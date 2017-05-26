@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+{% comment %} TODO  verify the description text shows up for all pages {% endcomment %}
+{%- if page_description %}
+  <meta name="description" content="{{ page_description | escape }}">
+{% endif %}
+  <title>
+{%- if template == "index" -%} {{- shop.name -}}{%- elsif template contains "404" -%}
+Page Not Found
+{%- else -%}
+{{ shop.name }} &mdash; {{ page_title | escape }}
+{%- endif -%}</title>
+  <link rel="canonical" href="{{ canonical_url }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  {%- comment -%} TODO template the site verification string {% endcomment %}
+  <meta name="google-site-verification" content="EpfeWwtVElUo_uESz-lSJN0B89D38gp5KfOQ3Yz0mTs">
+{% include 'head' %}
+  {{ content_for_header }}
+</head>
+
+<body id="{{ page_title | handle }}" class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
+
+{% include 'page-header' %}
+  <main>
+  {{content_for_layout}}
+  </main>
+</body>
+</html>

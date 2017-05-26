@@ -1,0 +1,8 @@
+{%- comment -%} TODO add these as settings {%- endcomment -%}
+{%- assign product_img_size = '1024x1024' -%}
+{%- comment -%} end TODO {%- endcomment -%}
+{%- assign product_img = product.images.first | product_img_url : product_img_size -%}
+{%- assign price = product.price | money_without_currency | remove: ','  -%}
+{%- assign currency = shop.currency -%}
+{%- assign availability = "InStock" -%}
+{%- unless product.available %}{% assign availability = "SoldOut"  %}{% endunless -%}

@@ -1,0 +1,32 @@
+  <header>
+    {%- assign main_menu = 'main-menu' -%}
+    {%- assign product_menu = 'product-nav' %}
+    <h1>Rennes</h1>
+    <nav class="product-nav">
+{% include 'search' %}
+      <a href="/cart">bag</a>
+      {%- comment %} webdesignerdepot 2014 06 nested navigation {% endcomment %}
+      <ul>
+        {%- for link in linklists[product_menu].links %}
+        <li>
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- if linklists[link.handle].links.size > 0 %}
+          <ul>
+          {%- for sublink in linklists[link.handle].links %}
+            <li><a href="{{ sublink.url }}">{{ sublink.title | escape }}</a></li>
+          {%- endfor %}
+          </ul>
+          {%- endif %}
+        </li>
+        {%- endfor %}
+      </ul>
+    </nav>
+  </header>
+
+  <nav class="site-nav">
+    <ul>
+      {%- for link in linklists[main_menu].links %}
+      <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+      {%- endfor -%}
+    </ul>
+  </nav>
