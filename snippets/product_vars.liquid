@@ -2,13 +2,14 @@
 {%- comment -%} Rather than using the featured image attribute, we just use the first in the list {%- endcomment -%}
 {%- assign product_img_size_collection = '1024x1024' -%}
 {%- assign product_img_size_main = '1024x1024' -%}
+{%- assign product_img_fmt = 'jpg' -%}
 {%- assign sale_disclaimer =  '
       All sale items are final sale and cannot be returned or exchanged.
       Please feel free to email us with any fit questions at info@rennes.us and
       we will be happy to help with sizing.' -%}
 {%- comment -%} end TODO {%- endcomment -%}
-{%- assign product_img_collection = product.images.first | product_img_url : product_img_size_collection -%}
-{%- assign product_img_main = product.images.first | product_img_url : product_img_size_main -%}
+{%- assign product_img_collection = product.images.first | img_url : product_img_size_collection, format: product_img_fmt  -%}
+{%- assign product_img_main = product.images.first | img_url : product_img_size_main, format: product_img_fmt -%}
 {%- assign product_img_alt = product.images.first.alt -%}
 {%- assign price = product.price | money_without_currency | remove: ','  -%}
 {%- assign price_display = product.price | money_without_trailing_zeros -%}

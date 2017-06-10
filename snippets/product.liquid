@@ -6,7 +6,7 @@
 
     <figure>
       {%- for image in product.images -%}
-      {%- assign temp_img = image | product_img_url: product_img_size_main %}
+      {%- assign temp_img = image | img_url: product_img_size_main, format: product_img_fmt %}
       <a property="image" typeof="ImageObject" href="{{ temp_img }}">
         <img property="contentUrl" src="{{ temp_img }}" alt="{{ image.alt | escape }}">
       </a>
