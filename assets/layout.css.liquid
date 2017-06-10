@@ -177,23 +177,34 @@ main {
  *
  * */
 
-/* Product images, all in a set inside a figure */
+/* Product images, all in a set inside a figure. */
 article[typeof="Product"] figure {
   margin: 0 10px 0 0;
-  width: calc(50% - 15px);
-  float: left;
+  width: 100%;
   min-width: 200px;
-  /*max-width: 400px;*/
   display: flex;
+  /* For cases where there's extra whitespace (that might only come up when the
+   * images hit the max-width below and there's still extra room) this will
+   * center them horizontally inside the figure. */
   justify-content: space-around;
-  flex-flow: wrap;
+  /* We use "wrap" to ensure the first image displays on top and all the rest
+   * below it */
+  flex-wrap: wrap;
 }
 
+/* Each separate product image, wrapped in a link. */
+/* Each link will grow and shrink so the whole set of them fits inside the
+ * width of the enclosing figure. Since the number of images can vary from
+ * product to product, we set a maximum width for the thumbnails for cases of
+ * just a few total images. flex-basis effectively sets the minimum width,
+ * since if the width had to go lower than that to fit everything it'll just
+ * wrap to another line instead. */
 article[typeof="Product"] figure a {
   display: block;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: 20px;
+  flex-basis: 10%;
+  max-width: 50%;
 }
 
 /* In general they'll be thumbnails in a row */
@@ -205,6 +216,8 @@ article[typeof="Product"] figure img {
 article[typeof="Product"] figure a:first-child {
   display: initial;
   flex-basis: initial;
+  max-width: initial;
+  width: 100%;
 }
 
 /* A bit of margin below them */
@@ -221,14 +234,23 @@ article[typeof="Product"] figure a:last-child  {
   margin-right: 10px;
 }*/
 
+
+/* On larger screens, float the figure and description/offer side-by-side,
+ * using half the usable space in their container on each side.
+ * TODO should I just use flex for this too? */
+@media only screen and (min-width: 600px) {
+
+article[typeof="Product"] figure {
+  width: calc(50% - 15px);
+  float: left;
+}
 /* Product description and cart form */
 article[typeof="Product"] [property="description"],
 article[typeof="Product"] [property="offers"] {
-  margin: 0 10px;
   width: calc(50% - 15px);
-  min-width: 200px;
   float: left;
 }
 article[typeof="Product"] [property="description"] p:first-child {
   margin-top: 0;
+}
 }
