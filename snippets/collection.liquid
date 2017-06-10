@@ -8,14 +8,14 @@
         <header>
           <h2 property="name">{{ product.title }}</h2>
           <p property="offers" typeof="Offer">
-            <span property="schema:price"         content="{{ price }}">{{ price }}</span>
+            <span property="schema:price"         content="{{ price }}">{{ price_display }}</span>
             <span property="schema:priceCurrency">{{ currency }}</span>
             <link property="availability"         href="http://schema.org/{{availability}}">
             <link property="schema:itemCondition" href="http://schema.org/NewCondition">
           </p>
         </header>
         <a property="url" href="{{ product.url | within: collection }}" title="View {{ product.title | escape }}">
-          <img property="image" src="{{ product_img }}" alt="{{ product.title | escape }}">
+          <img property="image" src="{{ product_img_collection }}" alt="{{ product.title | escape }}">
         </a>
       </section>
     {%- endfor %}
