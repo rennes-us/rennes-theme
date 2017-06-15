@@ -1,4 +1,42 @@
-/* Product description and cart form */
+/* Product description and offer form */
 article[typeof="Product"] [property="description"] {
   text-align: justify;
+}
+[property="offers"] {
+  text-align: center;
+}
+
+
+/* Offer form */
+/* We hide the radio buttons themselves and style everything with the labels */
+[property="offers"] input[type=radio] {
+  display: none;
+}
+
+[property="offers"] input[type=radio] + label {
+	text-transform: lowercase;
+	padding: 5px;
+}
+
+/* Add some margin to the left and right of the set of labels */
+[property="offers"] input[type=radio] + label:first-of-type {
+	margin-left: 20px;
+}
+[property="offers"] input[type=radio] + label:last-of-type {
+	margin-right: 20px;
+}
+
+[property="offers"] input[type=radio]:enabled + label {
+	cursor: pointer;
+}
+[property="offers"] input[type=radio]:disabled + label
+{
+	text-decoration: line-through;
+	color: gray;
+	cursor: not-allowed;
+}
+
+[property="offers"] input[type=radio]:checked + label {
+	border-radius: 100px;
+	box-shadow: inset 0 0 10px #bbb;
 }
