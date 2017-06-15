@@ -248,16 +248,26 @@ article[typeof="Product"] figure {
   float: left;
 }
 /* Product description and cart form */
-article[typeof="Product"] [property="description"] {
+article[typeof="Product"] div[property="description"] {
   width: calc(50% - 15px);
   margin: 0 10px;
   float: right;
 }
-article[typeof="Product"] [property="description"] p:first-child {
+article[typeof="Product"] div[property="description"] p:first-child {
   margin-top: 0;
 }
-article[typeof="Product"] [property="offers"] {
+article[typeof="Product"] form[property="offers"] {
   margin-left: calc(50% + 10px);
   margin-right: 10px;
   clear: right;
+}
+}
+
+/* Fade purchase button until variant selected */
+/* TODO find a trick to actually disable with a message until one is selected */
+form[property=offers] button {
+  opacity: 0.5;
+}
+form[property=offers] input[type=radio]:checked ~ button {
+  opacity: initial;
 }
