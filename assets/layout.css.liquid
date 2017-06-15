@@ -179,6 +179,7 @@ main {
 
 /* Product images, all in a set inside a figure. */
 article[typeof="Product"] figure {
+  /* 10px on right side */
   margin: 0 10px 0 0;
   width: 100%;
   min-width: 200px;
@@ -205,6 +206,7 @@ article[typeof="Product"] figure a {
   flex-shrink: 1;
   flex-basis: 10%;
   max-width: 50%;
+  cursor: zoom-in;
 }
 
 /* In general they'll be thumbnails in a row */
@@ -236,7 +238,8 @@ article[typeof="Product"] figure a:last-child  {
 
 
 /* On larger screens, float the figure and description/offer side-by-side,
- * using half the usable space in their container on each side.
+ * using half the usable space (minus half of the total horizontal margin each)
+ * in their container on each side.
  * TODO should I just use flex for this too? */
 @media only screen and (min-width: 600px) {
 
@@ -245,12 +248,16 @@ article[typeof="Product"] figure {
   float: left;
 }
 /* Product description and cart form */
-article[typeof="Product"] [property="description"],
-article[typeof="Product"] [property="offers"] {
+article[typeof="Product"] [property="description"] {
   width: calc(50% - 15px);
-  float: left;
+  margin: 0 10px;
+  float: right;
 }
 article[typeof="Product"] [property="description"] p:first-child {
   margin-top: 0;
 }
+article[typeof="Product"] [property="offers"] {
+  margin-left: calc(50% + 10px);
+  margin-right: 10px;
+  clear: right;
 }
