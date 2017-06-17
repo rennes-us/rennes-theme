@@ -1,42 +1,43 @@
+s {
+  color: gray;
+}
+
 /* Product description and offer form */
-article[typeof="Product"] [property="description"] {
+article[typeof=Product] div[property=description] {
   text-align: justify;
 }
-[property="offers"] {
+form[property=offers] {
   text-align: center;
 }
 
-
 /* Offer form */
-/* We hide the radio buttons themselves and style everything with the labels */
-[property="offers"] input[type=radio] {
-  display: none;
+
+/* Add some margin to the right and left of the price and button */
+form[property=offers] span[property=priceCurrency] {
+	margin-right: 20px;
+}
+form[property=offers] button {
+	margin-left: 20px;
 }
 
-[property="offers"] input[type=radio] + label {
+/* We hide the radio buttons themselves and style everything with the labels */
+form[property=offers] input[type=radio] {
+  display: none;
+}
+form[property=offers] input[type=radio] + label {
 	text-transform: lowercase;
 	padding: 5px;
 }
-
-/* Add some margin to the left and right of the set of labels */
-[property="offers"] input[type=radio] + label:first-of-type {
-	margin-left: 20px;
-}
-[property="offers"] input[type=radio] + label:last-of-type {
-	margin-right: 20px;
-}
-
-[property="offers"] input[type=radio]:enabled + label {
+form[property=offers] input[type=radio]:enabled + label {
 	cursor: pointer;
 }
-[property="offers"] input[type=radio]:disabled + label
+form[property=offers] input[type=radio]:disabled + label
 {
 	text-decoration: line-through;
 	color: gray;
 	cursor: not-allowed;
 }
-
-[property="offers"] input[type=radio]:checked + label {
+form[property=offers] input[type=radio]:checked + label {
 	border-radius: 100px;
 	box-shadow: inset 0 0 10px #bbb;
 }
