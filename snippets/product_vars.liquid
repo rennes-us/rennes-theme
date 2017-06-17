@@ -8,6 +8,8 @@
       Please feel free to email us with any fit questions at info@rennes.us and
       we will be happy to help with sizing.' -%}
 {%- comment -%} end TODO {%- endcomment -%}
+{%- if product.variants.size > 1 -%}{%- assign has_variants = true -%}{%- else -%}
+{%- assign has_variants = false -%}{%- endif -%}
 {%- assign product_img_collection = product.images.first | img_url : product_img_size_collection, format: product_img_fmt  -%}
 {%- assign product_img_main = product.images.first | img_url : product_img_size_main, format: product_img_fmt -%}
 {%- assign product_img_alt = product.images.first.alt -%}

@@ -5,12 +5,18 @@
     <meta property="manufacturer" content="{{ product.vendor }}">
 
     <figure>
+      <a property="image" typeof="ImageObject" href="{{ product_img_main }}">
+        <meta property="representativeOfPage" content="True">
+        <img property="contentUrl" src="{{ product_img_main }}" alt="{{ product.images.first.alt | escape }}">
+      </a>
+      <aside>
       {%- for image in product.images -%}
       {%- assign temp_img = image | img_url: product_img_size_main, format: product_img_fmt %}
-      <a property="image" typeof="ImageObject" href="{{ temp_img }}">
-        <img property="contentUrl" src="{{ temp_img }}" alt="{{ image.alt | escape }}">
-      </a>
+        <a property="image" typeof="ImageObject" href="{{ temp_img }}">
+          <img property="contentUrl" src="{{ temp_img }}" alt="{{ image.alt | escape }}">
+        </a>
       {%- endfor %}
+      </aside>
     </figure>
 
     <div property="description">
@@ -18,15 +24,15 @@
     </div>
 
     <form property="offers" typeof="Offer" action="/cart/add" method="post">
-      <span property="price"         content="{{ price }}">{{ price_display }}</span>
-      <span property="priceCurrency" content="{{ currency }}">{{ currency }}</span>
       {%- if product.compare_at_price_min > product.price %}
       <s>{{ compare_price }}</s>
       {%- endif %}
+      <span property="price"         content="{{ price }}">{{ price_display }}</span>
+      <span property="priceCurrency" content="{{ currency }}">{{ currency }}</span>
       <link property="itemCondition" href="http://schema.org/NewCondition">
       {%- if product.available %}
       <link property="availability"  href="http://schema.org/{{availability}}">
-        {%- if product.variants.size > 1 -%}
+        {%- if has_variants -%}
           {%- for variant in product.variants -%}
           {% if variant.available %}
           {% assign variant_disabled = '' %}
@@ -39,7 +45,7 @@
         {%- else %}
       <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
   {%- endif %}
-      <button type="submit" name="add" value="Add to bag">Add to bag</button>
+  <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option on the left"{% endif %}>Add to bag</button>
 {%- else %}
 {% comment %} TODO do the | t thing, and make sure this works with the structured data {% endcomment %}
       <span property="availability" href="http://schema.org/{{availability}}">Sold Out</span>

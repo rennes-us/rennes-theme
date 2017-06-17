@@ -6,7 +6,6 @@ TODO: template out or automate these things:
   max-width for product in collection
   fade timing for product hover in collection
   fade colors for product hover in collection
-  max-width for product figure
 */
 
 body {
@@ -179,63 +178,59 @@ main {
 
 /* Product images, all in a set inside a figure. */
 article[typeof="Product"] figure {
-  /* 10px on right side */
-  margin: 0 10px 0 0;
+  /* By default we assume this occupies the full width available on the page
+   * with no additional margin. */
   width: 100%;
   min-width: 200px;
+  margin: 0;
+}
+
+/* The images in the aside will be side-by-side thumbnails. */
+article[typeof=Product] figure aside {
   display: flex;
   /* For cases where there's extra whitespace (that might only come up when the
    * images hit the max-width below and there's still extra room) this will
    * center them horizontally inside the figure. */
   justify-content: space-around;
-  /* We use "wrap" to ensure the first image displays on top and all the rest
-   * below it */
+  /* This will allow the children image links to wrap if necessary, based on
+   * the number of children and the value of flex-basis below. */
   flex-wrap: wrap;
 }
 
-/* Each separate product image, wrapped in a link. */
+/* Each separate product thumbnail, wrapped in a link. */
 /* Each link will grow and shrink so the whole set of them fits inside the
- * width of the enclosing figure. Since the number of images can vary from
- * product to product, we set a maximum width for the thumbnails for cases of
- * just a few total images. flex-basis effectively sets the minimum width,
- * since if the width had to go lower than that to fit everything it'll just
- * wrap to another line instead. */
-article[typeof="Product"] figure a {
+ * width of the enclosing aside. */
+article[typeof="Product"] figure aside a {
   display: block;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: 10%;
+  /* Since the number of images can vary from product to product, we set a
+   * maximum width for the thumbnails for cases of just a few total images. */
   max-width: 50%;
+  /*flex-basis effectively sets the minimum width, since if the width had to go
+   * lower than that to fit everything it'll just wrap to another line
+   * instead.*/
+  flex-basis: 10%;
   cursor: zoom-in;
 }
 
-/* In general they'll be thumbnails in a row */
+/* Restrain the images to the size of the containing link, which is managed by
+ * the figure width for the main image and by the aside's flex display for the
+ * thumbnails. */
 article[typeof="Product"] figure img {
   width: 100%;
 }
 
-/* But, the first image will be featured */
-article[typeof="Product"] figure a:first-child {
-  display: initial;
-  flex-basis: initial;
-  max-width: initial;
-  width: 100%;
+/* Some margins on the thumbnails, proportional to the aside width */
+article[typeof="Product"] figure aside a {
+  margin: 1%;
 }
-
-/* A bit of margin below them */
-article[typeof="Product"] figure a {
-  margin: 0 10px 10px 10px;
+article[typeof="Product"] figure aside a:first-child {
+  margin-left: 0;
 }
-
-/* Some extra margin to the left and right of the thumbnails */
-/*article[typeof="Product"] figure a:nth-of-type(2)  {
-  margin-left: 10px;
+article[typeof="Product"] figure aside a:last-child {
+  margin-right: 0;
 }
-
-article[typeof="Product"] figure a:last-child  {
-  margin-right: 10px;
-}*/
-
 
 /* On larger screens, float the figure and description/offer side-by-side,
  * using half the usable space (minus half of the total horizontal margin each)
@@ -246,6 +241,8 @@ article[typeof="Product"] figure a:last-child  {
 article[typeof="Product"] figure {
   width: calc(50% - 15px);
   float: left;
+  /* 10px on right side */
+  margin: 0 10px 0 0;
 }
 /* Product description and cart form */
 article[typeof="Product"] div[property="description"] {
@@ -263,9 +260,10 @@ article[typeof="Product"] form[property="offers"] {
 }
 }
 
-/* Fade purchase button until variant selected */
+/* Fade purchase button until variant selected, if there are variants */
 /* TODO find a trick to actually disable with a message until one is selected */
-form[property=offers] button {
+/* TODO try "flex" trick as per https://stackoverflow.com/a/36118012 */
+form[property=offers] input[type=radio] ~ button {
   opacity: 0.5;
 }
 form[property=offers] input[type=radio]:checked ~ button {
