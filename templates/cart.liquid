@@ -1,0 +1,57 @@
+{% if cart.item_count > 0 %}
+
+  <form method="post" action="/cart">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">Item</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.items %}
+        {% include 'cart_item' %}
+          <tr>
+            <td><img src="{{ product_img_main }}" alt="{{ item.title | escape }}"></td>
+            <th scope="row"><a href="{{ item.url }}">{{ item.title }}</a></th>
+            <td>{{ item.price | money }}</td>
+            <td><input type="text" name="updates[{{ item.id }}]" id="updates_{{ item.id }}" value="{{ item.quantity }}"></td>
+            <td>{{ item.line_price | money }}</td>
+            <td><a href="/cart/change/{{ item.variant.id }}?quantity=0" title="Remove Item"><abbr title="Remove">✘</abbr></a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr id="total">
+          <td></td>
+          <th scope="row">Total:</th>
+          <td></td>
+          <td></td>
+          <td id="total-cost">{{ cart.total_price | money }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+    </table>
+
+    <button name="update" value="update" type="submit" title="Update your total">Update Shopping Bag</button>
+
+    {% if settings.away_mode %}
+    <label for="checkout-warning">
+      {{ settings.away_mode_message | escape}}
+      <input type="checkbox" id="checkout-warning" value="checkout-warning" required>
+    </label>
+    {% endif %}
+
+    <button type="submit" value="Check Out" name="checkout" title="Checkout">Checkout</button>
+
+  </form>
+
+{% else %}
+
+  <p class="alert-noitems">You don&#8217;t have any goods in your bag. <a href="/collections/new">Have a look around.</a></p>
+
+{% endif %}

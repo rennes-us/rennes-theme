@@ -262,10 +262,36 @@ article[typeof="Product"] form[property="offers"] {
 
 /* Fade purchase button until variant selected, if there are variants */
 /* TODO find a trick to actually disable with a message until one is selected */
-/* TODO try "flex" trick as per https://stackoverflow.com/a/36118012 */
 form[property=offers] input[type=radio] ~ button {
   opacity: 0.5;
 }
 form[property=offers] input[type=radio]:checked ~ button {
   opacity: initial;
+}
+
+/*
+ *
+ * Cart page
+ *
+ * */
+
+form[action="/cart"] table {
+/*  width: 100%;*/
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Product images won't go beyond 15% of the viewport width or 30% of its
+ * height. */
+form[action="/cart"] img {
+  max-width: 15vw;
+  max-height: 30vh;
+}
+
+/* On wide enough screens, show to full "Remove" text (rather than just the
+ * abbreviation).  TODO remove the X. */
+/* Couldn't get this to work: https://stackoverflow.com/a/22054588 */
+@media only screen and (min-width: 600px) {
+form[action="/cart"] tbody td:last-child a abbr::after {
+  content: attr(title);
 }
