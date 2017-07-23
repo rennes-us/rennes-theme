@@ -45,7 +45,7 @@
         {%- else %}
       <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
   {%- endif %}
-  <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option on the left"{% endif %}>Add to bag</button>
+      <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option on the left"{% endif %}>Add to bag</button>
 {%- else %}
 {% comment %} TODO do the | t thing, and make sure this works with the structured data {% endcomment %}
       <span property="availability" href="http://schema.org/{{availability}}">Sold Out</span>
