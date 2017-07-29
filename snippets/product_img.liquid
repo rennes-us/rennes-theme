@@ -34,6 +34,9 @@ the browser selects 25vw, it's assuming an image 25% of the viewport width.
 But we need more pixels than that vertically if we're using portrait images.
 We'll just double the requested width here to account for any probable aspect
 ratio.
+{%- endcomment -%}
+
+{%- comment -%}
 For the math below, the only case where we won't need up to 25vw*2 = 50vw
 pixels across either image dimension (i.e., where we don't have four images
 across) is when the viewport becomes narrow enough that we hit the minimum
@@ -55,4 +58,12 @@ hardcoding here.  Until that, see the max-width and min-width on '.products
 {%- endcomment -%}
 {%- if product_context == "collection" -%}
   {%- assign img_sizes = "(min-width: 1500px) 50vw, (min-width: 1200px) 70vw, (min-width: 800px) 100vw, 200vw" -%}
+{%- endif -%}
+
+{%- comment -%}
+The cart product image is at most 15% of the viewport wide, so we can just
+assume a 30% bounding box for all cases.
+{%- endcomment -%}
+{%- if product_context == "cart" -%}
+  {%- assign img_sizes = "30vw" -%}
 {%- endif -%}

@@ -15,7 +15,7 @@
         {% for item in cart.items %}
         {% include 'cart_item' %}
           <tr>
-            <td><img src="{{ product_img_main }}" alt="{{ item.title | escape }}"></td>
+            <td><img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" src="{{ img_url }}" alt="{{ img.alt | escape }}">
             <th scope="row"><a href="{{ item.url }}">{{ item.title }}</a></th>
             <td>{{ item.price | money }}</td>
             <td><input type="text" name="updates[{{ item.id }}]" id="updates_{{ item.id }}" value="{{ item.quantity }}"></td>
