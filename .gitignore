@@ -1,0 +1,7 @@
+# Ignore the config file for the shopify_theme utility
+config.yml
+# Don't track the particular settings in use
+config/settings_data.json
+# Don't track images
+assets/*.png
+assets/*.jpg
