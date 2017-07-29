@@ -1,0 +1,58 @@
+{%- comment -%}
+Set up helper variables for the currently defined product image object ("img").
+{%- endcomment -%}
+
+{%- comment -%}
+fallback image urls, for use when srcset isn't supported
+{%- endcomment -%}
+{%- assign img_url = img | img_url : product_img_size_main, format: product_img_fmt -%}
+{%- assign img_url_collection = img | img_url : product_img_size_collection, format: product_img_fmt -%}
+
+{%- comment -%}
+Predefined set of image sources that can be provided via Shopify's img_url.
+Note the bounding box issue as described below.
+{%- endcomment -%}
+{%- assign widths = "600,800,1200,2400,4472" | split: ',' -%}
+{% capture img_srcset %}
+{% for width in widths %}  {{ img | img_url: width, format: product_img_fmt }} {{ width }}w,
+{% endfor -%}
+{%- endcapture -%}
+
+{%- comment -%}
+Default value for img "sizes" attribute: 100% of the viewport width by default,
+with more specific cases covered below.
+{%- endcomment -%}
+{%- assign img_sizes = "100vw" -%}
+
+{%- comment -%}
+If a variable "product_context" is set we'll use that for specific cases.
+For the collection view, different viewport widths will give different numbers
+of product images tiled horizontally due to the minimum image size.
+NOTE: the shopify image size request syntax assumes a bounding box that will
+contain the image within the requested size.  That means that if from this list
+the browser selects 25vw, it's assuming an image 25% of the viewport width.
+But we need more pixels than that vertically if we're using portrait images.
+We'll just double the requested width here to account for any probable aspect
+ratio.
+For the math below, the only case where we won't need up to 25vw*2 = 50vw
+pixels across either image dimension (i.e., where we don't have four images
+across) is when the viewport becomes narrow enough that we hit the minimum
+image size, or wide enough that we hit the maximum.  I won't worry about the
+maximum case becuase it'll need about 2300px across the viewport before we
+start wasting bandwidth.  With a min-width set to 300px we'll need to reduce to
+300*4 + 180 + 56 = 1436px viewport width before we have fewer than four across,
+and 300*3 + 180 + 56 = 1136 before  we have fewer than three, and so on.  If we
+set thresholds slightly above those values in img_sizes we'll be sure to always
+load a large enough image to cover all cases.
+1500px on up: 4 across: ~ 25%
+1200px on up: 3 across: ~ 35%
+800px on up:  2 across: ~ 50%
+otherwise:    1 across: ~ 100%
+...and then double below due to aspect ratio. Whew.
+TODO maybe template out this math based on a shopify variable instead of
+hardcoding here.  Until that, see the max-width and min-width on '.products
+[typeof="Product"]' in assets/layout.css.liquid.
+{%- endcomment -%}
+{%- if product_context == "collection" -%}
+  {%- assign img_sizes = "(min-width: 1500px) 50vw, (min-width: 1200px) 70vw, (min-width: 800px) 100vw, 200vw" -%}
+{%- endif -%}

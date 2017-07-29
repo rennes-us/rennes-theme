@@ -3,6 +3,7 @@
 {%- paginate collection.products by 30 -%}
         
     {% for product in collection.products %}
+    {% assign product_context = 'collection' %}
     {% include 'product_vars' %}
       <section vocab="http://schema.org/" typeof="Product">
         <header>
@@ -14,8 +15,9 @@
             <link property="schema:itemCondition" href="http://schema.org/NewCondition">
           </p>
         </header>
+        {%- comment -%} TODO use srcset and sizes {%- endcomment -%}
         <a property="url" href="{{ product.url | within: collection }}" title="View {{ product.title | escape }}">
-          <img property="image" src="{{ product_img_collection }}" alt="{{ product.title | escape }}">
+          <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="image" src="{{ img_url_collection }}" alt="{{ product.title | escape }}">
         </a>
       </section>
     {%- endfor %}

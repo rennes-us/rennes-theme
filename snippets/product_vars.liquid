@@ -10,12 +10,11 @@
 {%- comment -%} end TODO {%- endcomment -%}
 {%- if product.variants.size > 1 -%}{%- assign has_variants = true -%}{%- else -%}
 {%- assign has_variants = false -%}{%- endif -%}
-{%- assign product_img_collection = product.images.first | img_url : product_img_size_collection, format: product_img_fmt  -%}
-{%- assign product_img_main = product.images.first | img_url : product_img_size_main, format: product_img_fmt -%}
-{%- assign product_img_alt = product.images.first.alt -%}
 {%- assign price = product.price | money_without_currency | remove: ','  -%}
 {%- assign price_display = product.price | money_without_trailing_zeros -%}
 {%- assign compare_price = product.compare_at_price_min | money_without_trailing_zeros -%}
 {%- assign currency = shop.currency -%}
 {%- assign availability = "InStock" -%}
 {%- unless product.available %}{% assign availability = "SoldOut" %}{% endunless -%}
+{% assign img = product.images.first %}
+{%- include 'product_img' -%}

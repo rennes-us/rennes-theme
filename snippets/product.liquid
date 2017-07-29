@@ -5,15 +5,15 @@
     <meta property="manufacturer" content="{{ product.vendor }}">
 
     <figure>
-      <a property="image" typeof="ImageObject" href="{{ product_img_main }}">
+      <a property="image" typeof="ImageObject" href="{{ img_url }}">
         <meta property="representativeOfPage" content="True">
-        <img property="contentUrl" src="{{ product_img_main }}" alt="{{ product.images.first.alt | escape }}">
+        <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
       </a>
       <aside>
-      {%- for image in product.images -%}
-      {%- assign temp_img = image | img_url: product_img_size_main, format: product_img_fmt %}
-        <a property="image" typeof="ImageObject" href="{{ temp_img }}">
-          <img property="contentUrl" src="{{ temp_img }}" alt="{{ image.alt | escape }}">
+      {%- for img in product.images -%}
+        {%- include 'product_img' -%}
+        <a property="image" typeof="ImageObject" href="{{ img_url }}">
+          <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
         </a>
       {%- endfor %}
       </aside>
