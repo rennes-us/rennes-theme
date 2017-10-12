@@ -1,5 +1,8 @@
 {%- comment -%} TODO add these as settings {%- endcomment -%}
-{%- comment -%} Rather than using the featured image attribute, we just use the first in the list {%- endcomment -%}
+{%- comment -%}
+These image sizes are just fallbacks; we primarily use srcset
+and sizes to provide a range of image sizes.
+{%- endcomment -%}
 {%- assign product_img_size_collection = '1024x1024' -%}
 {%- assign product_img_size_main = '2048x2048' -%}
 {%- assign product_img_fmt = 'jpg' -%}
@@ -8,13 +11,26 @@
       Please feel free to email us with any fit questions at info@rennes.us and
       we will be happy to help with sizing.' -%}
 {%- comment -%} end TODO {%- endcomment -%}
+
 {%- if product.variants.size > 1 -%}{%- assign has_variants = true -%}{%- else -%}
 {%- assign has_variants = false -%}{%- endif -%}
+
+{%- comment -%}
+Supposedly the money_without_trailing_zeros filter includes currency, but I'm
+not seeing that here.  If we want it for the trailing zeros case we could
+always put it in manually with a reference to shop.currency.
+{%- endcomment -%}
+{%- comment -%} Raw decimal value for product price, used in metadata {%- endcomment -%}
 {%- assign price = product.price | money_without_currency | remove: ','  -%}
+{%- comment -%} Formatted value for product price, displayed in page {%- endcomment -%}
 {%- assign price_display = product.price | money_without_trailing_zeros -%}
+{%- comment -%} Formatted value for product price if discounted {%- endcomment -%}
 {%- assign compare_price = product.compare_at_price_min | money_without_trailing_zeros -%}
 {%- assign currency = shop.currency -%}
+
 {%- assign availability = "InStock" -%}
 {%- unless product.available %}{% assign availability = "SoldOut" %}{% endunless -%}
+
+{%- comment -%} Rather than using the featured image attribute, we just use the first in the list {%- endcomment -%}
 {% assign img = product.images.first %}
 {%- include 'product_img' -%}
