@@ -8,18 +8,19 @@
       <a href="/cart">bag</a>
       {%- comment %} TODO credit webdesignerdepot 2014 06 nested navigation {% endcomment %}
       <ul>
-        {%- for link in linklists[product_menu].links %}
+        {%- for link in linklists[product_menu].links -%}
+        {%- include 'nav_sublinks' -%}
         <li>
           <a href="{{ link.url }}">{{ link.title | escape }}</a>
         {%- if linklists[link.handle].links.size > 0 %}
-          <ul>
+          <ul{{ nav_class_html }}>
           {%- for sublink in linklists[link.handle].links %}
             <li><a href="{{ sublink.url }}">{{ sublink.title | escape }}</a></li>
           {%- endfor %}
           </ul>
-          {%- endif %}
+        {%- endif %}
         </li>
-        {%- endfor %}
+        {% endfor -%}
       </ul>
     </nav>
   </header>

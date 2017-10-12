@@ -18,4 +18,7 @@ function setupToggleMenus()
 			$(this).next().slideToggle();
 			return(false);
 			});
+  // Leave the current sub-menu expanded, if there is one.  This assumes that
+  // the theme has already put the "current" class on the ul server-side.
+	$("nav ul ul.current").css('display', 'block');
 }
