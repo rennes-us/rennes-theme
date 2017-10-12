@@ -2,10 +2,11 @@
     {%- assign main_menu = 'main-menu' -%}
     {%- assign product_menu = 'product-nav' %}
     <h1>Rennes</h1>
+    {% comment %} edit the navigation lists at myshopify.com/admin/links {% endcomment %}
     <nav class="product-nav">
 {% include 'search' %}
       <a href="/cart">bag</a>
-      {%- comment %} webdesignerdepot 2014 06 nested navigation {% endcomment %}
+      {%- comment %} TODO credit webdesignerdepot 2014 06 nested navigation {% endcomment %}
       <ul>
         {%- for link in linklists[product_menu].links %}
         <li>
