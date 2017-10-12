@@ -19,9 +19,13 @@ body {
  * */
 
 
-input[type="search"] {
-  width: 80%;
-  max-width: 30em;
+/* Search */
+form[action="/search"] input {
+  width: calc(70% - 2px);
+}
+
+form[action="/search"] button {
+  width: calc(30% - 2px);
 }
 
 /* navigation lists in general */
@@ -278,17 +282,20 @@ form[property=offers] input[type=radio]:checked ~ button {
  *
  * */
 
+form[action="/cart"] {
+  text-align: center;
+}
+
 form[action="/cart"] table {
 /*  width: 100%;*/
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Product images won't go beyond 15% of the viewport width or 30% of its
- * height. */
+/* Product images will be 20% of the viewport height (but at least 100px). */
 form[action="/cart"] img {
-  max-width: 15vw;
-  max-height: 30vh;
+  height: 20vh;
+  min-height: 100px;
 }
 
 /* On wide enough screens, show to full "Remove" text (rather than just the
