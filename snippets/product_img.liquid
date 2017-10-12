@@ -12,11 +12,20 @@ fallback image urls, for use when srcset isn't supported
 Predefined set of image sources that can be provided via Shopify's img_url.
 Note the bounding box issue as described below.
 {%- endcomment -%}
-{%- assign widths = "600,800,1200,2400,4472" | split: ',' -%}
 {% capture img_srcset %}
+{{ img | img_url: 600, format: product_img_fmt }} 600w,
+{{ img | img_url: 800, format: product_img_fmt }} 800w,
+{{ img | img_url: 1200, format: product_img_fmt }} 1200w,
+{{ img | img_url: 2400, format: product_img_fmt }} 2400w,
+{{ img | img_url: 4472, format: product_img_fmt }} 4472w
+{%- endcapture -%}
+{% comment %}
+Previously I used the below to programmatically assign img_srcset, but I
+couldn't figure out how to get rid of that last trailing comma with liquid.
+{%- assign widths = "600,800,1200,2400,4472" | split: ',' -%}
 {% for width in widths %}  {{ img | img_url: width, format: product_img_fmt }} {{ width }}w,
 {% endfor -%}
-{%- endcapture -%}
+{% endcomment %}
 
 {%- comment -%}
 Default value for img "sizes" attribute: 100% of the viewport width by default,
