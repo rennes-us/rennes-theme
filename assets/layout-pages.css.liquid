@@ -1,0 +1,31 @@
+/* Layout styling specifically for one-off pages. */
+
+article.page p {
+  min-width: 8em;
+}
+
+/* 
+ * Two-column layout for individual pages as activated by choosing the
+ * page.columns template in the UI.
+ *
+ * */
+
+/* TODO make this look OK at small sizes */
+
+article.twocolumns {
+  margin: 0 auto;
+  max-width: 60em;
+}
+
+article.twocolumns img {
+  min-width: 200px;
+  width: calc(50% - 20px);
+  float: left;
+  padding-right: 20px;
+}
+
+article.twocolumns img.right {
+  float: right;
+  width: calc(50% - 80px);
+  padding: 40px;
+}
