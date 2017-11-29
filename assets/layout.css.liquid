@@ -210,6 +210,10 @@ article[typeof=Product] figure aside {
   flex-wrap: wrap;
 }
 
+article[typeof="Product"] figure a {
+  cursor: zoom-in;
+}
+
 /* Each separate product thumbnail, wrapped in a link. */
 /* Each link will grow and shrink so the whole set of them fits inside the
  * width of the enclosing aside. */
@@ -224,7 +228,6 @@ article[typeof="Product"] figure aside a {
    * lower than that to fit everything it'll just wrap to another line
    * instead.*/
   flex-basis: 10%;
-  cursor: zoom-in;
 }
 
 /* Restrain the images to the size of the containing link, which is managed by
@@ -271,6 +274,30 @@ article[typeof="Product"] form[property="offers"] {
   margin-right: 10px;
   clear: right;
 }
+}
+
+/* For when product images are zoomed.
+ *
+ * The list that normally has the thumbnails will instead expand and overlay
+ * the normal page content.  A jQuery handler will add and remove the "zoomed"
+ * class.
+ * */
+
+article[typeof=Product] figure aside.zoomed {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: white;
+  overflow: scroll;
+  display: block;
+  z-index: 99;
+}
+
+article[typeof=Product] figure aside.zoomed a {
+  cursor: zoom-out;
+  margin: 5px auto;
 }
 
 /* Fade purchase button until variant selected, if there are variants */

@@ -5,6 +5,7 @@ $(document).ready(mainShop);
 function mainShop() {
 	setupToggleMenus(); // Slide sub-menus in and out when clicked
 	setupProductImageSwapping(); // Select product images from thumbnails
+	setupProductImageZoom(); // Full-page zoom main product img when clicked
 }
 
 // ----------------------------------------------------------------------------
@@ -40,8 +41,44 @@ function setupProductImageSwapping() {
 // Take the img child of the given element and replace the current main product
 // img with it
 function swapImage(el) {
-	var img = $(el).children('img').clone();
+	// Keep track of the thumbnail matching the current image, for use in
+	// the zooming feature below.
+	$(".current_thumbnail").removeClass("current_thumbnail");
+	$(el).addClass("current_thumbnail");
+	var img = $(el).children('img');
 	var current_img = $('[typeof="Product"] figure > a img');
-	current_img.replaceWith(img);
+	current_img.replaceWith(img.clone());
 	return false;
+}
+
+// ----------------------------------------------------------------------------
+// Product image zoom
+
+// For showing a zoomed version of the product images when the main image is
+// clicked
+function setupProductImageZoom() {
+	$('[typeof="Product"] figure > a').click(zoomProductImages);
+}
+
+// Display the full list of images at large size one below the other
+function zoomProductImages() {
+	// We already have CSS defined for the zoomed case, so all that's
+	// needed is adding the class to the element.
+	$('[typeof="Product"] figure aside').addClass("zoomed");
+	// Scroll to the current image.
+	var current = $('[typeof="Product"] a.current_thumbnail');
+	var scroll = current.length ? current.offset().top : 0;
+	$('.zoomed').scrollTop(scroll);
+	// Un-zoom when any of the image links is clicked on.
+	$(".zoomed a").click(zoomedImageLinkClick);
+	return false;
+}
+
+// Un-zoom the list of images
+function zoomedImageLinkClick() {
+	// Resetting the scroll is required for this to work when re-entering
+	// zoom, but I don't see why.
+	$(".zoomed").scrollTop(0);
+	$(".zoomed").removeClass("zoomed");
+	$(".zoomed a").off("click", zoomedImageLinkClick);
 }
