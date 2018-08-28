@@ -1,6 +1,12 @@
+{% comment %}
+A view of all products for a single collection.
+/
+/collection/(collection_name)
+{% endcomment %}
+{% assign collection_paginate_num = 30 %}
   <article class="products">
         
-{%- paginate collection.products by 30 -%}
+{%- paginate collection.products by collection_paginate_num -%}
         
     {% for product in collection.products %}
     {% assign product_context = 'collection' %}
