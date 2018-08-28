@@ -1,0 +1,24 @@
+{%- comment -%}
+Set up a chunk of html to provide a "current" class for the navigation list
+item for the page we're currently sitting on.  This will let us keep a sub-menu
+(if present) open when we're on relevant pages.
+
+Implementation: Check if the current collection name is among the handles of
+the current top-level link or any of the sub-menu links.  If so, set the html
+text to specify the current class.  If not it'll just be blank.
+{%- endcomment -%}
+
+{%- assign current = false -%}
+{%- for sublink in linklists[link.handle].links -%}
+  {%- if sublink.handle contains collection.handle -%}
+    {%- assign current = true -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if link.handle contains collection.handle -%}
+{%- assign current = true -%}
+{%- endif -%}
+{%- if current -%}
+  {%- assign nav_class_html = ' class="current"' -%}
+{%- else -%}
+  {%- assign nav_class_html = '' -%}
+{%- endif -%}

@@ -2,28 +2,31 @@
     {%- assign main_menu = 'main-menu' -%}
     {%- assign product_menu = 'product-nav' %}
     <h1>Rennes</h1>
-    {% comment %} edit the navigation lists at myshopify.com/admin/links {% endcomment %}
-    <nav class="product-nav">
-{% include 'search' %}
+    <div>
       <a href="/cart">bag</a>
-      {%- comment %} TODO credit webdesignerdepot 2014 06 nested navigation {% endcomment %}
-      <ul>
-        {%- for link in linklists[product_menu].links -%}
-        {%- include 'nav_sublinks' -%}
-        <li>
-          <a href="{{ link.url }}">{{ link.title | escape }}</a>
-        {%- if linklists[link.handle].links.size > 0 %}
-          <ul{{ nav_class_html }}>
-          {%- for sublink in linklists[link.handle].links %}
-            <li><a href="{{ sublink.url }}">{{ sublink.title | escape }}</a></li>
-          {%- endfor %}
-          </ul>
-        {%- endif %}
-        </li>
-        {% endfor -%}
-      </ul>
-    </nav>
+{% include 'searchform' %}
+    </div>
   </header>
+
+  <nav class="product-nav">
+    {%- comment %} TODO credit webdesignerdepot 2014 06 nested navigation {% endcomment %}
+    {% comment %} edit the navigation lists at myshopify.com/admin/links {% endcomment %}
+    <ul>
+      {%- for link in linklists[product_menu].links -%}
+      {%- include 'nav_sublinks' -%}
+      <li>
+        <a href="{{ link.url }}">{{ link.title | escape }}</a>
+      {%- if linklists[link.handle].links.size > 0 %}
+        <ul{{ nav_class_html }}>
+        {%- for sublink in linklists[link.handle].links %}
+          <li><a href="{{ sublink.url }}">{{ sublink.title | escape }}</a></li>
+        {%- endfor %}
+        </ul>
+      {%- endif %}
+      </li>
+      {% endfor -%}
+    </ul>
+  </nav>
 
   <nav class="site-nav">
     <ul>
