@@ -5,21 +5,7 @@
     {% for product in collection.products %}
     {% assign product_context = 'collection' %}
     {% include 'product_vars' %}
-      <section vocab="http://schema.org/" typeof="Product">
-        <header>
-          <h2 property="name">{{ product.title }}</h2>
-          <p property="offers" typeof="Offer">
-            <span property="schema:price"         content="{{ price }}">{{ price_display }}</span>
-            <span property="schema:priceCurrency">{{ currency }}</span>
-            <link property="availability"         href="http://schema.org/{{availability}}">
-            <link property="schema:itemCondition" href="http://schema.org/NewCondition">
-          </p>
-        </header>
-        {%- comment -%} TODO use srcset and sizes {%- endcomment -%}
-        <a property="url" href="{{ product.url | within: collection }}" title="View {{ product.title | escape }}">
-          <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="image" src="{{ img_url_collection }}" alt="{{ product.title | escape }}">
-        </a>
-      </section>
+    {% include 'collection_item' %}
     {%- endfor %}
     {% if paginate.next.is_link %}
       <nav><a href="{{ paginate.next.url }}" rel="next">I'd like to see more</a></nav>

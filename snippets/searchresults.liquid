@@ -1,0 +1,36 @@
+	<article class="products" vocab="http://schema.org/" typeof="SearchResultsPage">
+			{% paginate search.results by 9 %}
+			{% comment %} search performed? {% endcomment %}
+			{% if search.performed %}
+		 
+					{% if paginate.current_page == 1 %}
+						<h2>searching for "{{search.terms | escape}}"</h2>
+						{% include 'searchform' %}
+					{% endif %}
+
+				{% comment %} no search results? {% endcomment%}
+				{% if search.results == empty %}  
+					<p>Your search for "{{search.terms | escape}}" did not yield any results</p>              
+				{% comment %} no search results? {% endcomment%}
+				{% else %}
+					{% for item in search.results %}
+						{% assign product = item %}
+						{% assign product_context = 'collection' %}
+						{% include 'product_vars' %}
+						{% include 'collection_item' %}
+					{% endfor %}
+				{% endif %}
+				{% comment %} no search results? {% endcomment%}
+
+      {% if paginate.next.is_link %}
+				<nav><a href="{{ paginate.next.url }}" rel="next">I'd like to see more</a></nav>
+			{% endif %}
+    
+			{% comment %} search performed? {% endcomment %}
+      {% else %}
+				<h2>Search</h2>
+				{% include 'searchform' %}
+      {% endif %}
+			{% comment %} search performed? {% endcomment %}
+	{% endpaginate %}
+		</article>
