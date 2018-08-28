@@ -1,7 +1,8 @@
+{% assign search_result_paginate = 9 %}
 	<article class="products" vocab="http://schema.org/" typeof="SearchResultsPage">
 			{% comment %} search performed? {% endcomment %}
 			{% if search.performed %}
-			{% paginate search.results by 9 %}
+			{% paginate search.results by search_result_paginate %}
 		 
 					{% if paginate.current_page == 1 %}
 						<h2>searching for "{{search.terms | escape}}"</h2>
