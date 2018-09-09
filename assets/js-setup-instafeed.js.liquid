@@ -1,0 +1,17 @@
+{% assign instafeed_access_token = '17657889.f8e5611.54050e93405e44d69970d915369d5740' %}
+{% assign instafeed_user_id = '17657889' %}
+{% assign instafeed_limit = '5' %}
+{% assign instafeed_resolution = 'low_resolution' %}
+$(document).ready(setup_instafeed);
+
+function setup_instafeed()
+{
+	feed = new Instafeed({
+	accessToken: '{{ instafeed_access_token }}',
+	userId: '{{ instafeed_user_id }}',
+	get: 'user',
+	sortBy: 'most-recent',
+	limit: '{{ instafeed_limit }}',
+	resolution: '{{ instafeed_resolution }}' });
+	feed.run()
+}
