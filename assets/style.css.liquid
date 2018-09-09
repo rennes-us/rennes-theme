@@ -1,4 +1,91 @@
+/* Basic page layout and organization */
+
 /*
+TODO: template out or automate these things:
+  min-width for product in collection
+  max-width for product in collection
+  fade timing for product hover in collection
+  fade colors for product hover in collection
+*/
+
+body {
+  padding: 10px 20px;
+}
+
+/*
+ *
+ * Header and navigation
+ *
+ * */
+
+body > header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-column-gap: 5px;
+  justify-items: center;
+}
+
+body > header > :nth-child(1) { grid-column-start: 2; }
+body > header > :nth-child(2) { width: 100%; margin-left: auto; }
+
+/* Bag */
+header a[href="/cart"] {
+  float: right;
+}
+
+/* navigation lists in general */
+nav ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+/* Bag */
+/*header a[href="/cart"] {
+  float: right;
+}*/
+
+/* Search */
+/*form[action="/search"] {
+  float: right;
+}*/
+
+/* Fixed heading and navigation links for large screens */
+@media only screen and (min-width: 740px) {
+
+/* Main site title */
+/*h1 {
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 0;
+  overflow: visible;
+}*/
+
+/* navigation menus in general */
+nav {
+  margin: 10px;
+}
+
+/* product navigation on one side */
+.product-nav {
+  width: 160px;
+  float: left;
+}
+
+/* site navigation */
+.site-nav {
+  float: left;
+  clear: both;
+}
+
+main {
+  /* leave room for header and product-nav */
+  margin-left: 180px;
+}
+
+}
+
+/* 
  *
  * Default element styling for the site
  *
@@ -26,120 +113,6 @@ s {
   color: gray;
 }
 
-/*
- *
- * Specific elements
- *
- * */
-
 nav li {
   padding-right: 0.5vw;
-}
-
-/*
- *
- * Product page
- *
- * */
-
-/* Product description and offer form */
-article[typeof=Product] div[property=description] {
-  text-align: justify;
-}
-form[property=offers] {
-  text-align: center;
-}
-
-/* Offer form */
-
-/* Add some margin to the right and left of the price and button */
-form[property=offers] span[property=priceCurrency] {
-	margin-right: 20px;
-}
-form[property=offers] button {
-	margin-left: 20px;
-}
-
-/* We hide the radio buttons themselves and style everything with the labels */
-form[property=offers] input[type=radio] {
-  display: none;
-}
-form[property=offers] input[type=radio] + label {
-	text-transform: lowercase;
-	padding: 5px;
-}
-form[property=offers] input[type=radio]:enabled + label {
-	cursor: pointer;
-}
-form[property=offers] input[type=radio]:disabled + label {
-	text-decoration: line-through;
-	color: gray;
-	cursor: not-allowed;
-}
-form[property=offers] input[type=radio]:checked + label {
-	border-radius: 100px;
-	box-shadow: inset 0 0 10px #bbb;
-}
-
-/*
- *
- * Cart page
- *
- * */
-
-/* Main cart table properties */
-
-/* Borders on parent elements of td/th in tables don't seem to work unless we
- * collapse borders  */
-form[action="/cart"] table {
-  border-collapse: collapse;
-}
-
-/* Padding inside all the table cells, proportional to the viewport size. */
-form[action="/cart"] td,
-form[action="/cart"] th {
-  padding: 1vh 2vw;
-}
-
-/* Cart table header */
-
-/* "Options" column can be left implicit */
-form[action="/cart"] thead th:last-child,
-form[action="/cart"] tfoot td:last-child {
-  display: none;
-}
-
-form[action="/cart"] thead th {
-  font-weight: normal;
-}
-form[action="/cart"] thead tr {
-  border-bottom: 1px solid #999;
-}
-form[action="/cart"] tfoot tr:first-child {
-  border-top: 1px solid #999;
-}
-
-/* Cart table body */
-
-/* product image */
-form[action="/cart"] tbody td:first-child {
-  text-align: right;
-}
-
-/* product title */
-form[action="/cart"] tbody th[scope=row] {
-  text-align: left;
-}
-
-/* Quantity box */
-form[action="/cart"] tbody td input[type=text] {
-  width: 3em;
-}
-
-/* "Remove" link */
-form[action="/cart"] tbody td:last-child a {
-  color: #aaa;
-}
-form[action="/cart"] tbody td:last-child a:hover {
-  color: #777;
 }

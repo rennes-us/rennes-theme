@@ -1,0 +1,44 @@
+/* Search */
+
+/* Just the search box in the header */
+header form[action="/search"] {
+  float: right;
+  margin-right: 20px;
+}
+
+/* Just the search page specifically,
+see below for both cases */
+article form[action="/search"] {
+  padding-bottom: 1em;
+  text-align: center;
+	width: 100%;
+}
+
+form[action="/search"] input[type="text"] {
+  font-family: "lora";
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #555;
+}
+
+form[action="/search"] input[type="text"]:focus {
+  border-bottom: 1px solid black;
+}
+
+form[action="/search"] input[type="submit"] {
+  border: none;
+  background: none;
+  background: url({{ 'search.svg' | asset_url }});
+  background-repeat: no-repeat;
+  width: 15px;
+}
+
+form[action="/search"] input[type="submit"]:hover {
+  cursor: pointer;
+}
+
+/* Search Results */
+article[typeof="SearchResultsPage"] h2 {
+  text-align: center;
+  font-weight: normal;
+}

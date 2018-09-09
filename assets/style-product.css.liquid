@@ -1,0 +1,169 @@
+/*
+ *
+ * Product page
+ *
+ * */
+
+/* Product images, all in a set inside a figure. */
+article[typeof="Product"] figure {
+  /* By default we assume this occupies the full width available on the page
+   * with no additional margin. */
+  width: 100%;
+  min-width: 200px;
+  margin: 0;
+}
+
+/* The images in the aside will be side-by-side thumbnails. */
+article[typeof=Product] figure aside {
+  display: flex;
+  /* For cases where there's extra whitespace (that might only come up when the
+   * images hit the max-width below and there's still extra room) this will
+   * center them horizontally inside the figure. */
+  justify-content: space-around;
+  /* This will allow the children image links to wrap if necessary, based on
+   * the number of children and the value of flex-basis below. */
+  flex-wrap: wrap;
+}
+
+article[typeof="Product"] figure a {
+  cursor: zoom-in;
+}
+
+/* Each separate product thumbnail, wrapped in a link. */
+/* Each link will grow and shrink so the whole set of them fits inside the
+ * width of the enclosing aside. */
+article[typeof="Product"] figure aside a {
+  display: block;
+  flex-grow: 1;
+  flex-shrink: 1;
+  /* Since the number of images can vary from product to product, we set a
+   * maximum width for the thumbnails for cases of just a few total images. */
+  max-width: 50%;
+  /*flex-basis effectively sets the minimum width, since if the width had to go
+   * lower than that to fit everything it'll just wrap to another line
+   * instead.*/
+  flex-basis: 10%;
+}
+
+/* Restrain the images to the size of the containing link, which is managed by
+ * the figure width for the main image and by the aside's flex display for the
+ * thumbnails. */
+article[typeof="Product"] figure img {
+  width: 100%;
+}
+
+/* Some margins on the thumbnails, proportional to the aside width */
+article[typeof="Product"] figure aside a {
+  margin: 1%;
+}
+article[typeof="Product"] figure aside a:first-child {
+  margin-left: 0;
+}
+article[typeof="Product"] figure aside a:last-child {
+  margin-right: 0;
+}
+
+/* On larger screens, float the figure and description/offer side-by-side,
+ * using half the usable space (minus half of the total horizontal margin each)
+ * in their container on each side.
+ * TODO should I just use flex for this too? */
+@media only screen and (min-width: 600px) {
+
+article[typeof="Product"] figure {
+  width: calc(50% - 15px);
+  float: left;
+  /* 10px on right side */
+  margin: 0 10px 0 0;
+}
+/* Product description and cart form */
+article[typeof="Product"] div[property="description"] {
+  width: calc(50% - 15px);
+  margin: 0 10px;
+  float: right;
+}
+article[typeof="Product"] div[property="description"] p:first-child {
+  margin-top: 0;
+}
+article[typeof="Product"] form[property="offers"] {
+  margin-left: calc(50% + 10px);
+  margin-right: 10px;
+  clear: right;
+}
+}
+
+/* For when product images are zoomed.
+ *
+ * The list that normally has the thumbnails will instead expand and overlay
+ * the normal page content.  A jQuery handler will add and remove the "zoomed"
+ * class.
+ * */
+
+article[typeof=Product] figure aside.zoomed {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: white;
+  overflow: scroll;
+  display: block;
+  z-index: 99;
+}
+
+article[typeof=Product] figure aside.zoomed a {
+  cursor: zoom-out;
+  margin: 5px auto;
+}
+
+/* Fade purchase button until variant selected, if there are variants */
+/* TODO find a trick to actually disable with a message until one is selected */
+form[property=offers] input[type=radio] ~ button {
+  opacity: 0.5;
+}
+form[property=offers] input[type=radio]:checked ~ button {
+  opacity: initial;
+}
+/*
+ *
+ * Product page - styling
+ *
+ * */
+
+/* Product description and offer form */
+article[typeof=Product] div[property=description] {
+  text-align: justify;
+}
+form[property=offers] {
+  text-align: center;
+}
+
+/* Offer form */
+
+/* Add some margin to the right and left of the price and button */
+form[property=offers] span[property=priceCurrency] {
+	margin-right: 20px;
+}
+form[property=offers] button {
+	margin-left: 20px;
+}
+
+/* We hide the radio buttons themselves and style everything with the labels */
+form[property=offers] input[type=radio] {
+  display: none;
+}
+form[property=offers] input[type=radio] + label {
+	text-transform: lowercase;
+	padding: 5px;
+}
+form[property=offers] input[type=radio]:enabled + label {
+	cursor: pointer;
+}
+form[property=offers] input[type=radio]:disabled + label {
+	text-decoration: line-through;
+	color: gray;
+	cursor: not-allowed;
+}
+form[property=offers] input[type=radio]:checked + label {
+	border-radius: 100px;
+	box-shadow: inset 0 0 10px #bbb;
+}

@@ -1,0 +1,91 @@
+/*
+ *
+ * Cart page
+ *
+ * */
+
+form[action="/cart"] {
+  text-align: center;
+}
+
+form[action="/cart"] table {
+/*  width: 100%;*/
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Product images will be 20% of the viewport height (but at least 100px). */
+form[action="/cart"] img {
+  height: 20vh;
+  min-height: 100px;
+}
+
+/* On wide enough screens, show to full "Remove" text (rather than just the
+ * abbreviation).  TODO remove the X. */
+/* Couldn't get this to work: https://stackoverflow.com/a/22054588 */
+@media only screen and (min-width: 600px) {
+form[action="/cart"] tbody td:last-child a abbr::after {
+  content: attr(title);
+}
+/*
+ *
+ * Cart page - styling
+ *
+ * */
+
+/* Main cart table properties */
+
+/* Borders on parent elements of td/th in tables don't seem to work unless we
+ * collapse borders  */
+form[action="/cart"] table {
+  border-collapse: collapse;
+}
+
+/* Padding inside all the table cells, proportional to the viewport size. */
+form[action="/cart"] td,
+form[action="/cart"] th {
+  padding: 1vh 2vw;
+}
+
+/* Cart table header */
+
+/* "Options" column can be left implicit */
+form[action="/cart"] thead th:last-child,
+form[action="/cart"] tfoot td:last-child {
+  display: none;
+}
+
+form[action="/cart"] thead th {
+  font-weight: normal;
+}
+form[action="/cart"] thead tr {
+  border-bottom: 1px solid #999;
+}
+form[action="/cart"] tfoot tr:first-child {
+  border-top: 1px solid #999;
+}
+
+/* Cart table body */
+
+/* product image */
+form[action="/cart"] tbody td:first-child {
+  text-align: right;
+}
+
+/* product title */
+form[action="/cart"] tbody th[scope=row] {
+  text-align: left;
+}
+
+/* Quantity box */
+form[action="/cart"] tbody td input[type=text] {
+  width: 3em;
+}
+
+/* "Remove" link */
+form[action="/cart"] tbody td:last-child a {
+  color: #aaa;
+}
+form[action="/cart"] tbody td:last-child a:hover {
+  color: #777;
+}

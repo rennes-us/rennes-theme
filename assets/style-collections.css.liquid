@@ -1,0 +1,102 @@
+/*
+ *
+ * Collections
+ *
+ * */
+
+/* Align the set of products in the center of this container, with
+ * evenly-distributed padding and however many products can fit per row. */
+.products {
+  display: flex;
+  flex-basis: 25%;
+  flex-flow: wrap;
+  justify-content: space-around;
+}
+
+/* For circumstances where we include a header inside the article, force the
+ * width so the heading doesn't flex inline with the other stuff. */
+.products h2 {
+  width: 100%;
+}
+
+/* An individual product. */
+.products [typeof="Product"] {
+  /* Margin relative to viewport width.  Effectively sets the minimum spacing
+   * between our flexible elements. */
+  margin: 1vw;
+  vertical-align: top;
+  /* Having a flexible width will let the contained product image scale, but
+   * only to a reasonable min/max.  Combined with display: flex on the
+   * container the layout will handle a wide range of screen sizes. */
+  /* Need to account for side-to-side margins */
+  width: calc(25% - 2vw);
+  min-width: 300px;
+  max-width: 512px;
+}
+
+/* The product link, wrapping the image. */
+.products [typeof="Product"] a {
+  display: block;
+  background: white;
+}
+
+/* The product image. */
+.products [typeof="Product"] img {
+  display: block;
+  width: 100%;
+}
+
+/* The pagination, centered at the bottom of the list. */
+.products nav {
+  width: 100%;
+  text-align: center;
+}
+
+/* Fancy product-details-on-hover styling */
+
+/* Ideally I could detect with a media query if the user CAN hover, but that's
+ * waiting on Media Queries Level 4.  Instead I'll just assume that larger
+ * screens come with a real mouse too. */
+@media only screen and (min-width: 1200px) {
+
+/* Product header, hidden until hover */
+.products [typeof="Product"] header {
+  opacity: 0;
+  /* Zero height, to overlay on product image */
+  height: 0;
+  /* z-index only affects positioned elements, not static, and we need to
+   * position the zero-height header on top of the image */
+  position: relative;
+  z-index: 10;
+  /* text color, vs background of product's a */
+  color: black;
+}
+
+/* Product header appears on hover */
+.products [typeof="Product"]:hover header {
+  opacity: 1;
+  transition: opacity .3s ease-in-out;
+  -o-transition: opacity .3s ease-in-out;
+  -moz-transition: opacity .3s ease-in-out;
+  -webkit-transition: opacity .3s ease-in-out;
+}
+
+/* Product image fades on hover */
+.products [typeof="Product"]:hover img {
+  opacity: 0.6;
+  transition: opacity .3s ease-in-out;
+  -o-transition: opacity .3s ease-in-out;
+  -moz-transition: opacity .3s ease-in-out;
+  -webkit-transition: opacity .3s ease-in-out;
+}
+
+/* Remove the heading's margin for the hovering case */
+.products [typeof="Product"] header h2 {
+  margin-top: 0;
+  padding: 8px;
+}
+.products [typeof="Product"] header p {
+  padding: 8px;
+}
+
+}
