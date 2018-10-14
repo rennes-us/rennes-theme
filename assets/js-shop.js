@@ -63,8 +63,11 @@ function setupProductImageZoom() {
 // Display the full list of images at large size one below the other
 function zoomProductImages() {
 	// We already have CSS defined for the zoomed case, so all that's
-	// needed is adding the class to the element.
+	// needed to zoom is adding the class to the element.
 	$('[typeof="Product"] figure aside').addClass("zoomed");
+	// We also need to avoid double-scroolbars from the container.
+	// Temporarily clipping will do that.
+	$('body').css('overflow', 'hidden');
 	// Scroll to the current image.
 	var current = $('[typeof="Product"] a.current_thumbnail');
 	var scroll = current.length ? current.offset().top : 0;
@@ -81,4 +84,6 @@ function zoomedImageLinkClick() {
 	$(".zoomed").scrollTop(0);
 	$(".zoomed").removeClass("zoomed");
 	$(".zoomed a").off("click", zoomedImageLinkClick);
+	// Undo the clipping on the container.
+	$('body').css('overflow', 'inherit');
 }
