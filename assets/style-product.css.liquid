@@ -4,14 +4,57 @@
  *
  * */
 
-/* Product images, all in a set inside a figure. */
+/* By default assume full width for each part of the product information.  If
+ * there's enough room, we'll drop to half of the container instead for items
+ * below the title. */
+
+article[typeof="Product"] {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Title */
+article[typeof="Product"] h2 {
+  flex-basis: 100%;
+}
+
+/* Figure */
 article[typeof="Product"] figure {
-  /* By default we assume this occupies the full width available on the page
-   * with no additional margin. */
-  width: 100%;
-  min-width: 200px;
+  flex-basis: 100%;
+  margin: 0;
+  max-width: 600px;
+}
+
+/* Description and Form */
+article[typeof="Product"] div {
+  flex-basis: 100%;
   margin: 0;
 }
+
+/* If space allows, show figure and other product details side-by-side. */
+@media only screen and (min-width: 600px) {
+
+article[typeof="Product"] figure {
+  flex-basis: 50%;
+}
+
+article[typeof="Product"] div {
+  flex-basis: 50%;
+}
+
+article[typeof="Product"] div[property="description"] p:first-child {
+  /* So the text is flush with the top of the figure, if they're
+   * side-by-side. */
+  margin-top: 0;
+}
+
+article[typeof="Product"] p {
+  padding: 0 1em;
+}
+
+}
+
+/* Product images */
 
 /* The images in the aside will be side-by-side thumbnails. */
 article[typeof=Product] figure aside {
@@ -63,33 +106,6 @@ article[typeof="Product"] figure aside a:last-child {
   margin-right: 0;
 }
 
-/* On larger screens, float the figure and description/offer side-by-side,
- * using half the usable space (minus half of the total horizontal margin each)
- * in their container on each side.
- * TODO should I just use flex for this too? */
-@media only screen and (min-width: 600px) {
-
-article[typeof="Product"] figure {
-  width: calc(50% - 15px);
-  float: left;
-  /* 10px on right side */
-  margin: 0 10px 0 0;
-}
-/* Product description and cart form */
-article[typeof="Product"] div[property="description"] {
-  width: calc(50% - 15px);
-  margin: 0 10px;
-  float: right;
-}
-article[typeof="Product"] div[property="description"] p:first-child {
-  margin-top: 0;
-}
-article[typeof="Product"] form[property="offers"] {
-  margin-left: calc(50% + 10px);
-  margin-right: 10px;
-  clear: right;
-}
-}
 
 /* For when product images are zoomed.
  *
@@ -123,6 +139,7 @@ form[property=offers] input[type=radio] ~ button {
 form[property=offers] input[type=radio]:checked ~ button {
   opacity: initial;
 }
+
 /*
  *
  * Product - styling
