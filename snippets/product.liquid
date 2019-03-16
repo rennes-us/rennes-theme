@@ -55,7 +55,7 @@
   {%- assign col_handles = product.collections | map: 'handle' -%}
   {% if col_handles contains "sale" %}
 
-      <strong>{{ sale_disclaimer }}
+      <strong>{{ settings.product_sale_disclaimer }}
       </strong>
 {%- endif %}
     </div>

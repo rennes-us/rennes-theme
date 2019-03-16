@@ -1,7 +1,7 @@
 <section vocab="http://schema.org/" typeof="PostalAddress">
-  <span property="streetAddress">rennes</span>
-  <span property="streetAddress">135 n. 3rd Street</span>
-  <span property="addressLocality">Philadelphia</span>,
-  <span property="addressRegion">PA</span>
-  <span property="postalCode">19106</span>
+  <span property="streetAddress">{{ settings.addr_name }}</span>
+  <span property="streetAddress">{{ settings.addr_street }}</span>
+  <span property="addressLocality">{{ settings.addr_city }}</span>,
+  <span property="addressRegion">{{ settings.addr_state }}</span>
+  <span property="postalCode">{{ settings.addr_zip }}</span>
 </section>

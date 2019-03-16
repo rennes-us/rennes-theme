@@ -2,7 +2,6 @@
 Loop over all collections, showing links and a small preview.
 /collections
 {% endcomment %}
-{% assign collection_list_product_num = 3 %}
 <article class="collections">
 {% for collection in collections %}
     {% capture collection_title %}{% endcapture %}
@@ -10,7 +9,7 @@ Loop over all collections, showing links and a small preview.
     <h2>
       <a href="{{ collection.url }}">{{ collection.title | escape }}</a>
     </h2>
-      {% for product in collection.products limit:collection_list_product_num %}
+      {% for product in collection.products limit:settings.collection_list_product_num %}
         {% assign product_context = 'collection' %}
         {% include 'product_vars' %}
         {% include 'collection_item' %}

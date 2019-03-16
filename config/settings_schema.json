@@ -1,0 +1,152 @@
+[
+  {
+    "name": "theme_info",
+    "logo": "https:\/\/cdn.shopify.com\/s\/files\/1\/0070\/7032\/files\/2010_6_23_Shopify-Green_256x256.jpg",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Rennes Theme"
+      },
+      {
+        "type": "paragraph",
+        "content": "v0.1.0"
+      },
+      {
+        "type": "paragraph",
+        "content": "Custom theme for [http:\/\/rennes.us](http:\/\/rennes.us)."
+      }
+    ]
+  },
+  {
+    "name": "Product Page",
+    "settings": [
+      {
+        "id": "product_sale_disclaimer",
+        "label": "Disclaimer for on-sale products",
+        "type": "text"
+      },
+      {
+        "type": "header",
+        "content": "Image Formatting"
+      },
+      {
+        "id": "product_img_format",
+        "label": "Product Image Format",
+        "type": "text"
+      }
+    ]
+  },
+  {
+    "name": "Collection Page",
+    "settings": [
+      {
+        "id": "collection_paginate_num",
+        "label": "Number of products per page",
+        "type": "text"
+      }
+    ]
+  },
+  {
+    "name": "Collection List Page",
+    "settings": [
+      {
+        "id": "collection_list_product_num",
+        "label": "Number of preview products per collection",
+        "type": "text"
+      }
+    ]
+  },
+  {
+    "name": "Other Settings",
+    "settings": [
+      {
+        "id": "main_title",
+        "label": "Main Title Text",
+        "type": "text"
+      },
+      {
+        "id": "instagram_handle",
+        "label": "Instagram Handle (no @)",
+        "type": "text"
+      },
+      {
+        "id": "nav_handle_main",
+        "label": "Handle for main link menu",
+        "type": "link_list"
+      },
+      {
+        "id": "nav_handle_product",
+        "label": "Handle for product link menu",
+        "type": "link_list"
+      },
+      {
+        "id": "collection_handle_index",
+        "label": "Collection shown on home page",
+        "type": "collection"
+      },
+      {
+        "id": "google_site_verification",
+        "label": "Google Site Verification Token",
+        "type": "text"
+      },
+      {
+        "id": "mailing_list_form_target",
+        "label": "Mailing List Form Target URL",
+        "type": "text"
+      },
+      {
+        "type": "header",
+        "content": "InstaFeed Instagram Viewer"
+      },
+      {
+        "id": "instafeed_access_token",
+        "label": "Instagram access token",
+        "type": "text"
+      },
+      {
+        "id": "instafeed_user_id",
+        "label": "Instagram user ID",
+        "type": "text"
+      },
+      {
+        "id": "instafeed_limit",
+        "label": "Number of photos to show",
+        "type": "text"
+      },
+      {
+        "id": "instafeed_resolution",
+        "label": "Instafeed resolution setting",
+        "type": "text"
+      },
+      {
+        "type": "header",
+        "content": "Storefront Address"
+      },
+      {
+        "id": "addr_name",
+        "label": "First line of address",
+        "type": "text"
+      },
+      {
+        "id": "addr_street",
+        "label": "Street and number",
+        "type": "text"
+      },
+      {
+        "id": "addr_city",
+        "label": "City",
+        "type": "text"
+      },
+      {
+        "id": "addr_state",
+        "label": "State",
+        "type": "text"
+      },
+      {
+        "id": "addr_zip",
+        "label": "Zip Code",
+        "type": "text"
+      }
+    ]
+  }
+]

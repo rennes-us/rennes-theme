@@ -5,25 +5,25 @@ Set up helper variables for the currently defined product image object ("img").
 {%- comment -%}
 fallback image urls, for use when srcset isn't supported
 {%- endcomment -%}
-{%- assign img_url = img | img_url : product_img_size_main, format: product_img_fmt -%}
-{%- assign img_url_collection = img | img_url : product_img_size_collection, format: product_img_fmt -%}
+{%- assign img_url = img | img_url : product_img_size_main, format: settings.product_img_fmt -%}
+{%- assign img_url_collection = img | img_url : product_img_size_collection, format: settings.product_img_fmt -%}
 
 {%- comment -%}
 Predefined set of image sources that can be provided via Shopify's img_url.
 Note the bounding box issue as described below.
 {%- endcomment -%}
 {% capture img_srcset %}
-{{ img | img_url: 600, format: product_img_fmt }} 600w,
-{{ img | img_url: 800, format: product_img_fmt }} 800w,
-{{ img | img_url: 1200, format: product_img_fmt }} 1200w,
-{{ img | img_url: 2400, format: product_img_fmt }} 2400w,
-{{ img | img_url: 4472, format: product_img_fmt }} 4472w
+{{ img | img_url: 600,  format: settings.product_img_fmt }} 600w,
+{{ img | img_url: 800,  format: settings.product_img_fmt }} 800w,
+{{ img | img_url: 1200, format: settings.product_img_fmt }} 1200w,
+{{ img | img_url: 2400, format: settings.product_img_fmt }} 2400w,
+{{ img | img_url: 4472, format: settings.product_img_fmt }} 4472w
 {%- endcapture -%}
 {% comment %}
 Previously I used the below to programmatically assign img_srcset, but I
 couldn't figure out how to get rid of that last trailing comma with liquid.
 {%- assign widths = "600,800,1200,2400,4472" | split: ',' -%}
-{% for width in widths %}  {{ img | img_url: width, format: product_img_fmt }} {{ width }}w,
+{% for width in widths %}  {{ img | img_url: width, format: settings.product_img_fmt }} {{ width }}w,
 {% endfor -%}
 {% endcomment %}
 

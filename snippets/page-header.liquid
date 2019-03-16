@@ -1,7 +1,5 @@
   <header>
-    {%- assign main_menu = 'main-menu' -%}
-    {%- assign product_menu = 'product-nav' %}
-    <h1><a href="/">Rennes</a></h1>
+    <h1><a href="/">{{ settings.main_title }}</a></h1>
     <div>
       <a href="/cart">
 	  {% if cart.item_count > 0 %}
@@ -23,7 +21,7 @@
     https://help.shopify.com/en/manual/sell-online/online-store/menus-and-links/change-to-nested-menus
     {% endcomment %}
     <ul>
-      {%- for link in linklists[product_menu].links -%}
+      {%- for link in linklists[settings.nav_handle_product].links -%}
       {%- include 'nav_sublinks' -%}
       <li>
         <a href="{{ link.url }}">{{ link.title | escape }}</a>
@@ -41,7 +39,7 @@
 
   <nav class="main site-nav">
     <ul>
-      {%- for link in linklists[main_menu].links %}
+      {%- for link in linklists[settings.nav_handle_main].links %}
       <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
       {%- endfor -%}
     </ul>

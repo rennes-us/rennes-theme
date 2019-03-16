@@ -5,13 +5,12 @@ instead, defined by another snippet.
 /
 /collection/(collection_name)
 {% endcomment %}
-{% assign collection_paginate_num = 10 %}
 {% if collection.title == 'Designers' %}
 {% include 'collection_designers' %}
 {% else %}
   <article class="products">
         
-{%- paginate collection.products by collection_paginate_num -%}
+{%- paginate collection.products by settings.collection_paginate_num -%}
         
     {% for product in collection.products %}
     {% assign product_context = 'collection' %}

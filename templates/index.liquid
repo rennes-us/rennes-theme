@@ -1,5 +1,4 @@
-{%- comment -%} TODO make this collection a config variable{%- endcomment -%}
-{%- assign collection = collections['new'] -%}
+{%- assign collection = collections[settings.collection_handle_index] -%}
 {%- include 'collection' -%}
 {%- include 'instafeed' -%}
 {%- include 'address' -%}

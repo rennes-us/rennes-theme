@@ -16,7 +16,7 @@ Page Not Found
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <meta name="theme-color" content="{{ settings.color_primary }}">
   {%- comment -%} TODO template the site verification string {% endcomment %}
-  <meta name="google-site-verification" content="EpfeWwtVElUo_uESz-lSJN0B89D38gp5KfOQ3Yz0mTs">
+  <meta name="google-site-verification" content="{{ settings.google_site_verification }}">
 {% include 'head' %}
   {{ content_for_header }}
 </head>

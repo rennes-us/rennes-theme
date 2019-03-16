@@ -1,16 +1,9 @@
-{%- comment -%} TODO add these as settings {%- endcomment -%}
 {%- comment -%}
 These image sizes are just fallbacks; we primarily use srcset
 and sizes to provide a range of image sizes.
 {%- endcomment -%}
 {%- assign product_img_size_collection = '1024x1024' -%}
 {%- assign product_img_size_main = '2048x2048' -%}
-{%- assign product_img_fmt = 'jpg' -%}
-{%- assign sale_disclaimer =  '
-      All sale items are final sale and cannot be returned or exchanged.
-      Please feel free to email us with any fit questions at info@rennes.us and
-      we will be happy to help with sizing.' -%}
-{%- comment -%} end TODO {%- endcomment -%}
 
 {%- if product.variants.size > 1 -%}{%- assign has_variants = true -%}{%- else -%}
 {%- assign has_variants = false -%}{%- endif -%}
