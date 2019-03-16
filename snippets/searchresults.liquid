@@ -23,6 +23,9 @@
 				{% endif %}
 				{% comment %} no search results? {% endcomment%}
 
+      {% comment %}
+      TODO use the separate pagenums snippet here
+      {% endcomment %}
       {% if paginate.next.is_link %}
 				<nav><a href="{{ paginate.next.url }}" rel="next">I'd like to see more</a></nav>
 			{% endif %}
