@@ -3,7 +3,13 @@
     {%- assign product_menu = 'product-nav' %}
     <h1><a href="/">Rennes</a></h1>
     <div>
-      <a href="/cart">bag</a>
+      <a href="/cart">
+	  {% if cart.item_count > 0 %}
+	  {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items'}} in Bag
+      {% else %}
+      My Bag
+	  {% endif %}
+      </a>
 {% include 'searchform' %}
     </div>
   </header>
