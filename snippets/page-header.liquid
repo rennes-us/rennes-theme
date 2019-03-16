@@ -8,9 +8,14 @@
     </div>
   </header>
 
-  <nav class="product-nav">
+  <nav class="main product-nav">
     {%- comment %} TODO credit webdesignerdepot 2014 06 nested navigation {% endcomment %}
     {% comment %} edit the navigation lists at myshopify.com/admin/links {% endcomment %}
+    {% comment %}
+    NEW!  They finally support nested menus in what sounds like a sensible way.
+    Probably switch to this at some point.
+    https://help.shopify.com/en/manual/sell-online/online-store/menus-and-links/change-to-nested-menus
+    {% endcomment %}
     <ul>
       {%- for link in linklists[product_menu].links -%}
       {%- include 'nav_sublinks' -%}
@@ -28,7 +33,7 @@
     </ul>
   </nav>
 
-  <nav class="site-nav">
+  <nav class="main site-nav">
     <ul>
       {%- for link in linklists[main_menu].links %}
       <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>

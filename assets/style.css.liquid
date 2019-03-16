@@ -13,7 +13,7 @@ TODO: template out or automate these things:
 */
 
 body {
-  padding: 10px 20px;
+  padding: 10px;
 }
 
 /* Header and navigation */
@@ -39,27 +39,13 @@ nav ul {
   padding-left: 10px;
 }
 
-/* Bag */
-/*header a[href="/cart"] {
-  float: right;
-}*/
-
-/* Search */
-/*form[action="/search"] {
-  float: right;
-}*/
-
 /* Fixed heading and navigation links for large screens */
 @media only screen and (min-width: 740px) {
 
 /* Main site title */
-/*h1 {
-  margin-top: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 0;
-  overflow: visible;
-}*/
+h1 {
+  text-transform: lowercase;
+}
 
 /* navigation menus in general */
 nav {
@@ -76,6 +62,18 @@ nav {
 .site-nav {
   float: left;
   clear: both;
+}
+
+/* The main nav elements with lists of links */
+nav.main {
+  margin: 5px;
+  text-transform: lowercase;
+}
+nav.main > ul {
+  padding-left: 0;
+}
+nav.main > ul > li {
+  margin-bottom: 10px;
 }
 
 main {
