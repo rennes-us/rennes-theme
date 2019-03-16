@@ -1,0 +1,22 @@
+{% comment %}
+pagination link code used within a paginate block in the collections snippet.
+{% endcomment %}
+<nav class="pagination">
+{% if paginate.previous.is_link %}
+    <a href="{{ paginate.previous.url }}">{{ paginate.previous.title }}</a>
+{% endif %}
+  {% for part in paginate.parts %}
+  {% if part.is_link %}
+    {{ part.title | link_to: part.url}}
+  {% else %}
+    {% if part.title == paginate.current_page %}
+  	<span class="current">{{ part.title }}</span>
+    {% else %}
+    {{ part.title }}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% if paginate.next.is_link %}
+        <a href="{{ paginate.next.url }}">{{ paginate.next.title }}</a>
+{% endif %}
+</nav>

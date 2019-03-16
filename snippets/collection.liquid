@@ -5,7 +5,7 @@ instead, defined by another snippet.
 /
 /collection/(collection_name)
 {% endcomment %}
-{% assign collection_paginate_num = 30 %}
+{% assign collection_paginate_num = 10 %}
 {% if collection.title == 'Designers' %}
 {% include 'collection_designers' %}
 {% else %}
@@ -18,9 +18,7 @@ instead, defined by another snippet.
     {% include 'product_vars' %}
     {% include 'collection_item' %}
     {%- endfor %}
-    {% if paginate.next.is_link %}
-      <nav><a href="{{ paginate.next.url }}" rel="next">I'd like to see more</a></nav>
-	  {%- endif -%}
+    {% include 'pagenums' %}
 {% endpaginate %}
     </article>
 {% endif %}
