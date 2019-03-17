@@ -94,6 +94,22 @@
         "label": "Mailing List Form Target URL",
         "type": "text"
       },
+
+      {
+        "type": "header",
+        "content": "Mailing List Popup"
+      },
+      {
+        "id": "mlpopup_enabled",
+        "label": "Enabled?",
+        "type": "checkbox"
+      },
+      {
+        "id": "mlpopup_delay",
+        "label": "Delay in ms",
+        "type": "text"
+      },
+
       {
         "type": "header",
         "content": "InstaFeed Instagram Viewer"
@@ -118,6 +134,7 @@
         "label": "Instafeed resolution setting",
         "type": "text"
       },
+
       {
         "type": "header",
         "content": "Storefront Address"

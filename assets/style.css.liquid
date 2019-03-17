@@ -157,3 +157,45 @@ main > section:after {
 	width: 60%;
 	border-top: 1px solid lightgray;
 }
+
+/*
+ *
+ *  Pop-up circle
+ *
+ * */
+
+.popup {
+  width: 500px;
+  height: 500px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  border-radius: 250px;
+  z-index: 99;
+  transform: translateX(-50%) translateY(-50%);
+  border: 1px solid gray;
+  background: white;
+}
+
+.popup .closebutton {
+  width: 25px;
+  height: 25px;
+  top: 5px;
+  left: 50%;
+  position: absolute;
+  /*transform: translateX(-50%) translateY(-50%);*/
+  transform: translateX(-50%);
+  /*border: 1px solid black;*/
+  background: white;
+  font-weight: bold;
+  text-align:center;
+  line-height: 25px;
+  overflow: hidden;
+}
+
+.popup > section {
+  top: 50%;
+  position: absolute;
+  transform: translateY(-50%);
+  width: initial;
+}
