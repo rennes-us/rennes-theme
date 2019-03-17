@@ -23,7 +23,7 @@ Page Not Found
 
 <body id="{{ page_title | handle }}" class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
 
-{% include 'page-header' %}
+{% include 'page_header' %}
   <main>
   {{content_for_layout}}
   </main>
