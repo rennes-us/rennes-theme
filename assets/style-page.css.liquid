@@ -4,8 +4,23 @@
  *
  * */
 
+article.page {
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 8em;
+  max-width: 60em;
+}
+
 article.page p {
   min-width: 8em;
+  max-width: 60em;
+  text-align: justify;
+}
+
+article.page h1,
+article.page h2,
+article.page h3 {
+  text-align: center;
 }
 
 /*
@@ -16,31 +31,19 @@ article.page p {
 
 /* TODO make this look OK at small sizes */
 
-article.twocolumns {
+article.columns {
   margin: 0 auto;
-  max-width: 60em;
 }
 
-article.twocolumns img {
+article.columns img {
   min-width: 200px;
   width: calc(50% - 20px);
   float: left;
   padding-right: 20px;
 }
 
-article.twocolumns img.right {
+article.columns img.right {
   float: right;
   width: calc(50% - 80px);
   padding: 40px;
 }
-
-/*
- *
- * One-off pages - styling
- *
- * */
-
-article.page p {
-  text-align: justify;
-}
-

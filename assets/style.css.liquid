@@ -96,12 +96,12 @@ nav ul {
 }
 
 /* Main site title */
-h1 {
+header > h1 {
   font-size: 400%;
   text-transform: lowercase;
   margin: 0.3em 0;
 }
-h1 a, h1 a:hover {
+header > h1 a, header > h1 a:hover {
   text-decoration: none;
 }
 
@@ -148,6 +148,7 @@ main {
 
 /* sections directly within main get a divider */
 /* SO 4131490 */
+/* TODO fix that the first one seems pinned to the top of the page */
 main > section:after {
 	content: "";
 	position: absolute;
