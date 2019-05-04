@@ -16,13 +16,13 @@ configured number of instagram images for the theme.
 {% assign instafeed_img_pct = 1.0 | divided_by: settings.instafeed_limit | times: 100 %}
 
 #instafeed {
-  text-align: center;
-  padding-bottom: 40px;
-  padding-top: 40px;
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  padding-bottom: 40px;
+  padding-top: 40px;
+  position: relative;
+  text-align: center;
 }
 
 #instafeed p {
@@ -33,9 +33,9 @@ configured number of instagram images for the theme.
 
 #instafeed > a {
   flex-basis: auto;
-  width: calc({{ instafeed_img_pct }}% - 30px);
-  min-width: 100px;
+  min-width: 200px;
   padding: 15px;
+  width: calc({{ instafeed_img_pct }}% - 30px);
 }
 
 #instafeed > a img {
