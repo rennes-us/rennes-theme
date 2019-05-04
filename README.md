@@ -8,6 +8,7 @@
 
 Additional tools:
  * <https://jshint.com>
+ * <https://github.com/CSSLint/csslint>
  * <https://github.com/Dealerdirect/liquid-linter-cli> (not maintained though)
 
 [themekit]: https://github.com/Shopify/themekit

@@ -4,13 +4,13 @@
  *
  * */
 
-[typeof="PostalAddress"] {
-  text-align: center;
+section[typeof="PostalAddress"] {
   padding: 1em;
   position: relative;
+  text-align: center;
   text-transform: lowercase;
 }
 
-[typeof="PostalAddress"] [property="streetAddress"] {
+section[typeof="PostalAddress"] span[property="streetAddress"] {
   display: block;
 }

@@ -19,10 +19,10 @@ article form[action="/search"] {
 }
 
 form[action="/search"] input[type="text"] {
-  font-family: "lora";
-  outline: none;
   border: none;
   border-bottom: 1px solid #555;
+  font-family: "lora";
+  outline-width: 0;
 }
 
 form[action="/search"] input[type="text"]:focus {
@@ -30,10 +30,10 @@ form[action="/search"] input[type="text"]:focus {
 }
 
 form[action="/search"] input[type="submit"] {
-  border: none;
   background: none;
   background: url({{ 'img-search.svg' | asset_url }});
   background-repeat: no-repeat;
+  border: none;
   width: 15px;
 }
 
@@ -43,6 +43,6 @@ form[action="/search"] input[type="submit"]:hover {
 
 /* Search Results */
 article[typeof="SearchResultsPage"] h2 {
-  text-align: center;
   font-weight: normal;
+  text-align: center;
 }

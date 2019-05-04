@@ -14,7 +14,14 @@ function check_javascript_all {
 	)
 }
 
-# Liquid lint
+# CSS Lint
+# This excludes liquid-templated CSS because I'm not sure how to get csslint to
+# handle it.
+function check_css_all {
+	csslint assets/style*.css
+}
+
+# Liquid Lint
 function check_liquid_all {
 	stash=$(mktemp -d)
 	lintout=$(
@@ -41,8 +48,10 @@ function check_liquid_all {
 }
 
 function check_main {
-	check_javascript_all
-	check_liquid_all
+	check_javascript_all || retval=$?
+	check_css_all || retval=$?
+	check_liquid_all || retval=$?
+	return $retval
 }
 
 if [[ ${FUNCNAME[0]} == main ]]; then

@@ -1,7 +1,7 @@
 .mailing-list {
+  padding: 1em;
   text-align: center;
   text-transform: lowercase;
-  padding: 1em;
 }
 
 .mailing-list label {
@@ -9,7 +9,7 @@
 }
 .mailing-list input[type="email"] {
   border: none;
-  outline: none;
-  width: 15em;
   border-bottom: 1px solid black;
+  outline-width: 0;
+  width: 15em;
 }

@@ -59,13 +59,13 @@ article[typeof="Product"] p {
 /* The images in the aside will be side-by-side thumbnails. */
 article[typeof=Product] figure aside {
   display: flex;
+  /* This will allow the children image links to wrap if necessary, based on
+   * the number of children and the value of flex-basis below. */
+  flex-wrap: wrap;
   /* For cases where there's extra whitespace (that might only come up when the
    * images hit the max-width below and there's still extra room) this will
    * center them horizontally inside the figure. */
   justify-content: space-around;
-  /* This will allow the children image links to wrap if necessary, based on
-   * the number of children and the value of flex-basis below. */
-  flex-wrap: wrap;
 }
 
 article[typeof="Product"] figure a {
@@ -77,15 +77,15 @@ article[typeof="Product"] figure a {
  * width of the enclosing aside. */
 article[typeof="Product"] figure aside a {
   display: block;
+  /*flex-basis effectively sets the minimum width, since if the width had to go
+   * lower than that to fit everything it'll just wrap to another line
+   * instead.*/
+  flex-basis: 10%;
   flex-grow: 1;
   flex-shrink: 1;
   /* Since the number of images can vary from product to product, we set a
    * maximum width for the thumbnails for cases of just a few total images. */
   max-width: 50%;
-  /*flex-basis effectively sets the minimum width, since if the width had to go
-   * lower than that to fit everything it'll just wrap to another line
-   * instead.*/
-  flex-basis: 10%;
 }
 
 /* Restrain the images to the size of the containing link, which is managed by
@@ -115,14 +115,14 @@ article[typeof="Product"] figure aside a:last-child {
  * */
 
 article[typeof=Product] figure aside.zoomed {
-  width: 100%;
+  background: white;
+  display: block;
   height: 100%;
+  left: 0;
+  overflow: scroll;
   position: fixed;
   top: 0;
-  left: 0;
-  background: white;
-  overflow: scroll;
-  display: block;
+  width: 100%;
   z-index: 99;
 }
 
@@ -169,16 +169,16 @@ form[property=offers] input[type=radio] {
   display: none;
 }
 form[property=offers] input[type=radio] + label {
-	text-transform: lowercase;
 	padding: 5px;
+	text-transform: lowercase;
 }
 form[property=offers] input[type=radio]:enabled + label {
 	cursor: pointer;
 }
 form[property=offers] input[type=radio]:disabled + label {
-	text-decoration: line-through;
 	color: gray;
 	cursor: not-allowed;
+	text-decoration: line-through;
 }
 form[property=offers] input[type=radio]:checked + label {
 	border-radius: 100px;
