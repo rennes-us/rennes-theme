@@ -4,22 +4,40 @@
  *
  * */
 
-/* TODO: make resizing better.  use flex? */
+{% comment %}
+Sizing is via flex. In general we want the images laid out horizontally
+without needing wrapping, but it can wrap if needed.  The minimum width on
+the top-level a element is where that would come up.
+
+The base width of an image is set as a percentage of the parent based on the
+configured number of instagram images for the theme.
+{% endcomment %}
+
+{% assign instafeed_img_pct = 1.0 | divided_by: settings.instafeed_limit | times: 100 %}
 
 #instafeed {
   text-align: center;
   padding-bottom: 40px;
   padding-top: 40px;
   position: relative;
-  min-width: 1100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 #instafeed p {
   font-size: 130%;
   text-align: center;
+  width: 100%;
 }
 
-#instafeed img {
-  width: 200px;
-  margin-right: 20px;
+#instafeed > a {
+  flex-basis: auto;
+  width: calc({{ instafeed_img_pct }}% - 30px);
+  min-width: 100px;
+  padding: 15px;
+}
+
+#instafeed > a img {
+  width: 100%;
 }
