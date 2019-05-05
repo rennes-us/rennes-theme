@@ -25,6 +25,8 @@
   /* Need to account for side-to-side margins */
   width: calc(50% - 2vw);
   display: flex;
+  /* The column/flex-end combo will have items "bottom justified" which helps
+   * with varying product title length and wrapping */
   flex-direction: column;
   justify-content: flex-end;
 }
