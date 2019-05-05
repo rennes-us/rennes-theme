@@ -148,10 +148,10 @@ main {
 /* **************** */
 
 main > section {
-  position:relative;
   margin-bottom: 20px;
   margin-top: 20px;
   padding-top: 20px;
+  position:relative;
 }
 
 /* sections directly within main get a divider */
