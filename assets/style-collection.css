@@ -20,6 +20,9 @@
 }
 
 /* An individual product. */
+/* Having a flexible width will let the contained product image scale, but
+ * only to a reasonable min/max.  Combined with display: flex on the
+ * container the layout will handle a wide range of screen sizes. */
 .products [typeof="Product"] {
   /* Margin relative to viewport width.  Effectively sets the minimum spacing
    * between our flexible elements. */
@@ -27,9 +30,6 @@
   max-width: 512px;
   min-width: 300px;
   vertical-align: top;
-  /* Having a flexible width will let the contained product image scale, but
-   * only to a reasonable min/max.  Combined with display: flex on the
-   * container the layout will handle a wide range of screen sizes. */
   /* Need to account for side-to-side margins */
   width: calc(25% - 2vw);
 }
