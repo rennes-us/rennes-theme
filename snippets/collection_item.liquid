@@ -3,7 +3,7 @@ A single product in a collection, search result, etc.
 {% endcomment %}
       <section vocab="http://schema.org/" typeof="Product">
         <header>
-          <h2 property="name">{{ product.title }}</h2>
+          <div property="name">{{ product.title }}</div>
           <p property="offers" typeof="Offer">
             <span property="schema:price"         content="{{ price }}">{{ price_display }}</span>
             <span property="schema:priceCurrency">{{ currency }}</span>

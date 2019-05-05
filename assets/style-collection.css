@@ -8,15 +8,10 @@
  * evenly-distributed padding and however many products can fit per row. */
 .products {
   display: flex;
-  flex-basis: 25%;
+  /* In general do two across */
+  flex-basis: 50%;
   flex-flow: wrap;
   justify-content: space-around;
-}
-
-/* For circumstances where we include a header inside the article, force the
- * width so the heading doesn't flex inline with the other stuff. */
-.products h2 {
-  width: 100%;
 }
 
 /* An individual product. */
@@ -27,17 +22,42 @@
   /* Margin relative to viewport width.  Effectively sets the minimum spacing
    * between our flexible elements. */
   margin: 1vw;
-  max-width: 512px;
-  min-width: 300px;
-  vertical-align: top;
   /* Need to account for side-to-side margins */
-  width: calc(25% - 2vw);
+  width: calc(50% - 2vw);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* ****************
+ * On larger screens do more products across
+ * ***************/
+@media only screen and (min-width: 740px) {
+.products { flex-basis: 33.3%; }
+.products [typeof="Product"] { width: calc(33.3% - 2vw); }
+}
+@media only screen and (min-width: 1200px) {
+.products { flex-basis: 25%; }
+.products [typeof="Product"] { width: calc(25% - 2vw); }
+}
+/* ************* */
+
+.products [typeof="Product"] div[property="name"] {
+  font-weight: bold;
+  margin: 20px 5px 10px 5px;
+  text-align: center;
 }
 
 /* The product link, wrapping the image. */
 .products [typeof="Product"] a {
   background: white;
   display: block;
+}
+
+.products [typeof="Product"] p[typeof="Offer"] {
+  text-align: center;
+  margin: 0.3em 0;
+
 }
 
 /* The product image. */
@@ -91,7 +111,7 @@
 }
 
 /* Remove the heading's margin for the hovering case */
-.products [typeof="Product"] header h2 {
+.products [typeof="Product"] span[property="name"] {
   margin-top: 0;
   padding: 8px;
 }
