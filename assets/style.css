@@ -71,10 +71,10 @@ button:focus {
 
 /* In general the header will be flex with a few items stacked vertically. */
 body > header {
-  text-transform: lowercase;
   display: flex;
   flex-direction: column;
   text-align: center;
+  text-transform: lowercase;
   white-space: nowrap;
 }
 
