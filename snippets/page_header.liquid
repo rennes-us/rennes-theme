@@ -1,6 +1,7 @@
   <header>
     <h1><a href="/">{{ settings.main_title }}</a></h1>
     <div>
+{% include 'searchform' %}
       <a href="/cart">
 	  {% if cart.item_count > 0 %}
 	  {{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items'}} in Bag
@@ -8,7 +9,6 @@
       My Bag
 	  {% endif %}
       </a>
-{% include 'searchform' %}
     </div>
   </header>
 

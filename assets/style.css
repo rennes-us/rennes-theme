@@ -20,7 +20,7 @@ TODO: template out or automate these things:
 
 body {
   font-family: "Lora", serif;
-  padding: 10px;
+  padding: 5px;
 }
 
 a {
@@ -69,22 +69,35 @@ button:focus {
  *
  * */
 
+/* In general the header will be flex with a few items stacked vertically. */
+body > header {
+  text-transform: lowercase;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  white-space: nowrap;
+}
+
+body > header > div > form,
+body > header > div > a {
+	padding: 10px 0 10px 10px;
+}
+
+/* ****************
+ * Wide-format header for large screens
+ * ***************/
+@media only screen and (min-width: 740px) {
 body > header {
   display: grid;
   grid-column-gap: 5px;
   grid-template-columns: 1fr auto 1fr;
   /* DRAFT: https://drafts.csswg.org/css-align-3/#propdef-justify-items */
   justify-items: center;
-  text-transform: lowercase;
 }
-
 body > header > :nth-child(1) { grid-column-start: 2; }
-body > header > :nth-child(2) { margin-left: auto; width: 100%; }
-
-/* Bag */
-header a[href="/cart"] {
-  float: right;
+body > header > :nth-child(2) { display: flex; margin-left: auto; }
 }
+/* **************** */
 
 /* navigation in general */
 nav {
@@ -99,7 +112,7 @@ nav ul {
 /* Main site title */
 header > h1 {
   font-size: 400%;
-  margin: 0.3em 0;
+  margin: 0 0 0.3em 0;
   text-transform: lowercase;
 }
 header > h1 a, header > h1 a:hover {

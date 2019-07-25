@@ -27,7 +27,7 @@
   display: flex;
   /* The column/flex-end combo will have items "bottom justified" which helps
    * with varying product title length and wrapping */
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: flex-end;
 }
 
@@ -80,37 +80,6 @@
  * waiting on Media Queries Level 4.  Instead I'll just assume that larger
  * screens come with a real mouse too. */
 @media only screen and (min-width: 1200px) {
-
-/* Product header, hidden until hover */
-.products [typeof="Product"] header {
-  /* text color, vs background of product's a */
-  color: black;
-  /* Zero height, to overlay on product image */
-  height: 0;
-  opacity: 0;
-  /* z-index only affects positioned elements, not static, and we need to
-   * position the zero-height header on top of the image */
-  position: relative;
-  z-index: 10;
-}
-
-/* Product header appears on hover */
-.products [typeof="Product"]:hover header {
-  opacity: 1;
-  transition: opacity .3s ease-in-out;
-  -o-transition: opacity .3s ease-in-out;
-  -moz-transition: opacity .3s ease-in-out;
-  -webkit-transition: opacity .3s ease-in-out;
-}
-
-/* Product image fades on hover */
-.products [typeof="Product"]:hover img {
-  opacity: 0.6;
-  transition: opacity .3s ease-in-out;
-  -o-transition: opacity .3s ease-in-out;
-  -moz-transition: opacity .3s ease-in-out;
-  -webkit-transition: opacity .3s ease-in-out;
-}
 
 /* Remove the heading's margin for the hovering case */
 .products [typeof="Product"] span[property="name"] {
