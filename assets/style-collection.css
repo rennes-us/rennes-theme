@@ -21,7 +21,7 @@
 .products [typeof="Product"] {
   /* Margin relative to viewport width.  Effectively sets the minimum spacing
    * between our flexible elements. */
-  margin: 1vw;
+  margin: 2vw 1vw;
   /* Need to account for side-to-side margins */
   width: calc(50% - 2vw);
   display: flex;
@@ -46,7 +46,7 @@
 
 .products [typeof="Product"] div[property="name"] {
   font-weight: bold;
-  margin: 20px 5px 10px 5px;
+  margin: 5px;
   text-align: center;
 }
 
