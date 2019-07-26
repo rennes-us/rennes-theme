@@ -31,28 +31,22 @@ article[typeof="Product"] div {
   margin: 0;
 }
 
-/* If space allows, show figure and other product details side-by-side. */
+/* ****************
+ * If space allows, show figure and other product details side-by-side.
+ * ***************/
 @media only screen and (min-width: 600px) {
-
-article[typeof="Product"] figure {
-  flex-basis: 50%;
-}
-
-article[typeof="Product"] div {
-  flex-basis: 50%;
-}
-
+article[typeof="Product"] figure { flex-basis: 50%; }
+article[typeof="Product"] div { flex-basis: 50%; }
 article[typeof="Product"] div[property="description"] p:first-child {
   /* So the text is flush with the top of the figure, if they're
    * side-by-side. */
   margin-top: 0;
 }
-
 article[typeof="Product"] p {
   padding: 0 1em;
 }
-
 }
+/* ************* */
 
 /* Product images */
 
@@ -124,11 +118,32 @@ article[typeof=Product] figure aside.zoomed {
   top: 0;
   width: 100%;
   z-index: 99;
+  /* This webkit thing is needed for the expected sort of scrolling behavior in
+   * mobile Safari.  Note that this gives both the "momentum-based scrolling"
+   * you otherwise get, but also fixes weirdness where elements with lower
+   * z-index were inadvertantly getting scrolled instead.  "auto" instead of
+   * "touch" still gives the messed-up scrolling behavior.  So touch it is! */
+  /* Possibly related:
+   *  * https://github.com/scottjehl/Device-Bugs/issues/14
+   *  * https://github.com/willmcpo/body-scroll-lock
+   *  * https://stackoverflow.com/a/38505679 */
+  -webkit-overflow-scrolling: touch;
 }
 
+/* In general we allow the zoomed image to be the full available width.  But
+ * see below for larger screens. */
 article[typeof=Product] figure aside.zoomed a {
   cursor: zoom-out;
   margin: 5px auto;
+  max-width: 100%;
+}
+/* Aiming for one reasonable approach across viewport dimensions for the
+ * maximum width in zoom mode, once we're beyond the smallest screens.  100% of
+ * the viewport height seems OK. */
+@media only screen and (min-width: 600px) {
+article[typeof=Product] figure aside.zoomed a {
+	max-width: 100vh;
+}
 }
 
 /* Fade purchase button until variant selected, if there are variants */
