@@ -32,18 +32,25 @@ article.page h3 {
 /* TODO make this look OK at small sizes */
 
 article.columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
   margin: 0 auto;
 }
 
-article.columns img {
-  float: left;
-  min-width: 200px;
-  padding-right: 20px;
-  width: calc(50% - 20px);
+article.columns p {
+  margin-top: 0;
 }
 
-article.columns .right {
-  float: right;
-  padding: 40px;
-  width: calc(50% - 80px);
+article.columns > div {
+  align-items: center;
+  display: flex;
+  flex-basis: calc(50% - 1em);
+  flex-direction: column;
+  min-width: 20em;
+  padding: 0.5em;
+}
+
+article.columns img {
+  max-width: 100%;
 }
