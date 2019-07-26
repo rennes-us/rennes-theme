@@ -65,7 +65,7 @@
         "type": "checkbox"
       },
       {
-        "id": "cart_msg",
+        "id": "checkout_msg",
         "label": "Cart message",
         "type": "textarea"
       }
