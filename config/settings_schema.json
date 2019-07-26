@@ -57,6 +57,21 @@
     ]
   },
   {
+    "name": "Cart Page",
+    "settings": [
+      {
+        "id": "checkout_msg_enabled",
+        "label": "Require sign-off on the below disclaimer before reaching checkout?",
+        "type": "checkbox"
+      },
+      {
+        "id": "cart_msg",
+        "label": "Cart message",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
     "name": "Other Settings",
     "settings": [
       {

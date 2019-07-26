@@ -39,9 +39,9 @@
 
     <button name="update" value="update" type="submit" title="Update your total">Update Shopping Bag</button>
 
-    {% if settings.away_mode %}
+    {% if settings.checkout_msg_enabled %}
     <label for="checkout-warning">
-      {{ settings.away_mode_message | escape}}
+      {{ settings.checkout_msg | escape}}
       <input type="checkbox" id="checkout-warning" value="checkout-warning" required>
     </label>
     {% endif %}

@@ -20,12 +20,19 @@ form[action="/cart"] img {
   min-height: 100px;
 }
 
+form[action="/cart"] label[for="checkout-warning"] {
+  display: block;
+  margin: 1em auto;
+  max-width: 60em;
+}
+
 /* On wide enough screens, show to full "Remove" text (rather than just the
  * abbreviation).  TODO remove the X. */
 /* Couldn't get this to work: https://stackoverflow.com/a/22054588 */
 @media only screen and (min-width: 600px) {
 form[action="/cart"] tbody td:last-child a abbr::after {
   content: attr(title);
+}
 }
 /*
  *
@@ -89,4 +96,74 @@ form[action="/cart"] tbody td:last-child a {
 form[action="/cart"] tbody td:last-child a:hover {
   color: #777;
 }
-}
+
+/*****************************************************************************/
+
+/* Adapted from:
+ * https://css-tricks.com/responsive-data-tables/
+ * THANKS!
+ * */
+
+@media only screen and (max-width: 600px) {
+
+  /* Force table to not be like tables anymore */
+  form[action="/cart"] table,
+  form[action="/cart"] thead,
+  form[action="/cart"] tbody,
+  form[action="/cart"] tfoot,
+  form[action="/cart"] th,
+  form[action="/cart"] td,
+  form[action="/cart"] tr {
+    display: block;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  form[action="/cart"] thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  form[action="/cart"] tbody tr { border: 1px solid #ccc; }
+
+  form[action="/cart"] tbody td,
+  form[action="/cart"] tbody th {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 30%;
+  }
+
+  form[action="/cart"] tbody th[scope="row"] {
+    text-align: center;
+  }
+  form[action="/cart"] tfoot td { padding: 0; }
+  form[action="/cart"] tfoot { padding: 1em 0; }
+  form[action="/cart"] tfoot tr:first-child { border-top: none; }
+
+  form[action="/cart"] tbody td:before ,
+  form[action="/cart"] tbody th:before {
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 25%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  /* Label the data */
+  /* The first one is just an image so we'll style it up special */
+  form[action="/cart"] tbody td:nth-of-type(1) {
+    padding-left: initial;
+    text-align: center;
+  }
+  /* The rest get labels.  But careful now, I'm using a th for one.  */
+  form[action="/cart"] tbody th:nth-of-type(1):before { content: "Item:"; }
+  form[action="/cart"] tbody td:nth-of-type(2):before { content: "Price:"; }
+  form[action="/cart"] tbody td:nth-of-type(3):before { content: "Qty:"; }
+  form[action="/cart"] tbody td:nth-of-type(4):before { content: "Total:"; }
+  form[action="/cart"] tbody td:nth-of-type(5):before { content: "Options:"; }
+} 
