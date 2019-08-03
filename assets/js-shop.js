@@ -6,6 +6,7 @@ function mainShop() {
 	setupToggleMenus(); // Slide sub-menus in and out when clicked
 	setupProductImageSwapping(); // Select product images from thumbnails
 	setupProductImageZoom(); // Full-page zoom main product img when clicked
+	setupVariantCheck(); // Check if product variant chosen for "add to bag"
 }
 
 // ----------------------------------------------------------------------------
@@ -86,4 +87,22 @@ function zoomedImageLinkClick() {
 	$(".zoomed a").off("click", zoomedImageLinkClick);
 	// Undo the clipping on the container.
 	$('body').css('overflow', 'inherit');
+}
+
+// ----------------------------------------------------------------------------
+// For ensuring a variant is picked before the item is added to the cart.
+// Only set the handler if there are actually variants to choose from, though.
+
+function setupVariantCheck() {
+	if ($('article[typeof="Product"] form input[type="radio"]').length > 0)
+		$('article[typeof="Product"] form button').click(function() {return addCartHandler();});
+}
+
+function addCartHandler() {
+	if ($('article[typeof="Product"] form input[type="radio"]:checked').length > 0)
+		return true;
+	else {
+      $('article[typeof="Product"] form label').last().after('<span class="pick-an-option">← Pick an option first</span>');
+      return false;
+    }
 }
