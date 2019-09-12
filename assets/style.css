@@ -221,7 +221,7 @@ main > section:after {
   width: 25px;
 }
 
-.popup > section {
+.popup > div {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
