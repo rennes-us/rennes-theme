@@ -3,6 +3,7 @@
     <h2 property="name">{{ product.title | escape }}</h2>
     <link property="url" href="{{ product.url | within: collection }}">
     <meta property="manufacturer" content="{{ product.vendor }}">
+    <meta property="brand" content="{{ product.vendor }}">
 
     <figure>
       <a property="image" typeof="ImageObject" href="{{ img_url }}">
@@ -25,38 +26,42 @@
         {{ product.description }}
       </div>
 
-      <form property="offers" typeof="Offer" action="/cart/add" method="post">
-        {%- if product.compare_at_price_min > product.price %}
-        <s>{{ compare_price }}</s>
-        {%- endif %}
-        <span property="price"         content="{{ price }}">{{ price_display }}</span>
-        <span property="priceCurrency" content="{{ currency }}">{{ currency }}</span>
+      <form property="offers" typeof="OfferForPurchase" action="/cart/add" method="post">
         <link property="itemCondition" href="http://schema.org/NewCondition">
-        {%- if product.available %}
         <link property="availability"  href="http://schema.org/{{availability}}">
+        <div class="pricing">
+        {%- if product.compare_at_price_min > product.price %}
+          <s>{{ compare_price }}</s>
+        {%- endif %}
+          <span property="price"         content="{{ price }}">{{ price_display }}</span>
+          <span property="priceCurrency" content="{{ currency }}">{{ currency }}</span>
+        </div>
+        {%- if product.available %}
           {%- if has_variants -%}
+        <div class="variants">
             {%- for variant in product.variants -%}
             {% if variant.available %}
             {% assign variant_disabled = '' %}
             {% else %}
             {% assign variant_disabled = ' disabled="true"' %}
             {% endif %}
-        <input type="radio"{{ variant_disabled }} name="id" id="{{variant.id}}" value="{{variant.id}}">
-        <label for="{{variant.id}}">{{variant.title}}</label>
+          <input type="radio"{{ variant_disabled }} name="id" id="{{variant.id}}" value="{{variant.id}}">
+          <label for="{{variant.id}}">{{variant.title}}</label>
             {%- endfor -%}
+        </div>
           {%- else %}
         <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
-    {%- endif %}
-        <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option on the left"{% endif %}>Add to bag</button>
-  {%- else %}
-        <span property="availability" href="http://schema.org/{{availability}}">Sold Out</span>
+          {%- endif %}
+        <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option"{% endif %}>Add to bag</button>
+        {%- else %}
+        Sold Out
   {% endif %}
       </form>
   {%- assign col_handles = product.collections | map: 'handle' -%}
   {% if col_handles contains "sale" %}
 
-      <strong>{{ settings.product_sale_disclaimer }}
-      </strong>
+      <div class="sale-disclaimer">{{ settings.product_sale_disclaimer }}
+      </div>
 {%- endif %}
     </div>
     {% comment %} Description and purchase form end {% endcomment %}

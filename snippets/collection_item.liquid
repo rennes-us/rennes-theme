@@ -4,7 +4,7 @@ A single product in a collection, search result, etc.
       <section vocab="http://schema.org/" typeof="Product">
         <header>
           <div property="name">{{ product.title }}</div>
-          <p property="offers" typeof="Offer">
+          <p property="offers" typeof="OfferForPurchase">
             <span property="schema:price"         content="{{ price }}">{{ price_display }}</span>
             <span property="schema:priceCurrency">{{ currency }}</span>
             <link property="availability"         href="http://schema.org/{{availability}}">
