@@ -1,5 +1,6 @@
-$(document).ready(setup_instafeed);
+$(document).ready(setup_instagramfeed);
 
+// our credentials are not currently accepted with this method
 function setup_instafeed()
 {
 	feed = new Instafeed({
@@ -10,4 +11,20 @@ function setup_instafeed()
 	limit: '{{ settings.instafeed_limit }}',
 	resolution: '{{ settings.instafeed_resolution }}' });
 	feed.run();
+}
+
+function setup_instagramfeed()
+{
+  $.instagramFeed({
+                'username': '{{ settings.instagram_handle }}',
+                'container': "#instagramfeed",
+                'display_profile': false,
+                'display_biography': true,
+                'display_gallery': true,
+                'callback': null,
+                'styling': true,
+                'items': {{ settings.instafeed_limit }},
+                'items_per_row': {{ settings.instafeed_limit }},
+                'margin': 1
+            });
 }
