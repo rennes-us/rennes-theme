@@ -33,6 +33,12 @@ logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 ELEM_DELAY = float(os.getenv("SHOPIFY_TEST_DELAY", 0))
 
+TEST_PRODUCTS = {
+    "out-of-stock":   "collections/testing/products/out-of-stock",
+    "running-low":    "collections/testing/products/running-low",
+    "lots-of-photos": "collections/testing/products/lots-of-photos",
+    "now-cheaper":    "collections/testing/products/now-cheaper"}
+
 with open("config.yml") as f_in:
     CONFIG = yaml.safe_load(f_in)
 
@@ -120,8 +126,7 @@ class StoreSite(unittest.TestCase):
 
     def add_to_cart(self, product, variant=None):
         """Go to a product page and add it to the cart."""
-        # TODO actually use product given!  Don't hardcode
-        self.get("products/" + "elsa-esturgie-boudoir-long-cloud-coat-ecru")
+        self.get("products/" + product)
         if variant:
             for label in self.xps("//form[@typeof='OfferForPurchase']//label"):
                 if label.text == variant:
@@ -247,7 +252,7 @@ class StoreSite(unittest.TestCase):
             ("about", self.url + "pages/about"),
             ("events", self.url + "pages/events"),
             ("news", "http://blog.rennes.us/"),
-            ("instagram", "https://www.instagram.com/rennes._/"),
+            ("instagram", "https://www.instagram.com/" + get_setting("instagram_handle")),
             ("pinterest", "https://www.pinterest.com/rennes/"),
             ("contact", self.url + "pages/contact-us"),
             ("policies", self.url + "pages/policies"),
@@ -685,24 +690,24 @@ class TestSiteProducts(StoreSite):
     """
 
     def test_template_product_out_of_stock(self):
-        self.get("collections/testing/products/out-of-stock")
+        self.get(TEST_PRODUCTS["out-of-stock"])
         self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
         self.check_product(None, {"availability": "SoldOut"})
 
     def test_template_product_out_of_stock_variant(self):
-        self.get("collections/testing/products/running-low")
+        self.get(TEST_PRODUCTS["running-low"])
         # TODO check that only one of two variants is available
         self.skipTest("not yet implemented")
 
     def test_template_product_lots_of_photos(self):
-        self.get("collections/testing/products/lots-of-photos")
+        self.get(TEST_PRODUCTS["lots-of-photos"])
         # TODO check whatever should be checked for when we have a ton of
         # photos.  Make sure the width/height of the thumbnails makes sense,
         # maybe?
         self.skipTest("not yet implemented")
 
     def test_template_product_on_sale(self):
-        self.get("collections/testing/products/now-cheaper")
+        self.get(TEST_PRODUCTS["now-cheaper"])
         # TODO make sure the original price is shown in strikethrough next to
         # the new price
         # TODO should these show a disclaimer like the "sale" collection?
