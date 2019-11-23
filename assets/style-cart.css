@@ -124,7 +124,7 @@ form[action="/cart"] tbody td:last-child a:hover {
     left: -9999px;
   }
 
-  form[action="/cart"] tbody tr { border: 1px solid #ccc; }
+  form[action="/cart"] tbody tr { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; }
 
   form[action="/cart"] tbody td,
   form[action="/cart"] tbody th {
@@ -166,4 +166,11 @@ form[action="/cart"] tbody td:last-child a:hover {
   form[action="/cart"] tbody td:nth-of-type(3):before { content: "Qty:"; }
   form[action="/cart"] tbody td:nth-of-type(4):before { content: "Total:"; }
   form[action="/cart"] tbody td:nth-of-type(5):before { content: "Options:"; }
+
+
+  /* With this layout, we can afford to use a bit more of the viewport height
+   * on the images.*/
+  form[action="/cart"] img {
+    height: 30vh;
+  }
 } 
