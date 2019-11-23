@@ -442,6 +442,8 @@ class TestSite(StoreSite):
 
     def test_template_cart(self):
         """Cart should show items and allow checkout"""
+        # TODO test the update cart link.  It shouldn't require you to check
+        # off the disclaimer box, just for checkout itself!
         self.get("cart")
         # Basics
         self.check_header()
