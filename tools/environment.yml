@@ -1,0 +1,14 @@
+# conda environment for development software.
+# https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file
+name: rennes-theme
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pylint
+  - pyyaml
+  - selenium
+  - pip:
+    - xvfbwrapper
+  # Also: downloaded chromdriver binary that matches my chrome version from:
+  # https://sites.google.com/a/chromium.org/chromedriver/downloads
