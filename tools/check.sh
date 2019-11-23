@@ -5,7 +5,7 @@ function check_javascript_all {
 	(
 	set -o errexit -o pipefail
 	# First, plain ol' javascript
-	find . -name '*.js' -a ! -name 'js-instafeed.js' -exec jshint {} +
+	find . -name '*.js' -a ! -name '*.min.js' -exec jshint {} +
 	# Separately handle liquid-templated-javascript with a kludgy bit of
 	# sed to hide it from jshint
 	find . -name '*.js.liquid' | while read fn; do
