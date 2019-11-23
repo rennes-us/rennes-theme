@@ -173,4 +173,14 @@ form[action="/cart"] tbody td:last-child a:hover {
   form[action="/cart"] img {
     height: 30vh;
   }
+
+  /* More obvious button on small screens.  See also product style.*/
+  button {
+    padding: 8px;
+    background: #DBDBDB;
+    width: 100%;
+  }
+  button:hover {
+    background: #E3E3E3;
+  }
 } 

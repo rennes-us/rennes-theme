@@ -43,6 +43,21 @@ article[typeof="Product"] div[property="description"] p:first-child {
   margin-top: 0;
 }
 }
+/* ************* *
+ * Try alternate button styling on small screens.  See also cart style.
+ * ***************/
+@media only screen and (max-width: 600px) {
+  button {
+    padding: 8px;
+    background: #DBDBDB;
+    width: 100%;
+  }
+  /* I'm defining a style for hover, but now that I think of it, nobody's going
+   * to be using a mouse with these tiny screens. */
+  button:hover {
+    background: #E3E3E3;
+  }
+}
 /* ************* */
 
 /* Product images */
