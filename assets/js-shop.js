@@ -102,7 +102,7 @@ function addCartHandler() {
 	if ($('article[typeof="Product"] form input[type="radio"]:checked').length > 0)
 		return true;
 	else {
-      $('article[typeof="Product"] form label').last().after('<span class="pick-an-option">← Pick an option first</span>');
+      $('article[typeof="Product"] form label').last().after('<span class="pick-an-option">⬅ Pick an option first</span>');
       return false;
     }
 }
