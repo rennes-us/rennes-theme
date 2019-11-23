@@ -6,3 +6,5 @@ config/settings_data.json
 # Don't track images
 assets/*.png
 assets/*.jpg
+# Cache directories
+__pycache__/
