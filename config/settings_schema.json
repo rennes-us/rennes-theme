@@ -37,6 +37,16 @@
     ]
   },
   {
+    "name": "Search",
+    "settings": [
+      {
+        "id": "search_paginate_num",
+        "label": "Number of search results per page",
+        "type": "text"
+      }
+    ]
+  },
+  {
     "name": "Collection Page",
     "settings": [
       {

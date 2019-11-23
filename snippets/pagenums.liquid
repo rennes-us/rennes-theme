@@ -1,6 +1,9 @@
 {% comment %}
-pagination link code used within a paginate block in the collections snippet.
+pagination link code used within a paginate block in the collections and
+searchresults snippets.  If there are no additional pages the nav is not shown
+at all.
 {% endcomment %}
+{% if paginate.parts != empty %}
 <nav class="pagination">
 {% if paginate.previous.is_link %}
     <a href="{{ paginate.previous.url }}">{{ paginate.previous.title }}</a>
@@ -20,3 +23,4 @@ pagination link code used within a paginate block in the collections snippet.
         <a href="{{ paginate.next.url }}">{{ paginate.next.title }}</a>
 {% endif %}
 </nav>
+{% endif %}

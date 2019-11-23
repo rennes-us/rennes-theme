@@ -1,8 +1,7 @@
-{% assign search_result_paginate = 9 %}
 	<article class="products" vocab="http://schema.org/" typeof="SearchResultsPage">
 			{% comment %} search performed? {% endcomment %}
 			{% if search.performed %}
-			{% paginate search.results by search_result_paginate %}
+      {%- paginate search.results by settings.search_paginate_num -%}
 		 
 					{% if paginate.current_page == 1 %}
 						<h2>searching for "{{search.terms | escape}}"</h2>
@@ -10,7 +9,7 @@
 					{% endif %}
 
 				{% comment %} no search results? {% endcomment%}
-				{% if search.results == empty %}  
+				{% if search.results == empty %}
 					<p>Your search for "{{search.terms | escape}}" did not yield any results</p>              
 				{% comment %} no search results? {% endcomment%}
 				{% else %}
@@ -23,13 +22,7 @@
 				{% endif %}
 				{% comment %} no search results? {% endcomment%}
 
-      {% comment %}
-      TODO use the separate pagenums snippet here
-      {% endcomment %}
-      {% if paginate.next.is_link %}
-				<nav><a href="{{ paginate.next.url }}" rel="next">I'd like to see more</a></nav>
-			{% endif %}
-    
+      {% include 'pagenums' %}
       {% endpaginate %}
 			{% comment %} search performed? {% endcomment %}
       {% else %}
