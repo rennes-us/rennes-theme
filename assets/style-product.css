@@ -48,8 +48,8 @@ article[typeof="Product"] div[property="description"] p:first-child {
  * ***************/
 @media only screen and (max-width: 600px) {
   button {
-    padding: 8px;
     background: #DBDBDB;
+    padding: 8px;
     width: 100%;
   }
   /* I'm defining a style for hover, but now that I think of it, nobody's going
@@ -174,14 +174,14 @@ form[property=offers] input[type=radio]:checked ~ button {
 
 /* Product description and offer form */
 article[typeof=Product] div[property=description] {
-  text-align: justify;
   margin: 0 0.5em;
+  text-align: justify;
 }
 form[property=offers] {
-  text-align: center;
-  border-top: 1px solid black;
   border-bottom: 1px solid black;
+  border-top: 1px solid black;
   margin: 0 0.5em;
+  text-align: center;
 }
 
 .sale-disclaimer {

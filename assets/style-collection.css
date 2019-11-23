@@ -6,7 +6,7 @@
 
 /* Align the set of products in the center of this container, with
  * evenly-distributed padding and however many products can fit per row. */
-.products {
+article.products, section.products {
   display: flex;
   /* In general do two across */
   flex-basis: 50%;
@@ -18,7 +18,7 @@
 /* Having a flexible width will let the contained product image scale, but
  * only to a reasonable min/max.  Combined with display: flex on the
  * container the layout will handle a wide range of screen sizes. */
-.products [typeof="Product"] {
+article.products [typeof="Product"], section.products [typeof="Product"] {
   /* Margin relative to viewport width.  Effectively sets the minimum spacing
    * between our flexible elements. */
   margin: 2vw 1vw;
@@ -35,41 +35,47 @@
  * On larger screens do more products across
  * ***************/
 @media only screen and (min-width: 740px) {
-.products { flex-basis: 33.3%; }
-.products [typeof="Product"] { width: calc(33.3% - 2vw); }
+  article.products, section.products { flex-basis: 33.3%; }
+  article.products [typeof="Product"], section.products [typeof="Product"] {
+    width: calc(33.3% - 2vw);
+  }
 }
 @media only screen and (min-width: 1200px) {
-.products { flex-basis: 25%; }
-.products [typeof="Product"] { width: calc(25% - 2vw); }
+  article.products, section.products { flex-basis: 25%; }
+  article.products [typeof="Product"], section.products [typeof="Product"] {
+    width: calc(25% - 2vw);
+  }
 }
 /* ************* */
 
-.products [typeof="Product"] div[property="name"] {
+article.products [typeof="Product"] div[property="name"],
+section.products [typeof="Product"] div[property="name"] {
   font-weight: bold;
   margin: 5px;
   text-align: center;
 }
 
 /* The product link, wrapping the image. */
-.products [typeof="Product"] a {
+article.products [typeof="Product"] a, section.products [typeof="Product"] a {
   background: white;
   display: block;
 }
 
-.products [typeof="Product"] p[typeof="OfferForPurchase"] {
-  text-align: center;
+article.products [typeof="Product"] p[typeof="OfferForPurchase"],
+section.products [typeof="Product"] p[typeof="OfferForPurchase"] {
   margin: 0.3em 0;
-
+  text-align: center;
 }
 
 /* The product image. */
-.products [typeof="Product"] img {
+article.products [typeof="Product"] img,
+section.products [typeof="Product"] img {
   display: block;
   width: 100%;
 }
 
 /* The pagination, centered at the bottom of the list. */
-.products nav {
+article.products nav, section.products nav {
   text-align: center;
   width: 100%;
 }
@@ -80,16 +86,16 @@
  * waiting on Media Queries Level 4.  Instead I'll just assume that larger
  * screens come with a real mouse too. */
 @media only screen and (min-width: 1200px) {
-
-/* Remove the heading's margin for the hovering case */
-.products [typeof="Product"] span[property="name"] {
-  margin-top: 0;
-  padding: 8px;
-}
-.products [typeof="Product"] header p {
-  padding: 8px;
-}
-
+  /* Remove the heading's margin for the hovering case */
+  article.products [typeof="Product"] span[property="name"],
+  section.products [typeof="Product"] span[property="name"]  {
+    margin-top: 0;
+    padding: 8px;
+  }
+  article.products [typeof="Product"] header p,
+  section.products [typeof="Product"] header p {
+    padding: 8px;
+  }
 }
 
 

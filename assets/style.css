@@ -91,7 +91,7 @@ body > header {
   grid-column-gap: 5px;
   grid-template-columns: 1fr auto 1fr;
   /* DRAFT: https://drafts.csswg.org/css-align-3/#propdef-justify-items */
-  justify-items: center;
+  justify-items: center; /* W3C draft */
 }
 body > header > :nth-child(1) { grid-column-start: 2; }
 body > header > :nth-child(2) { display: flex; margin-left: auto; }

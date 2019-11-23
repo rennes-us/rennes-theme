@@ -119,9 +119,9 @@ form[action="/cart"] tbody td:last-child a:hover {
 
   /* Hide table headers (but not display: none;, for accessibility) */
   form[action="/cart"] thead tr {
+    left: -9999px;
     position: absolute;
     top: -9999px;
-    left: -9999px;
   }
 
   form[action="/cart"] tbody tr { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; }
@@ -176,8 +176,8 @@ form[action="/cart"] tbody td:last-child a:hover {
 
   /* More obvious button on small screens.  See also product style.*/
   button {
-    padding: 8px;
     background: #DBDBDB;
+    padding: 8px;
     width: 100%;
   }
   button:hover {
