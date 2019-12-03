@@ -581,6 +581,7 @@ class TestSite(StoreSite):
         self.check_nav_site()
         self.check_nav_product()
         self.check_for_elem("//article[@class='collections']/section[@class='products']")
+        self.check_pagination()
 
     def test_template_product(self):
         """Product page should show product information"""
