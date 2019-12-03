@@ -33,7 +33,8 @@ TESTING_CONFIG = {
     "store_password": os.getenv("SHOPIFY_STORE_PASSWORD"),
     "elem_delay": float(os.getenv("SHOPIFY_TEST_DELAY") or 0),
     "real_x11": os.getenv("SHOPIFY_TEST_SHOW") is not None,
-    "log_level": int(os.getenv("SHOPIFY_TEST_LOGLEVEL") or 30)
+    "log_level": int(os.getenv("SHOPIFY_TEST_LOGLEVEL") or 30),
+    "page_load_timeout": 90000 # ms?
     }
 
 logging.basicConfig(level=TESTING_CONFIG["log_level"])
@@ -89,12 +90,11 @@ class StoreError(Exception):
     """An Exception for store-related errors."""
 
 
-class StoreSite(unittest.TestCase):
-    """Automated queries to development store website.
+class StoreClient(unittest.TestCase):
+    """Low-level handling for queries to development store website with Selenium.
 
-    This prepares for the tests themselves but can be used independently of the
-    test functions.  Instances of this class share a single browser session.
-    Child classes each receive their own browser session.
+    Instances of this class share a single browser session.  Child classes each
+    receive their own browser session.
     """
 
     @classmethod
@@ -159,6 +159,7 @@ class StoreSite(unittest.TestCase):
             client = cls.clientmap[cls]
         except KeyError:
             client = selenium.webdriver.Chrome()
+            client.set_page_load_timeout(TESTING_CONFIG["page_load_timeout"])
             LOGGER.info("No driver for class %s, initialized %s", str(cls), str(client))
             cls.clientmap[cls] = client
         return client
@@ -167,6 +168,62 @@ class StoreSite(unittest.TestCase):
     def driver(self):
         """Selenium driver in use for all instances of this class."""
         return self.__class__.get_driver()
+
+    def check_for_elem(self, xpath, elem=None):
+        """ Get a single element by xpath, failing if not found."""
+        elem2 = self.try_for_elem(xpath, elem)
+        if not elem2:
+            self.fail("element not found: \"%s\"" % xpath)
+        return elem2
+
+    def check_for_elems(self, xpath, elems=None):
+        """ Get a list of elements by xpath, failing if not found."""
+        elem = self.try_for_elems(xpath, elems)
+        if not elem:
+            self.fail("element not found: \"%s\"" % xpath)
+        return elem
+
+    def try_for_elem(self, xpath, elem=None):
+        """ Get a single element by xpath, or None if not found."""
+        try:
+            return self.xp(xpath, elem)
+        except NoSuchElementException:
+            return None
+
+    def try_for_elems(self, xpath, elems=None):
+        """ Get a list of elements by xpath, or None if not found."""
+        try:
+            return self.xps(xpath, elems)
+        except NoSuchElementException:
+            return None
+
+    def xp(self, xpath, elem=None):
+        """ Get a single element by xpath."""
+        # pylint: disable=invalid-name
+        time.sleep(TESTING_CONFIG["elem_delay"])
+        if elem:
+            return elem.find_element_by_xpath(xpath)
+        return self.driver.find_element_by_xpath(xpath)
+
+    def xps(self, xpath, elem=None):
+        """ Get a list of elements by xpath."""
+        time.sleep(TESTING_CONFIG["elem_delay"])
+        if elem:
+            return elem.find_elements_by_xpath(xpath)
+        return self.driver.find_elements_by_xpath(xpath)
+
+    def get(self, path=""):
+        """Get a page"""
+        LOGGER.info("Loading %s", str(path))
+        self.driver.get(self.url + path)
+
+
+class StoreSite(StoreClient):
+    """Browser session for development store website.
+
+    This prepares for the tests themselves but can be used independently of the
+    test functions.
+    """
 
     def add_to_cart(self, product, variant=None):
         """Go to a product page and add it to the cart."""
@@ -207,14 +264,6 @@ class StoreSite(unittest.TestCase):
         self.assertIn(pagetitle or pagename, self.driver.title)
         self.check_for_elem("/html/body/main/article[@class='%s']" % pageclass)
         self.check_instafeed()
-
-    def check_snippet_collection(self, paginate=True):
-        """Check a product collection within a page."""
-        self.check_for_elem("//article[@class='products']")
-        if paginate:
-            self.check_for_elem(
-                "//article[@class='products']/" +
-                "nav[@class='pagination']/span[@class='current']")
 
     def check_product(self, description_blurb, expected):
         """Check the contents of a single product's page"""
@@ -381,14 +430,41 @@ class StoreSite(unittest.TestCase):
         elems = self.xps("//section[@id='instafeed']//img")
         self.assertEqual(len(elems), get_setting("instafeed_limit"))
 
-    # TODO check the address chunk at the bottom of most pages.
+    def check_snippet_collection(self, paginate=True):
+        """Check a product collection within a page."""
+        self.check_for_elem("//article[@class='products']")
+        if paginate:
+            self.check_for_elem(
+                "//article[@class='products']/" +
+                "nav[@class='pagination']/span[@class='current']")
+
+    def check_snippet_collection_designers(self):
+        """Check the special designers collection snippet."""
+        self.check_for_elem("//ul[@class='designers']")
+
     def check_snippet_address(self):
         """Check the physical address blurb."""
-        #self.check_for_elem("//section[]")
+        addr = self.check_for_elem("//section[@typeof='PostalAddress']")
+        street_txt = [el.text for el in self.xps("//span[@property='streetAddress']", addr)]
+        addr_chunk = lambda p: self.xp("//span[@property='%s']" % p, addr).text
+        addr_chunk_exp = lambda p: get_setting(p).lower()
+        self.assertEqual(street_txt[0], addr_chunk_exp("addr_name"))
+        self.assertEqual(street_txt[1], addr_chunk_exp("addr_street"))
+        self.assertEqual(addr_chunk("addressLocality"), addr_chunk_exp("addr_city"))
+        self.assertEqual(addr_chunk("addressRegion"), addr_chunk_exp("addr_state"))
+        self.assertEqual(addr_chunk("postalCode"), addr_chunk_exp("addr_zip"))
 
-    # TODO check the mailing list chunk at the bottom of most pages.
-    def check_mailing_list(self):
-        """Check the mailing list signup blurb."""
+    def check_snippet_mailing_list(self):
+        """Check the mailing list signup blurb.
+
+        Currently just verifies that the mailing list container and form
+        exist.
+        """
+        elem = self.check_for_elem("//div[@class='mailing-list']")
+        LOGGER.warning(elem.text)
+        #form_xp = "//form[@action='%s']" % get_setting("mailing_list_form_target")
+        form_xp = "//form"
+        self.check_for_elem(form_xp, elem)
 
     def check_snippet_searchresults(self, h2text="Search"):
         """Check the search results snippet."""
@@ -401,54 +477,6 @@ class StoreSite(unittest.TestCase):
         """Check the search form snippet."""
         root = "//article[@typeof='SearchResultsPage']"
         self.check_for_elem(root + "/form[@action='/search'][@role='search']")
-
-    def check_for_elem(self, xpath, elem=None):
-        """ Get a single element by xpath, failing if not found."""
-        elem = self.try_for_elem(xpath, elem)
-        if not elem:
-            self.fail("element not found: \"%s\"" % xpath)
-        return elem
-
-    def check_for_elems(self, xpath, elems=None):
-        """ Get a list of elements by xpath, failing if not found."""
-        elem = self.try_for_elems(xpath, elems)
-        if not elem:
-            self.fail("element not found: \"%s\"" % xpath)
-        return elem
-
-    def try_for_elem(self, xpath, elem=None):
-        """ Get a single element by xpath, or None if not found."""
-        try:
-            return self.xp(xpath, elem)
-        except NoSuchElementException:
-            return None
-
-    def try_for_elems(self, xpath, elems=None):
-        """ Get a list of elements by xpath, or None if not found."""
-        try:
-            return self.xps(xpath, elems)
-        except NoSuchElementException:
-            return None
-
-    def xp(self, xpath, elem=None):
-        """ Get a single element by xpath."""
-        # pylint: disable=invalid-name
-        time.sleep(TESTING_CONFIG["elem_delay"])
-        if elem:
-            return elem.find_element_by_xpath(xpath)
-        return self.driver.find_element_by_xpath(xpath)
-
-    def xps(self, xpath, elem=None):
-        """ Get a list of elements by xpath."""
-        time.sleep(TESTING_CONFIG["elem_delay"])
-        if elem:
-            return elem.find_elements_by_xpath(xpath)
-        return self.driver.find_elements_by_xpath(xpath)
-
-    def get(self, path=""):
-        """Get a page"""
-        LOGGER.info("Loading %s", str(path))
-        self.driver.get(self.url + path)
 
 
 class TestSite(StoreSite):
@@ -475,9 +503,11 @@ class TestSite(StoreSite):
         """Test blog"""
 
     def test_template_cart(self):
-        """Cart should show items and allow checkout"""
-        # TODO test the update cart link.  It shouldn't require you to check
-        # off the disclaimer box, just for checkout itself!
+        """Cart should show items and allow checkout.
+
+        We should be able to add items, remove them, modify the quantity, and
+        go to checkout.
+        """
         self.get("cart")
         # Basics
         self.check_header()
@@ -510,14 +540,21 @@ class TestSite(StoreSite):
         self.driver.implicitly_wait(1)
         # Now we've reached checkout
         self.assertIn("Checkout", self.driver.title)
-        # Remove item from cart (otherwise it'll throw off other tests since
-        # we're sharing one browser session!)
-        # TODO probably should handle this more generally to make sure
-        # failures/exceptions in one test are isolated and the cart is still
-        # properly cleared
+        # Back to the cart page, check one more thing: the update button.
+        # Update the quantity field for one row and click the button.  This
+        # should remove the item by setting the quantity to zero, rather than
+        # just clicking the remove link as above.
         self.get("cart")
         trow = self.get_cart_row("elsa-esturgie-boudoir-long-cloud-coat-ecru", "15391537561635")
-        trow.find_element_by_xpath("//a[@title='Remove Item']").click()
+        qty = self.xp("//input", self.xps("//td", trow)[2])
+        qty.set_attribute("value", 0)
+        button = self.xp("//button[@title='Update your total']")
+        button.click()
+        # At this point we should have nothing in the cart (otherwise it'll
+        # throw off other tests since # we're sharing one browser session!)
+        # Probably should handle this more generally to make sure
+        # failures/exceptions in one test are isolated and the cart is still
+        # properly cleared.
 
     def test_template_collection(self):
         """Collection page"""
@@ -525,7 +562,7 @@ class TestSite(StoreSite):
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
-        self.check_mailing_list()
+        self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product()
         self.check_snippet_collection()
@@ -537,7 +574,7 @@ class TestSite(StoreSite):
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
-        self.check_mailing_list()
+        self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product(clothing_menu_starts="block")
         self.check_snippet_collection()
@@ -549,12 +586,10 @@ class TestSite(StoreSite):
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
-        self.check_mailing_list()
+        self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product()
-        # TODO check the collection snippet that gets loaded for this case
-        # specifically
-        #self.check_snippet_collection()
+        self.check_snippet_collection_designers()
 
     @unittest.skip("not yet implemented")
     def test_template_gift_card(self):
@@ -566,7 +601,7 @@ class TestSite(StoreSite):
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
-        self.check_mailing_list()
+        self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product()
         self.check_snippet_collection()
@@ -577,7 +612,7 @@ class TestSite(StoreSite):
         self.check_header()
         #self.check_instafeed()
         self.check_snippet_address()
-        self.check_mailing_list()
+        self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product()
         self.check_for_elem("//article[@class='collections']/section[@class='products']")
@@ -590,7 +625,7 @@ class TestSite(StoreSite):
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
-        self.check_mailing_list()
+        self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product()
         self.check_product(
@@ -709,6 +744,7 @@ class TestSite(StoreSite):
         first_link.click()
         nav = self.xp("//nav[@class='pagination']")
         first_link = self.try_for_elem("a", elem=nav)
+        LOGGER.warning(first_link.text)
         self.assertFalse("previous" in first_link.text)
 
 
@@ -727,7 +763,7 @@ class TestSiteProducts(StoreSite):
     def test_template_product_out_of_stock_variant(self):
         """Test product template for a product with one variant out of stock."""
         self.get(TEST_PRODUCTS["running-low"])
-        # TODO check that only one of two variants is available
+        # check that only one of two variants is available
         self.skipTest("not yet implemented")
 
     def test_template_product_lots_of_photos(self):
@@ -737,7 +773,7 @@ class TestSiteProducts(StoreSite):
         the flex CSS working right.
         """
         self.get(TEST_PRODUCTS["lots-of-photos"])
-        # TODO check whatever should be checked for when we have a ton of
+        # check whatever should be checked for when we have a ton of
         # photos.  Make sure the width/height of the thumbnails makes sense,
         # maybe?
         self.skipTest("not yet implemented")
@@ -749,10 +785,10 @@ class TestSiteProducts(StoreSite):
         price alongside the current price.
         """
         self.get(TEST_PRODUCTS["now-cheaper"])
-        # TODO make sure the original price is shown in strikethrough next to
+        # Make sure the original price is shown in strikethrough next to
         # the new price
-        # TODO should these show a disclaimer like the "sale" collection?
-        # Should this *be* the sale collection?
+        # Should these show a disclaimer like the "sale" collection?  Should
+        # this *be* the sale collection?
         self.skipTest("not yet implemented")
 
 
