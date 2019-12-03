@@ -3,6 +3,7 @@ Loop over all collections, showing links and a small preview.
 /collections
 {% endcomment %}
 <article class="collections">
+{%- paginate collections by settings.collection_paginate_num -%}
 {% for collection in collections %}
     {% capture collection_title %}{% endcapture %}
     <section class="products">
@@ -16,4 +17,6 @@ Loop over all collections, showing links and a small preview.
       {% endfor %}
     </section>
 {% endfor %}
+{% include 'pagenums' %}
+{% endpaginate %}
 </article>

@@ -75,7 +75,7 @@ section.products [typeof="Product"] img {
 }
 
 /* The pagination, centered at the bottom of the list. */
-article.products nav, section.products nav {
+nav.pagination {
   text-align: center;
   width: 100%;
 }
