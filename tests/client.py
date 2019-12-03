@@ -29,9 +29,15 @@ from selenium.common.exceptions import (
 # https://stackoverflow.com/a/8910326/4499968
 from xvfbwrapper import Xvfb
 
-logging.basicConfig(level=logging.INFO)
+TESTING_CONFIG = {
+    "store_password": os.getenv("SHOPIFY_STORE_PASSWORD"),
+    "elem_delay": float(os.getenv("SHOPIFY_TEST_DELAY") or 0),
+    "real_x11": os.getenv("SHOPIFY_TEST_SHOW") is not None,
+    "log_level": int(os.getenv("SHOPIFY_TEST_LOGLEVEL") or 30)
+    }
+
+logging.basicConfig(level=TESTING_CONFIG["log_level"])
 LOGGER = logging.getLogger(__name__)
-ELEM_DELAY = float(os.getenv("SHOPIFY_TEST_DELAY", 0))
 
 TEST_PRODUCTS = {
     "out-of-stock":   "collections/testing/products/out-of-stock",
@@ -87,42 +93,80 @@ class StoreSite(unittest.TestCase):
     """Automated queries to development store website.
 
     This prepares for the tests themselves but can be used independently of the
-    test functions.
+    test functions.  Instances of this class share a single browser session.
+    Child classes each receive their own browser session.
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        LOGGER.info("Setting up StoreSite: %s", str(cls))
         try:
-            self.set_up_site()
+            cls.set_up_site()
         except StoreError as exc:
-            self.fail(str(exc))
+            cls.fail(str(exc))
 
-    def tearDown(self):
-        self.tear_down_site()
+    @classmethod
+    def tearDownClass(cls):
+        cls.tear_down_site()
 
-    def set_up_site(self):
+    @classmethod
+    def set_up_site(cls):
         """Set up client and authenticate with site if needed.
 
         Call this before interacting with any pages.
         """
-        self.driver = selenium.webdriver.Chrome()
-        self.driver.implicitly_wait(1)
-        self.url = "https://" + CONFIG["development"]["store"] + "/"
-        self.get()
-        elem = self.try_for_elem("//input[@type='password']")
-        if elem:
-            password = os.getenv("SHOPIFY_STORE_PASSWORD")
+        driver = cls.get_driver()
+        driver.implicitly_wait(1)
+        cls.url = "https://" + CONFIG["development"]["store"] + "/"
+        driver.get(cls.url)
+        LOGGER.info("Setting up StoreSite: %s: loaded %s", str(cls), cls.url)
+        try:
+            elem = driver.find_element_by_xpath("//input[@type='password']")
+        except NoSuchElementException:
+            pass
+        else:
+            LOGGER.info("Setting up StoreSite: %s: reached password prompt", str(cls))
+            password = TESTING_CONFIG["store_password"]
             if password:
                 elem.send_keys(password)
                 elem.send_keys(Keys.RETURN)
-                self.driver.implicitly_wait(1)
-                if "Please Log In" in self.driver.title:
+                driver.implicitly_wait(1)
+                if "Please Log In" in driver.title:
+                    LOGGER.info("Setting up StoreSite: %s: password not accepted", str(cls))
                     raise StoreError("login failed")
             else:
                 raise StoreError("No password found in environment variable SHOPIFY_STORE_PASSWORD")
 
-    def tear_down_site(self):
+    @classmethod
+    def tear_down_site(cls):
         """Clean up after client."""
-        self.driver.close()
+        LOGGER.info("Cleaning up StoreSite: %s", str(cls))
+        cls.get_driver().close()
+
+    @classmethod
+    def get_driver(cls):
+        """Get the Selenium driver object for this class.
+
+        This will transparently manage a dictionary of one driver object for
+        all instances of this or any class inheriting from it.  The instances
+        of each class share one object distinct from that used by the instances
+        of other classes.  These driver objects are initialized as needed when
+        they are first referenced via this function.
+        """
+        clientmap = getattr(cls, "clientmap", None) or {}
+        cls.clientmap = clientmap
+        try:
+            client = cls.clientmap[cls]
+        except KeyError:
+            client = selenium.webdriver.Chrome()
+            LOGGER.info("No driver for class %s, initialized %s", str(cls), str(client))
+            cls.clientmap[cls] = client
+        return client
+
+    @property
+    def driver(self):
+        """Selenium driver in use for all instances of this class."""
+        return self.__class__.get_driver()
 
     def add_to_cart(self, product, variant=None):
         """Go to a product page and add it to the cart."""
@@ -233,7 +277,8 @@ class StoreSite(unittest.TestCase):
         root = "//article[@typeof='Product']"
         tag = root + "/figure/a[@property='image'][@typeof='ImageObject']"
         img = self.xp(tag + '/img')
-        thumbnails = self.xps(root + "/figure/aside/a[@property='image'][@typeof='ImageObject']/img")
+        thumbnails = self.xps(
+            root + "/figure/aside/a[@property='image'][@typeof='ImageObject']/img")
         src = lambda elem: elem.get_attribute("src")
         srcset = lambda elem: elem.get_attribute("srcset")
         # first off, the first thumbnail should be the main image.
@@ -251,16 +296,16 @@ class StoreSite(unittest.TestCase):
         links = [
             ("about", self.url + "pages/about"),
             ("events", self.url + "pages/events"),
-            ("news", "http://blog.rennes.us/"),
+            ("news", "http://blog.rennes.us"),
             ("instagram", "https://www.instagram.com/" + get_setting("instagram_handle")),
-            ("pinterest", "https://www.pinterest.com/rennes/"),
+            ("pinterest", "https://www.pinterest.com/rennes"),
             ("contact", self.url + "pages/contact-us"),
             ("policies", self.url + "pages/policies"),
             ("shipping", self.url + "pages/shipping"),
             ("faq", self.url + "pages/faq")]
         for pair in zip(anchors, links):
             expected = pair[1]
-            observed = ((pair[0].text), pair[0].get_attribute("href"))
+            observed = ((pair[0].text), pair[0].get_attribute("href").strip("/"))
             self.assertEqual(observed, expected)
 
     def check_nav_product(self, clothing_menu_starts="none"):
@@ -334,7 +379,7 @@ class StoreSite(unittest.TestCase):
     def check_instafeed(self):
         """Check for the instafeed images AJAXd from instagram."""
         elems = self.xps("//section[@id='instafeed']//img")
-        #self.assertEqual(len(elems), get_setting("instafeed_limit"))
+        self.assertEqual(len(elems), get_setting("instafeed_limit"))
 
     # TODO check the address chunk at the bottom of most pages.
     def check_snippet_address(self):
@@ -356,23 +401,6 @@ class StoreSite(unittest.TestCase):
         """Check the search form snippet."""
         root = "//article[@typeof='SearchResultsPage']"
         self.check_for_elem(root + "/form[@action='/search'][@role='search']")
-
-    def check_ml_popup(self, should_pop=True):
-        """Check the mailing list popup element.
-
-        This takes a while to run, since there's a delay before it appears on
-        screen.
-        """
-        condition = EC.presence_of_element_located((By.CLASS_NAME, "popup"))
-        try:
-            delay = get_setting("mlpopup_delay")/1000 + 5
-            WebDriverWait(self.driver, delay).until(condition)
-        except TimeoutException:
-            if should_pop:
-                self.fail("mailing list popup not found")
-        else:
-            if not should_pop:
-                self.fail("mailing list popup triggered but shouldn't have")
 
     def check_for_elem(self, xpath, elem=None):
         """ Get a single element by xpath, failing if not found."""
@@ -405,20 +433,21 @@ class StoreSite(unittest.TestCase):
     def xp(self, xpath, elem=None):
         """ Get a single element by xpath."""
         # pylint: disable=invalid-name
-        time.sleep(ELEM_DELAY)
+        time.sleep(TESTING_CONFIG["elem_delay"])
         if elem:
             return elem.find_element_by_xpath(xpath)
         return self.driver.find_element_by_xpath(xpath)
 
     def xps(self, xpath, elem=None):
         """ Get a list of elements by xpath."""
-        time.sleep(ELEM_DELAY)
+        time.sleep(TESTING_CONFIG["elem_delay"])
         if elem:
             return elem.find_elements_by_xpath(xpath)
         return self.driver.find_elements_by_xpath(xpath)
 
     def get(self, path=""):
         """Get a page"""
+        LOGGER.info("Loading %s", str(path))
         self.driver.get(self.url + path)
 
 
@@ -481,6 +510,14 @@ class TestSite(StoreSite):
         self.driver.implicitly_wait(1)
         # Now we've reached checkout
         self.assertIn("Checkout", self.driver.title)
+        # Remove item from cart (otherwise it'll throw off other tests since
+        # we're sharing one browser session!)
+        # TODO probably should handle this more generally to make sure
+        # failures/exceptions in one test are isolated and the cart is still
+        # properly cleared
+        self.get("cart")
+        trow = self.get_cart_row("elsa-esturgie-boudoir-long-cloud-coat-ecru", "15391537561635")
+        trow.find_element_by_xpath("//a[@title='Remove Item']").click()
 
     def test_template_collection(self):
         """Collection page"""
@@ -626,19 +663,6 @@ class TestSite(StoreSite):
 
     ### Tests - Others
 
-    @unittest.skip("slow")
-    def test_mailing_list(self):
-        """Mailing list should only pop up on first visit
-
-        This takes a while.
-        """
-        if not get_setting("mlpopup_enabled"):
-            self.skipTest("mailing list pop-up not enabled")
-        self.get()
-        self.check_ml_popup()
-        self.get()
-        self.check_ml_popup(False)
-
     def test_header_search(self):
         """Test search from the page header."""
         # try with a query that works
@@ -667,9 +691,13 @@ class TestSite(StoreSite):
     ### Tests - Helpers
 
     def check_pagination(self):
-        # try using the pagination: verify there's no "previous" link to start
-        # with, click the first link, and then click the previous link.
-        # behavior with multiple pagination elements is not curently defined.
+        """Check that pagination links work as expected.
+
+        This will verify there's no "previous" link to start with, click the
+        first link (which should be for page 2), and then click the previous
+        link.  behavior with multiple pagination elements on the page is not
+        curently defined.
+        """
         nav = self.xp("//nav[@class='pagination']")
         first_link = self.try_for_elem("a", elem=nav)
         self.assertFalse("previous" in first_link.text)
@@ -690,16 +718,23 @@ class TestSiteProducts(StoreSite):
     """
 
     def test_template_product_out_of_stock(self):
+        """Test product template for a completely out-of-stock product."""
         self.get(TEST_PRODUCTS["out-of-stock"])
         self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
         self.check_product(None, {"availability": "SoldOut"})
 
     def test_template_product_out_of_stock_variant(self):
+        """Test product template for a product with one variant out of stock."""
         self.get(TEST_PRODUCTS["running-low"])
         # TODO check that only one of two variants is available
         self.skipTest("not yet implemented")
 
     def test_template_product_lots_of_photos(self):
+        """Test product template for a product with a lot of photos.
+
+        These get tricky to display sensibly and flexibly while trying to keep
+        the flex CSS working right.
+        """
         self.get(TEST_PRODUCTS["lots-of-photos"])
         # TODO check whatever should be checked for when we have a ton of
         # photos.  Make sure the width/height of the thumbnails makes sense,
@@ -707,6 +742,11 @@ class TestSiteProducts(StoreSite):
         self.skipTest("not yet implemented")
 
     def test_template_product_on_sale(self):
+        """Test product template for a product whose price was lowered.
+
+        For this case there should be a strikethrough version of the original
+        price alongside the current price.
+        """
         self.get(TEST_PRODUCTS["now-cheaper"])
         # TODO make sure the original price is shown in strikethrough next to
         # the new price
@@ -715,13 +755,44 @@ class TestSiteProducts(StoreSite):
         self.skipTest("not yet implemented")
 
 
+class TestSiteMailingList(StoreSite):
+    """Test suite for store - mailing list features"""
+
+    def test_mailing_list(self):
+        """Mailing list should only pop up on first visit
+
+        This takes a while.
+        """
+        if not get_setting("mlpopup_enabled"):
+            self.skipTest("mailing list pop-up not enabled")
+        self.get()
+        self.check_ml_popup()
+        self.get()
+        self.check_ml_popup(False)
+
+    def check_ml_popup(self, should_pop=True):
+        """Check the mailing list popup element.
+
+        This takes a while to run, since there's a delay before it appears on
+        screen.
+        """
+        condition = EC.presence_of_element_located((By.CLASS_NAME, "popup"))
+        try:
+            delay = get_setting("mlpopup_delay")/1000 + 5
+            WebDriverWait(self.driver, delay).until(condition)
+        except TimeoutException:
+            if should_pop:
+                self.fail("mailing list popup not found")
+        else:
+            if not should_pop:
+                self.fail("mailing list popup triggered but shouldn't have")
+
 def main():
     """Run unit tests within virtual X display."""
-    if os.getenv("SHOPIFY_TEST_SHOW"):
+    if TESTING_CONFIG["real_x11"]:
         unittest.main()
     else:
         with Xvfb():
             unittest.main()
-
 if __name__ == "__main__":
     main()
