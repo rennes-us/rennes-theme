@@ -8,6 +8,7 @@ dependencies:
   - pylint
   - pyyaml
   - selenium
+  - pip
   - pip:
     - xvfbwrapper
   # Also: downloaded chromdriver binary that matches my chrome version from:
