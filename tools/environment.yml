@@ -8,8 +8,11 @@ dependencies:
   - pylint
   - pyyaml
   - selenium
-  - pip
-  - pip:
-    - xvfbwrapper
+  # Requires an actual xvfb X server too.  There's a conda one
+  # (xorg-x11-server-xvfb-cos6-x86_64) but I'm just using the Ubuntu xvfb
+  # package.
+  - xvfbwrapper
   # Also: downloaded chromdriver binary that matches my chrome version from:
   # https://sites.google.com/a/chromium.org/chromedriver/downloads
+  # Requires libnss in Ubuntu (or maybe nss conda package, but as of this
+  # writing that was too new of a version to work with the chromedriver binary)
