@@ -24,6 +24,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (
     NoSuchElementException,
+    StaleElementReferenceException,
     TimeoutException)
 
 # https://stackoverflow.com/a/8910326/4499968
@@ -31,14 +32,25 @@ from xvfbwrapper import Xvfb
 
 TESTING_CONFIG = {
     "store_password": os.getenv("SHOPIFY_STORE_PASSWORD"),
-    "elem_delay": float(os.getenv("SHOPIFY_TEST_DELAY") or 0),
+    "elem_delay": float(os.getenv("SHOPIFY_TEST_DELAY", "0")),
     "real_x11": os.getenv("SHOPIFY_TEST_SHOW") is not None,
-    "log_level": int(os.getenv("SHOPIFY_TEST_LOGLEVEL") or 30),
+    "log_level": int(os.getenv("SHOPIFY_TEST_LOGLEVEL", "30")),
+    # Seems like we sometimes get banned temporarily, probably from hammering
+    # instagram's server too hard.
+    "check_instafeed": os.getenv("SHOPIFY_CHECK_INSTA", "True").title() == "True",
     "page_load_timeout": 90000 # ms?
     }
 
 logging.basicConfig(level=TESTING_CONFIG["log_level"])
 LOGGER = logging.getLogger(__name__)
+
+def log_testing_config():
+    for key in TESTING_CONFIG:
+        val = TESTING_CONFIG[key]
+        if key == "store_password" and len(val) > 0:
+            val = "********"
+        LOGGER.info("config: %s=%s", key, val)
+log_testing_config()
 
 TEST_PRODUCTS = {
     "out-of-stock":   "collections/testing/products/out-of-stock",
@@ -116,7 +128,6 @@ class StoreClient(unittest.TestCase):
         Call this before interacting with any pages.
         """
         driver = cls.get_driver()
-        driver.implicitly_wait(1)
         cls.url = "https://" + CONFIG["development"]["store"] + "/"
         driver.get(cls.url)
         LOGGER.info("Setting up StoreSite: %s: loaded %s", str(cls), cls.url)
@@ -130,7 +141,6 @@ class StoreClient(unittest.TestCase):
             if password:
                 elem.send_keys(password)
                 elem.send_keys(Keys.RETURN)
-                driver.implicitly_wait(1)
                 if "Please Log In" in driver.title:
                     LOGGER.info("Setting up StoreSite: %s: password not accepted", str(cls))
                     raise StoreError("login failed")
@@ -141,7 +151,10 @@ class StoreClient(unittest.TestCase):
     def tear_down_site(cls):
         """Clean up after client."""
         LOGGER.info("Cleaning up StoreSite: %s", str(cls))
-        cls.get_driver().close()
+        # The close method just closes the window.  quit actually quits the
+        # browser.  (Possibly I could just del the object, not sure.)
+        cls.get_driver().quit()
+        del cls.clientmap[cls]
 
     @classmethod
     def get_driver(cls):
@@ -169,53 +182,134 @@ class StoreClient(unittest.TestCase):
         """Selenium driver in use for all instances of this class."""
         return self.__class__.get_driver()
 
+    @staticmethod
+    def click(elem, tries=5, delta=0.1, checker=None):
+        """Click an element and make sure it does a thing.
+
+        By default the thing is assumed to be going to a new page, which is
+        checked by checking for the staleness of the element.  If the checker
+        argument is given, it will instead repeatedly call that until True.  It
+        will only try up to tries times, waiting delta seconds between each
+        try.
+
+        Background: Selenium's clicking is driving me crazy.  Sometimes clicks
+        on simple anchor elements work, and sometimes they just don't do
+        anything, despite the page being loaded, the element displayed and
+        enabled, etc.  So here I just keep clicking the given element until
+        that same element becomes stale (implying we went somewhere else so the
+        click actually worked), with a limit on the number of tries.
+        """
+        # If I just pull the href out and get the URL, that does work, so this
+        # seems like a bug to me.  If I sleep for a few seconds before the
+        # click that helps but is hardly reliable.  It also "helps" if I check
+        # another element on the page in the intervening time, probably just
+        # because there's a slight delay then.
+        # Maybe related: https://github.com/SeleniumHQ/selenium/issues/4075
+        # If all else fails: self.get(elem.get_attribute("href"))
+        # Other methods we can check, though no luck yet:
+        #  * is_selected
+        #  * is_displayed
+        #  * is_enabled
+        prefix = "click: " + elem.tag_name + " %s"
+        log = lambda msg: LOGGER.info(prefix, msg)
+        log("click")
+        elem.click()
+        while tries:
+            if checker:
+                if checker():
+                    log("check passed")
+                    return True
+                log("check not yet passed")
+                time.sleep(delta)
+                elem.click()
+                tries -= 1
+            else:
+                try:
+                    elem.is_enabled()
+                    log("enabled")
+                    time.sleep(delta)
+                    elem.click()
+                    tries -= 1
+                except StaleElementReferenceException:
+                    log("stale")
+                    return True
+        log("tries exhausted")
+        return False
+
     def check_for_elem(self, xpath, elem=None):
-        """ Get a single element by xpath, failing if not found."""
+        """Get a single element by xpath, failing if not found."""
         elem2 = self.try_for_elem(xpath, elem)
         if not elem2:
             self.fail("element not found: \"%s\"" % xpath)
         return elem2
 
     def check_for_elems(self, xpath, elems=None):
-        """ Get a list of elements by xpath, failing if not found."""
+        """Get a list of elements by xpath, failing if not found."""
         elem = self.try_for_elems(xpath, elems)
         if not elem:
             self.fail("element not found: \"%s\"" % xpath)
         return elem
 
     def try_for_elem(self, xpath, elem=None):
-        """ Get a single element by xpath, or None if not found."""
+        """Get a single element by xpath, or None if not found."""
         try:
             return self.xp(xpath, elem)
         except NoSuchElementException:
             return None
 
     def try_for_elems(self, xpath, elems=None):
-        """ Get a list of elements by xpath, or None if not found."""
+        """Get a list of elements by xpath, or None if not found."""
         try:
             return self.xps(xpath, elems)
         except NoSuchElementException:
             return None
 
     def xp(self, xpath, elem=None):
-        """ Get a single element by xpath."""
+        """Get a single element by xpath."""
         # pylint: disable=invalid-name
+        log = lambda msg: LOGGER.debug("xp: %s", msg)
         time.sleep(TESTING_CONFIG["elem_delay"])
         if elem:
+            log("in %s: %s" % (elem.tag_name, xpath))
+            # As per the docs,
+            #      This will select the first link under this element.
+            #      myelement.find_element_by_xpath(".//a")
+            #      However, this will select the first link on the page.
+            #      myelement.find_element_by_xpath("//a")
+            # So we'll make sure we have a leading dot!!
+            xpath = self._relative(xpath)
             return elem.find_element_by_xpath(xpath)
+        log("in page: %s" % xpath)
         return self.driver.find_element_by_xpath(xpath)
 
     def xps(self, xpath, elem=None):
-        """ Get a list of elements by xpath."""
+        """Get a list of elements by xpath."""
+        log = lambda msg: LOGGER.debug("xps: %s", msg)
         time.sleep(TESTING_CONFIG["elem_delay"])
         if elem:
+            log("in %s: %s" % (elem.tag_name, xpath))
+            xpath = self._relative(xpath)
             return elem.find_elements_by_xpath(xpath)
+        log("in page: %s" % xpath)
         return self.driver.find_elements_by_xpath(xpath)
 
     def get(self, path=""):
         """Get a page"""
-        LOGGER.info("Loading %s", str(path))
-        self.driver.get(self.url + path)
+        LOGGER.info("get: %s", str(path))
+        if path.startswith("http"):
+            self.driver.get(path)
+        else:
+            self.driver.get(self.url + path)
+
+    @staticmethod
+    def _relative(xpath):
+        """Make xpath relative to current element."""
+        if not xpath.startswith("."):
+            if not xpath.startswith("/"):
+                xpath = "/" + xpath
+            xpath = "." + xpath
+        return xpath
+
 
 
 class StoreSite(StoreClient):
@@ -229,12 +323,14 @@ class StoreSite(StoreClient):
         """Go to a product page and add it to the cart."""
         self.get("products/" + product)
         if variant:
+            label = None
             for label in self.xps("//form[@typeof='OfferForPurchase']//label"):
                 if label.text == variant:
-                    label.click()
                     break
+            option = self.xp("//input[@id='" + label.get_attribute("for") + "']")
+            self.click(label, checker=option.is_selected)
         button = self.xp("//form[@typeof='OfferForPurchase']/button[@type='submit']")
-        button.click()
+        self.click(button)
 
     def get_cart_row(self, product_slug, variant_id=None):
         """Get the tr element for a particular product in the cart."""
@@ -427,8 +523,9 @@ class StoreSite(StoreClient):
 
     def check_instafeed(self):
         """Check for the instafeed images AJAXd from instagram."""
-        elems = self.xps("//section[@id='instafeed']//img")
-        self.assertEqual(len(elems), get_setting("instafeed_limit"))
+        if TESTING_CONFIG["check_instafeed"]:
+            elems = self.xps("//section[@id='instafeed']//img")
+            self.assertEqual(len(elems), get_setting("instafeed_limit"))
 
     def check_snippet_collection(self, paginate=True):
         """Check a product collection within a page."""
@@ -461,7 +558,6 @@ class StoreSite(StoreClient):
         exist.
         """
         elem = self.check_for_elem("//div[@class='mailing-list']")
-        LOGGER.warning(elem.text)
         #form_xp = "//form[@action='%s']" % get_setting("mailing_list_form_target")
         form_xp = "//form"
         self.check_for_elem(form_xp, elem)
@@ -508,53 +604,87 @@ class TestSite(StoreSite):
         We should be able to add items, remove them, modify the quantity, and
         go to checkout.
         """
+        log = lambda msg: LOGGER.info("test_template_cart: %s", msg)
         self.get("cart")
         # Basics
         self.check_header()
         self.check_nav_site()
         self.check_nav_product()
         # Specifics
+        product = "elsa-esturgie-boudoir-long-cloud-coat-ecru"
+        prodid = "15391537561635"
+        prodvar = "40"
         elem = self.xp("//main")
         self.assertIn("You don’t have any goods in your bag", elem.text)
         # Features
+
         # This should add one product to the cart page and bring us back there.
         # Clicking the remove link should take it away.
-        self.add_to_cart("elsa-esturgie-boudoir-long-cloud-coat-ecru", "40")
+        log("adding item")
+        self.add_to_cart(product, prodvar)
+        log("checking header for item")
         self.check_header(bagsize=1)
-        trow = self.get_cart_row("elsa-esturgie-boudoir-long-cloud-coat-ecru", "15391537561635")
+        trow = self.get_cart_row(product, prodid)
+        log("clicking remove link")
         trow.find_element_by_xpath("//a[@title='Remove Item']").click()
+        log("checking header for no items")
         self.check_header(bagsize=0)
-        trow = self.get_cart_row("elsa-esturgie-boudoir-long-cloud-coat-ecru", "15391537561635")
+        trow = self.get_cart_row(product, prodid)
+        log("checking cart for no items")
         self.assertIsNone(trow)
+
         # Let's add it back in, and try to check out.
-        self.add_to_cart("elsa-esturgie-boudoir-long-cloud-coat-ecru", "40")
+        log("adding item")
+        self.add_to_cart(product, prodvar)
+        log("checking header for item")
         self.check_header(bagsize=1)
+        log("trying checkout button")
         button = self.xp("//button[@title='Checkout']")
-        button.click()
-        self.driver.implicitly_wait(1)
+        self.assertFalse(self.click(button))
         # Nope, not yet, need to check the checkbox
+        log("checking we're not yet at checkout")
         self.assertNotIn("Checkout", self.driver.title)
         checkbox = self.xp("//input[@id='checkout-warning']")
+        log("disclaimer checkbox: %s" % checkbox.is_selected())
+        log("disclaimer checkbox: click")
         checkbox.click()
-        button.click()
-        self.driver.implicitly_wait(1)
+        log("disclaimer checkbox: %s" % checkbox.is_selected())
+        log("clicking checkout button")
+        self.assertTrue(self.click(button))
         # Now we've reached checkout
         self.assertIn("Checkout", self.driver.title)
+
         # Back to the cart page, check one more thing: the update button.
         # Update the quantity field for one row and click the button.  This
         # should remove the item by setting the quantity to zero, rather than
         # just clicking the remove link as above.
         self.get("cart")
-        trow = self.get_cart_row("elsa-esturgie-boudoir-long-cloud-coat-ecru", "15391537561635")
-        qty = self.xp("//input", self.xps("//td", trow)[2])
-        qty.set_attribute("value", 0)
+        # TODO this should not be necessary!  Only when clicking the Checkout
+        # button, not the Update Shopping Bag button.
+        checkbox = self.xp("//input[@id='checkout-warning']")
+        log("disclaimer checkbox: %s" % checkbox.is_selected())
+        log("disclaimer checkbox: click")
+        checkbox.click()
+        log("disclaimer checkbox: %s" % checkbox.is_selected())
+        qty = self.xp("//input", self.get_cart_row(product, prodid))
+        log("qty: %s" % qty.get_attribute("value"))
+        log("setting qty to 0")
+        qty.send_keys(Keys.BACKSPACE)
+        qty.send_keys("0")
+        log("qty: %s" % qty.get_attribute("value"))
         button = self.xp("//button[@title='Update your total']")
-        button.click()
+        log("clicking update button")
+        self.assertTrue(self.click(button))
         # At this point we should have nothing in the cart (otherwise it'll
         # throw off other tests since # we're sharing one browser session!)
         # Probably should handle this more generally to make sure
         # failures/exceptions in one test are isolated and the cart is still
         # properly cleared.
+        trow = self.get_cart_row(product, prodid)
+        log("checking cart for no items")
+        self.assertIsNone(trow)
+        log("checking header for no items")
+        self.check_header(bagsize=0)
 
     def test_template_collection(self):
         """Collection page"""
@@ -726,6 +856,7 @@ class TestSite(StoreSite):
 
     ### Tests - Helpers
 
+
     def check_pagination(self):
         """Check that pagination links work as expected.
 
@@ -734,18 +865,26 @@ class TestSite(StoreSite):
         link.  behavior with multiple pagination elements on the page is not
         curently defined.
         """
+        log = lambda msg: LOGGER.info("check_pagination: %s", msg)
         nav = self.xp("//nav[@class='pagination']")
+        log("try for first link elem")
         first_link = self.try_for_elem("a", elem=nav)
-        self.assertFalse("previous" in first_link.text)
-        first_link.click()
+        log("check that previous is NOT in first link text (\"%s\")" % first_link.text)
+        self.assertFalse("previous" in first_link.text.lower())
+        log("click first link")
+        self.click(first_link)
         nav = self.xp("//nav[@class='pagination']")
+        log("try for first link elem again")
         first_link = self.try_for_elem("a", elem=nav)
-        self.assertTrue("previous" in first_link.text)
-        first_link.click()
+        log("check that previous IS in first link text (\"%s\")" % first_link.text)
+        self.assertTrue("previous" in first_link.text.lower())
+        log("click first link again")
+        self.click(first_link)
         nav = self.xp("//nav[@class='pagination']")
+        log("try for first link elem #3")
         first_link = self.try_for_elem("a", elem=nav)
-        LOGGER.warning(first_link.text)
-        self.assertFalse("previous" in first_link.text)
+        log("check that previous is NOT in first link text (\"%s\")" % first_link.text)
+        self.assertFalse("previous" in first_link.text.lower())
 
 
 class TestSiteProducts(StoreSite):
