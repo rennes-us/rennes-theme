@@ -27,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 def __log_testing_config():
     for key in TESTING_CONFIG:
         val = TESTING_CONFIG[key]
-        if key == "store_password" and len(val) > 0:
+        if key == "store_password" and val:
             val = "********"
         LOGGER.info("config: %s=%s", key, val)
 __log_testing_config()
