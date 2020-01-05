@@ -23,7 +23,10 @@ class StoreClient(unittest.TestCase):
     """Low-level handling for queries to development store website with Selenium.
 
     Instances of this class share a single browser session.  Child classes each
-    receive their own browser session.
+    receive their own browser session.  (This is primarily to make
+    cache-handling more manageable with unit testing, since a separate test
+    case instance is created for each test but it bogs things down too much to
+    let each instance start with an empty cache.)
     """
 
     @classmethod
