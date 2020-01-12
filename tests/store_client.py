@@ -15,9 +15,14 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException)
 
-from .util import (StoreError, CONFIG, TESTING_CONFIG)
+from .util import TESTING_CONFIG
 
 LOGGER = logging.getLogger(__name__)
+
+
+class StoreError(Exception):
+    """An Exception for store-related errors."""
+
 
 class StoreClient(unittest.TestCase):
     """Low-level handling for queries to development store website with Selenium.
@@ -48,7 +53,7 @@ class StoreClient(unittest.TestCase):
         Call this before interacting with any pages.
         """
         driver = cls.get_driver()
-        cls.url = "https://" + CONFIG["development"]["store"] + "/"
+        cls.url = "https://" + TESTING_CONFIG["store_site"] + "/"
         driver.get(cls.url)
         LOGGER.info("Setting up StoreSite: %s: loaded %s", str(cls), cls.url)
         try:

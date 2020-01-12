@@ -1,6 +1,10 @@
 """
 Test suite for a browser interacting with the development site.
 
+This ensures that the development site running on Shopify behaves as expected,
+referencing the config/settings_data.json here (and assuming that is the same
+as Shopify's copy).
+
 This package uses Selenium to automate a locally-running web browser (currently
 hardcoded as Chrome).  If the store is password-protected, the environment
 variable SHOPIFY_STORE_PASSWORD will be used to supply the store password to
