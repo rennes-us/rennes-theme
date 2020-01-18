@@ -179,6 +179,7 @@ class StoreSite(StoreClient):
         anchors = self.xps("//nav[@class='main site-nav']/ul/li/a")
         links = [
             ("about", self.url + "pages/about"),
+            ("podcast", "https://shoprennes.podbean.com"),
             ("events", self.url + "pages/events"),
             ("news", "http://blog.rennes.us"),
             ("instagram", "https://www.instagram.com/" + get_setting("instagram_handle")),
@@ -197,6 +198,7 @@ class StoreSite(StoreClient):
         # Check links and targets
         col = self.url + "collections/"
         links = [
+            ("winter sale", col + "winter-sale"),
             ("new", col + "new"),
             ("gifts", col + "gifts"),
             ("leather goods", col + "leather-goods"),
