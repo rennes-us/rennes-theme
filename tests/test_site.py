@@ -30,6 +30,7 @@ class TestSite(StoreSite):
     def test_template_404(self):
         """The 404 page should show a message and the search form."""
         self.get("does-not-exist")
+        self.check_layout()
         self.assertIn("Page Not Found", self.driver.title)
         self.check_for_elem("//form[@action='/search']")
 
@@ -49,6 +50,7 @@ class TestSite(StoreSite):
         """
         self.get("cart")
         # Basics
+        self.check_layout()
         self.check_header()
         self.check_nav_site()
         self.check_nav_product()
@@ -109,6 +111,7 @@ class TestSite(StoreSite):
     def test_template_collection(self):
         """Collection page"""
         self.get("collections/new")
+        self.check_layout()
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
@@ -121,6 +124,7 @@ class TestSite(StoreSite):
     def test_template_collection_submenu(self):
         """A collection page for a collection that is with in another category."""
         self.get("collections/skirts")
+        self.check_layout()
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
@@ -133,6 +137,7 @@ class TestSite(StoreSite):
     def test_template_collection_designers(self):
         """The collection page for the list of designers."""
         self.get("collections/designers")
+        self.check_layout()
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
@@ -148,6 +153,7 @@ class TestSite(StoreSite):
     def test_template_index(self):
         """Index page should show a collection"""
         self.get()
+        self.check_layout()
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
@@ -159,6 +165,7 @@ class TestSite(StoreSite):
     def test_template_list_collections(self):
         """Collections page should show a few products for each collection"""
         self.get("collections")
+        self.check_layout()
         self.check_header()
         #self.check_instafeed()
         self.check_snippet_address()
@@ -172,6 +179,7 @@ class TestSite(StoreSite):
         """Product page should show product information"""
         self.get("collections/new/products/elsa-esturgie-boudoir-long-cloud-coat-ecru")
         self.assertIn("elsa esturgie boudoir long cloud coat ecru", self.driver.title)
+        self.check_layout()
         self.check_header()
         self.check_instafeed()
         self.check_snippet_address()
@@ -204,6 +212,7 @@ class TestSite(StoreSite):
         # Basics
         self.get("/search")
         self.assertIn("Search", self.driver.title)
+        self.check_layout()
         self.check_header()
         self.check_nav_site()
         self.check_nav_product()

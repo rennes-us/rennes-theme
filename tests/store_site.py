@@ -73,6 +73,13 @@ class StoreSite(StoreClient):
             return anchor.find_element_by_xpath("./../..")
         return None
 
+    def check_layout(self):
+        """Check the overall page layout and metadata."""
+        elem = self.xp("//meta[@name='google-site-verification']")
+        self.assertEqual(
+            elem.get_attribute("content"),
+            get_setting("google_site_verification"))
+
     def check_header(self, bagsize=0):
         """Check the header element (the cart link and such, not <head>)"""
         LOGGER.info("check_header (bagsize: %d)", bagsize)
