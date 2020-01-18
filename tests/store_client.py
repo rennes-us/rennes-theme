@@ -9,7 +9,7 @@ import logging
 import unittest
 
 # https://selenium-python.readthedocs.io/getting-started.html
-import selenium.webdriver
+from selenium.webdriver import (Chrome, ChromeOptions)
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import (
     NoSuchElementException,
@@ -96,7 +96,11 @@ class StoreClient(unittest.TestCase):
         try:
             client = cls.clientmap[cls]
         except KeyError:
-            client = selenium.webdriver.Chrome()
+            # Why did this start being necessary?  Is our Xvfb still working?
+            # https://stackoverflow.com/questions/50642308
+            options = ChromeOptions()
+            options.add_argument("--headless")
+            client = Chrome(options = options)
             client.set_page_load_timeout(TESTING_CONFIG["page_load_timeout"])
             LOGGER.info("No driver for class %s, initialized %s", str(cls), str(client))
             cls.clientmap[cls] = client
