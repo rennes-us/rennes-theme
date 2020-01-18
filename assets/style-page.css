@@ -17,12 +17,6 @@ article.page p {
   text-align: justify;
 }
 
-article.page h1,
-article.page h2,
-article.page h3 {
-  text-align: center;
-}
-
 /*
  * Two-column layout for individual pages as activated by choosing the
  * page.columns template in the UI.

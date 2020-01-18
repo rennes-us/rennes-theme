@@ -13,11 +13,6 @@ article[typeof="Product"] {
   flex-wrap: wrap;
 }
 
-/* Title */
-article[typeof="Product"] h2 {
-  flex-basis: 100%;
-}
-
 /* Figure */
 article[typeof="Product"] figure {
   flex-basis: 100%;
@@ -25,7 +20,7 @@ article[typeof="Product"] figure {
   max-width: 600px;
 }
 
-/* Description and Form */
+/* Description, Title, and Form */
 article[typeof="Product"] > div {
   flex-basis: 100%;
   margin: 0;

@@ -1,6 +1,5 @@
   <article vocab="http://schema.org/" typeof="Product">
 
-    <h2 property="name">{{ product.title | escape }}</h2>
     <link property="url" href="{{ product.url | within: collection }}">
     <meta property="manufacturer" content="{{ product.vendor }}">
     <meta property="brand" content="{{ product.vendor }}">
@@ -22,6 +21,7 @@
 
     {% comment %} Description and purchase form {% endcomment %}
     <div>
+      <h2 property="name">{{ product.title | escape }}</h2>
       <div property="description">
         {{ product.description }}
       </div>
