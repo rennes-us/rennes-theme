@@ -56,7 +56,7 @@ class TestSite(StoreSite):
         self.check_nav_product()
         # Specifics
         product = "variants"
-        prodid  = "31622054412323"
+        prodid = "31622054412323"
         prodvar = "small"
         elem = self.xp("//main")
         self.assertIn("You don’t have any goods in your bag", elem.text)
