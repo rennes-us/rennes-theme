@@ -101,7 +101,7 @@ class StoreClient(unittest.TestCase):
             # https://stackoverflow.com/questions/50642308
             options = ChromeOptions()
             options.add_argument("--headless")
-            client = Chrome(options = options)
+            client = Chrome(options=options)
             client.set_page_load_timeout(TESTING_CONFIG["page_load_timeout"])
             LOGGER.info("No driver for class %s, initialized %s", str(cls), str(client))
             cls.clientmap[cls] = client
