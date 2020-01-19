@@ -5,13 +5,16 @@
  * */
 
 /* Align the set of products in the center of this container, with
- * evenly-distributed padding and however many products can fit per row. */
+ * evenly-distributed padding and however many products can fit per row.
+ * With these defaults it'll default to a left-justified display for the final
+ * row of items.  To make it center with padding do justify-content:
+ * space-around
+ * */
 article.products, section.products {
   display: flex;
   /* In general do two across */
   flex-basis: 50%;
   flex-flow: wrap;
-  justify-content: space-around;
 }
 
 /* An individual product. */
