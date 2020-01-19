@@ -114,7 +114,7 @@ class StoreSite(StoreClient):
         self.check_for_elem(root)
         observed = {}
         prop = lambda t, p: self.check_for_elem((root + "/%s[@property='%s']") % (t, p))
-        observed["name"] = prop("h2", "name").text
+        observed["name"] = prop("/h2", "name").text
         observed["url"] = prop("link", "url").get_attribute("href")
         observed["mfg"] = prop("meta", "manufacturer").get_attribute("content")
         ### Get figure and images
@@ -178,16 +178,13 @@ class StoreSite(StoreClient):
         """Check the nav element for site links."""
         anchors = self.xps("//nav[@class='main site-nav']/ul/li/a")
         links = [
-            ("about", self.url + "pages/about"),
-            ("podcast", "https://shoprennes.podbean.com"),
-            ("events", self.url + "pages/events"),
-            ("news", "http://blog.rennes.us"),
-            ("instagram", "https://www.instagram.com/" + get_setting("instagram_handle")),
-            ("pinterest", "https://www.pinterest.com/rennes"),
-            ("contact", self.url + "pages/contact-us"),
             ("policies", self.url + "pages/policies"),
             ("shipping", self.url + "pages/shipping"),
-            ("faq", self.url + "pages/faq")]
+            ("faq", self.url + "pages/faq"),
+            ("instagram", "https://www.instagram.com/" + get_setting("instagram_handle")),
+            ("pinterest", "https://www.pinterest.com/rennes"),
+            ("podcast", "https://shoprennes.podbean.com"),
+            ("contact", self.url + "pages/contact-us")]
         for pair in zip(anchors, links):
             expected = pair[1]
             observed = ((pair[0].text), pair[0].get_attribute("href").strip("/"))
