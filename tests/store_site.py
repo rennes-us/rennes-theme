@@ -49,8 +49,17 @@ class StoreSite(StoreClient):
     test functions.
     """
 
+    def is404(self):
+        """Did we get a 404 on the most recent request?"""
+        return "Page Not Found" in self.driver.title
+
     def add_to_cart(self, product, variant=None):
-        """Go to a product page and add it to the cart."""
+        """Go to a product page and add it to the cart.
+
+        If variant is given, select that variant.  ValueError is raised if the
+        given variant isn't found in the page, or if no variant is given but
+        variants are available.
+        """
         LOGGER.info("add_to_cart: %s (%s)", product, variant)
         self.get("products/" + product)
         if variant:
@@ -58,10 +67,19 @@ class StoreSite(StoreClient):
             for label in self.xps("//form[@typeof='OfferForPurchase']//label"):
                 if label.text == variant:
                     break
+            else:
+                raise ValueError(
+                    "product %s: variant \"%s\" not found" % (str(product), str(variant)))
             option = self.xp("//input[@id='" + label.get_attribute("for") + "']")
             self.click(label, checker=option.is_selected)
+        else:
+            if self.try_for_elems("//form[@typeof='OfferForPurchase']//label"):
+                raise ValueError(
+                    "product %s: no variant given but variants available")
         button = self.xp("//form[@typeof='OfferForPurchase']/button[@type='submit']")
         self.click(button)
+        cartlink = self.xp("//body/header//a[@href='/cart']")
+        self.assertNotEqual(cartlink.text, "my bag")
 
     def get_cart_row(self, product_slug, variant_id=None):
         """Get the tr element for a particular product in the cart."""
@@ -132,7 +150,7 @@ class StoreSite(StoreClient):
         if "name" in expected:
             self.assertEqual(imgset.get_attribute("alt"), expected["name"])
         path = root + "/figure/aside/a[@property='image'][@typeof='ImageObject']"
-        observed["num_extra_images"] = len(self.check_for_elems(path))
+        observed["num_images"] = len(self.check_for_elems(path))
         ### Get cart form and price info
         offer = self.check_for_elem(root + "//form[@property='offers']")
         self.assertEqual(offer.get_attribute("action"), self.url + "cart/add")
@@ -162,8 +180,45 @@ class StoreSite(StoreClient):
         if description_blurb:
             self.assertIn(description_blurb, description)
 
+    def check_product_image_swap_arrows(self, num_images):
+        """Check that clicking left/right arrows switches the product image.
+
+        Clicking the left and right links should swap out the images in order.
+        Going past the left edge should wrap around to the last image, and
+        going past the right edge should wrap around to the first image.
+        """
+        getimg = lambda: self.check_for_elem(
+            "/a[@property='image'][@typeof='ImageObject']/img",
+            figure)
+        checksrc = lambda img: self.assertEqual(
+            getimg().get_attribute("src"),
+            img.get_attribute("src"))
+        figure = self.check_for_elem("//article[@typeof='Product']/figure")
+        thumbnails = self.check_for_elems(
+            "/aside/a[@property='image'][@typeof='ImageObject']/img",
+            figure)
+        self.assertEqual(len(thumbnails), num_images)
+        checksrc(thumbnails[0])
+        left = self.check_for_elem("a[@class='arrow left']", figure)
+        right = self.check_for_elem("a[@class='arrow right']", figure)
+        # wrap around backwards
+        left.click()
+        checksrc(thumbnails[num_images-1])
+        # back to beginning
+        right.click()
+        # click through the rest.  The last click should wrap us around to the
+        # first image
+        for click in range(num_images):
+            checksrc(thumbnails[click])
+            right.click()
+        ## wrap around forwards
+        checksrc(thumbnails[0])
+
     def check_product_image_swap(self, altimg=1):
-        """Check that clicking thumbnails switches out the main product image."""
+        """Check that clicking thumbnails switches out the main product image.
+
+        We're not currently using this method; see the arrows method instead.
+        """
         root = "//article[@typeof='Product']"
         tag = root + "/figure/a[@property='image'][@typeof='ImageObject']"
         img = self.xp(tag + '/img')
