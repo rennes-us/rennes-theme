@@ -177,12 +177,12 @@ class StoreClient(unittest.TestCase):
             self.fail("element not found: \"%s\"" % xpath)
         return elem2
 
-    def check_for_elems(self, xpath, elems=None):
+    def check_for_elems(self, xpath, elem=None):
         """Get a list of elements by xpath, failing if not found."""
-        elem = self.try_for_elems(xpath, elems)
-        if not elem:
+        elems = self.try_for_elems(xpath, elem)
+        if not elems:
             self.fail("element not found: \"%s\"" % xpath)
-        return elem
+        return elems
 
     def try_for_elem(self, xpath, elem=None):
         """Get a single element by xpath, or None if not found."""
@@ -191,10 +191,10 @@ class StoreClient(unittest.TestCase):
         except NoSuchElementException:
             return None
 
-    def try_for_elems(self, xpath, elems=None):
+    def try_for_elems(self, xpath, elem=None):
         """Get a list of elements by xpath, or None if not found."""
         try:
-            return self.xps(xpath, elems)
+            return self.xps(xpath, elem)
         except NoSuchElementException:
             return None
 
