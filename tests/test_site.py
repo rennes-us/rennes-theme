@@ -31,7 +31,7 @@ class TestSite(StoreSite):
         """The 404 page should show a message and the search form."""
         self.get("does-not-exist")
         self.check_layout()
-        self.assertIn("Page Not Found", self.driver.title)
+        self.assertTrue(self.is404())
         self.check_for_elem("//form[@action='/search']")
 
     @unittest.skip("not yet implemented")
@@ -55,18 +55,24 @@ class TestSite(StoreSite):
         self.check_nav_site()
         self.check_nav_product()
         # Specifics
-        product = "elsa-esturgie-boudoir-long-cloud-coat-ecru"
-        prodid = "15391537561635"
-        prodvar = "40"
+        product = "variants"
+        prodid  = "31622054412323"
+        prodvar = "small"
         elem = self.xp("//main")
         self.assertIn("You don’t have any goods in your bag", elem.text)
         # Features
+        # First off, make sure we're on a site that has the the testing
+        # collection.  Otherwise we'll stop here.
+        self.get("collections/testing")
+        if self.is404():
+            return
 
         # This should add one product to the cart page and bring us back there.
         # Clicking the remove link should take it away.
         self.add_to_cart(product, prodvar)
         self.check_header(bagsize=1)
         trow = self.get_cart_row(product, prodid)
+        self.assertIsNotNone(trow)
         trow.find_element_by_xpath("//a[@title='Remove Item']").click()
         self.check_header(bagsize=0)
         trow = self.get_cart_row(product, prodid)
@@ -177,8 +183,10 @@ class TestSite(StoreSite):
 
     def test_template_product(self):
         """Product page should show product information"""
-        self.get("collections/new/products/elsa-esturgie-boudoir-long-cloud-coat-ecru")
-        self.assertIn("elsa esturgie boudoir long cloud coat ecru", self.driver.title)
+        self.get("collections/testing/products/variants")
+        if self.is404():
+            self.skipTest("testing collection not available")
+        self.assertIn("Variants", self.driver.title)
         self.check_layout()
         self.check_header()
         self.check_instafeed()
@@ -187,25 +195,22 @@ class TestSite(StoreSite):
         self.check_nav_site()
         self.check_nav_product()
         self.check_product(
-            description_blurb=\
-            "Organic cotton weave with jersey organic" +
-            " cotton lining, the softest coziest coat you will ever own!",
+            description_blurb="This one has variants.",
             expected={
-                "name": "elsa esturgie boudoir long cloud coat ecru",
-                "url": "collections/new/products/elsa-esturgie-boudoir-long-cloud-coat-ecru",
-                "mfg": "elsa esturgie",
-                "price": "725.00",
+                "name": "Variants",
+                "url": "collections/testing/products/variants",
+                "mfg": "rennes-dev",
+                "price": "50.00",
                 "currency": "USD",
                 "condition": "NewCondition",
                 "availability": "InStock",
-                "num_extra_images": 24,
+                "num_images": 2,
                 "variants": {
-                    "36": "15391537496099",
-                    "38": "15391537528867",
-                    "40": "15391537561635"
+                    "small": "31622054412323",
+                    "large": "31622054445091",
                     }
                 })
-        self.check_product_image_swap()
+        self.check_product_image_swap_arrows(2)
 
     def test_template_search(self):
         """Test /search"""
@@ -389,6 +394,15 @@ class TestSiteProducts(StoreSite):
         self.check_decoration_on_hover(link1, "underline", "underline")
         link2 = self.check_for_elem("p/a", proddesc)
         self.check_decoration_on_hover(link2, "underline", "underline")
+
+    def test_template_product_variants(self):
+        """Test product template for a product with multiple variants.
+
+        It should notify us if we try to add to cart without selecting one of
+        the variants.
+        """
+        self.get(TEST_PRODUCTS["variants"])
+        self.skipTest("not yet implemented")
 
 
 class TestSiteMailingList(StoreSite):
