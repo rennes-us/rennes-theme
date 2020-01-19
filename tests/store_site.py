@@ -84,7 +84,11 @@ class StoreSite(StoreClient):
         """Check the header element (the cart link and such, not <head>)"""
         LOGGER.info("check_header (bagsize: %d)", bagsize)
         header = self.xp("/html/body/header")
+        # the main title is a special case, no underline
+        h1link = self.xp(".//h1/a", header)
+        self.check_decoration_on_hover(h1link, "none")
         cartlink = self.xp(".//a[@href='/cart']", header)
+        self.check_decoration_on_hover(cartlink)
         self.xp(".//form[@action='/search']", header)
         if bagsize > 1:
             self.assertEqual(cartlink.text, bagsize + " items in bag")
@@ -189,6 +193,7 @@ class StoreSite(StoreClient):
             expected = pair[1]
             observed = ((pair[0].text), pair[0].get_attribute("href").strip("/"))
             self.assertEqual(observed, expected)
+            self.check_decoration_on_hover(pair[0])
 
     def check_nav_product(self, clothing_menu_starts="none"):
         """Check the nav element for product collection links."""
@@ -234,6 +239,7 @@ class StoreSite(StoreClient):
             expected = pair[1]
             observed = ((pair[0].text), pair[0].get_attribute("href"))
             self.assertEqual(observed, expected)
+            self.check_decoration_on_hover(pair[0])
 
     def _check_menu_collapse(self, xpath, starts="none"):
         """Helper for checking collapsing menus within nav elements."""
@@ -311,3 +317,10 @@ class StoreSite(StoreClient):
         """Check the search form snippet."""
         root = "//article[@typeof='SearchResultsPage']"
         self.check_for_elem(root + "/form[@action='/search'][@role='search']")
+
+    def check_decoration_on_hover(self, elem, value2="underline", value1="none"):
+        """Ensure an element's text-decoration appears on hover."""
+        css = lambda: elem.value_of_css_property("text-decoration")
+        self.assertTrue(css().startswith(value1 + " "))
+        self.hover(elem)
+        self.assertTrue(css().startswith(value2 + " "))

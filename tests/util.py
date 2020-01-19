@@ -63,10 +63,12 @@ LOGGER = logging.getLogger(__name__)
 __log_testing_config()
 
 TEST_PRODUCTS = {
-    "out-of-stock":   "collections/testing/products/out-of-stock",
-    "running-low":    "collections/testing/products/running-low",
-    "lots-of-photos": "collections/testing/products/lots-of-photos",
-    "now-cheaper":    "collections/testing/products/now-cheaper"}
+    "out-of-stock":        "collections/testing/products/out-of-stock",
+    "running-low":         "collections/testing/products/running-low",
+    "lots-of-photos":      "collections/testing/products/lots-of-photos",
+    "now-cheaper":         "collections/testing/products/now-cheaper",
+    "complex-description": "collections/testing/products/complex-description"}
+
 
 def get_setting(key):
     """Get the expected store setting from local JSON."""

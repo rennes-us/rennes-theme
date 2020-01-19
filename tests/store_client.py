@@ -9,6 +9,7 @@ import logging
 import unittest
 
 # https://selenium-python.readthedocs.io/getting-started.html
+from selenium import webdriver
 from selenium.webdriver import (Chrome, ChromeOptions)
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import (
@@ -164,6 +165,10 @@ class StoreClient(unittest.TestCase):
                     return True
         log("tries exhausted")
         return False
+
+    def hover(self, elem):
+        """Hover the mouse over the given element."""
+        webdriver.ActionChains(self.driver).move_to_element(elem).perform()
 
     def check_for_elem(self, xpath, elem=None):
         """Get a single element by xpath, failing if not found."""
