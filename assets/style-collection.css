@@ -119,11 +119,6 @@ ul.designers li {
   list-style-type: none;
 }
 
-ul.designers a:hover {
-  font-weight: bold;
-  text-decoration: none;
-}
-
 /* Pagination */
 
 .pagination .current {

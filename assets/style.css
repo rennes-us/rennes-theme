@@ -27,6 +27,13 @@ body {
   padding: 5px;
 }
 
+/* LINKS
+ *
+ * Generally, underline on hover.  For links embedded in text (defined as text
+ * in paragraph tags or product descriptions) we'll always underline, for
+ * clarity.
+ * */
+
 a {
   color: initial;
   font-weight: normal;
@@ -34,6 +41,10 @@ a {
 }
 
 a:hover {
+  text-decoration: underline;
+}
+
+p a {
   text-decoration: underline;
 }
 
