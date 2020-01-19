@@ -9,10 +9,12 @@
         <meta property="representativeOfPage" content="True">
         <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
       </a>
+      <a href="" class="arrow left">‹</a>
+      <a href="" class="arrow right">›</a>
       <aside>
       {%- for img in product.images -%}
         {%- include 'product_img' -%}
-        <a property="image" typeof="ImageObject" href="{{ img_url }}">
+        <a property="image" typeof="ImageObject" href="{{ img_url }}"{% if img == product.images.first %} class="current_thumbnail"{% endif %}>
           <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
         </a>
       {%- endfor %}
