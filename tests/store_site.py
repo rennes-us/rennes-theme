@@ -122,6 +122,8 @@ class StoreSite(StoreClient):
         observed["url"] = prop("link", "url").get_attribute("href")
         observed["mfg"] = prop("meta", "manufacturer").get_attribute("content")
         ### Get figure and images
+        # TODO try using the image swapping
+        # TODO check styling things like anchor cursor
         tag = root + "/figure/a[@property='image'][@typeof='ImageObject']"
         self.check_for_elem(tag + "/meta[@property='representativeOfPage'][@content='True']")
         imgset = self.check_for_elem(tag + '/img')

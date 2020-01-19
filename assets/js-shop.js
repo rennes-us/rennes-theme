@@ -4,7 +4,7 @@ $(document).ready(mainShop);
 
 function mainShop() {
 	setupToggleMenus(); // Slide sub-menus in and out when clicked
-	setupProductImageSwapping(); // Select product images from thumbnails
+	setupProductImageSwappingArrows(); // Select product images from arrows
 	setupProductImageZoom(); // Full-page zoom main product img when clicked
 	setupVariantCheck(); // Check if product variant chosen for "add to bag"
 }
@@ -31,7 +31,39 @@ function setupToggleMenus() {
 // ----------------------------------------------------------------------------
 // Product image swapping
 
-// For swapping out product images for the main image displayed
+// New method: arrow clicking
+function setupProductImageSwappingArrows() {
+	// When an arrow is clicked, swap out for the next or previous image
+	$('[typeof="Product"] figure a.arrow').click(function() {
+		// What kind of arrow is this?
+		// https://stackoverflow.com/a/10159062/4499968
+		var classes = $(this).attr("class").split(/\s+/);
+		var current_thumbnail = $(".current_thumbnail");
+		// There might not actually be a next or previous element, if
+		// we were already at the edge of the set of images.  In that
+		// case wrap around to the first/last depending on the case.
+		if (classes.indexOf("left") >= 0) {
+			var elem = $(current_thumbnail).prev();
+			if (elem.length == 0) {
+				var elem = $("aside a").last();
+			}
+		}
+		if (classes.indexOf("right") >= 0) {
+			var elem = $(current_thumbnail).next();
+			if (elem.length == 0) {
+				var elem = $("aside a").first();
+			}
+		}
+		if (elem.length > 0) {
+			return swapImage(elem);
+		} else {
+			return false;
+		}
+	});
+}
+
+// Old method: thumbnail clicking
+// Not currently used, see the arrows version instead.
 function setupProductImageSwapping() {
 	// When a small image is clicked, set it as the current image
 	$('[typeof="Product"] figure aside a').click(function() {
@@ -58,7 +90,7 @@ function swapImage(el) {
 // For showing a zoomed version of the product images when the main image is
 // clicked
 function setupProductImageZoom() {
-	$('[typeof="Product"] figure > a').click(zoomProductImages);
+	$('[typeof="Product"] figure > a[property="image"]').click(zoomProductImages);
 }
 
 // Display the full list of images at large size one below the other

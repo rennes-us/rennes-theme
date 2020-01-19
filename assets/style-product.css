@@ -15,9 +15,32 @@ article[typeof="Product"] {
 
 /* Figure */
 article[typeof="Product"] figure {
+  position: relative;
   flex-basis: 100%;
   margin: 0;
   max-width: 600px;
+}
+
+figure a.arrow {
+  position: absolute;
+  color: white;
+  /* https://stackoverflow.com/a/4269821/4499968 */
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  top: 50%;
+  font-size: 220%;
+  padding: 10px;
+  z-index: 99;
+}
+
+figure a.left {
+  left: 0;
+}
+figure a.right {
+  right: 0;
+}
+figure a.arrow:hover {
+  text-decoration: none;
+  font-weight: bold;
 }
 
 /* Description, Title, and Form */
@@ -57,9 +80,14 @@ article[typeof="Product"] div[property="description"] p:first-child {
 
 /* Product images */
 
+article[typeof="Product"] figure > a[property="image"] {
+  cursor: zoom-in;
+}
+
 /* The images in the aside will be side-by-side thumbnails. */
+/* Not currently shown on the page; using the left/right arrows instead. */
 article[typeof=Product] figure aside {
-  display: flex;
+  display: none;
   /* This will allow the children image links to wrap if necessary, based on
    * the number of children and the value of flex-basis below. */
   flex-wrap: wrap;
@@ -67,10 +95,6 @@ article[typeof=Product] figure aside {
    * images hit the max-width below and there's still extra room) this will
    * center them horizontally inside the figure. */
   justify-content: space-around;
-}
-
-article[typeof="Product"] figure a {
-  cursor: zoom-in;
 }
 
 /* Each separate product thumbnail, wrapped in a link. */
