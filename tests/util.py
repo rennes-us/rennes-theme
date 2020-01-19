@@ -35,6 +35,7 @@ def __load_settings_data():
 
 def __setup_testing_config(config):
     testing_config = {
+        # TODO unify this around the environment variables themekit uses
         "store_site": config.get("development", {}).get("store") or os.getenv("SHOPIFY_STORE"),
         "store_password": os.getenv("SHOPIFY_STORE_PASSWORD"),
         "elem_delay": float(os.getenv("SHOPIFY_TEST_DELAY", "0")),
@@ -67,6 +68,7 @@ TEST_PRODUCTS = {
     "running-low":         "collections/testing/products/running-low",
     "lots-of-photos":      "collections/testing/products/lots-of-photos",
     "now-cheaper":         "collections/testing/products/now-cheaper",
+    "variants":            "collections/testing/products/variants",
     "complex-description": "collections/testing/products/complex-description"}
 
 
