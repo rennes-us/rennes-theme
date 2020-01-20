@@ -205,10 +205,15 @@ class StoreSite(StoreClient):
         figure = self.xp("//article[@typeof='Product']/figure")
         anchor = self.xp("a", figure)
         aside = self.xp("aside", figure)
+        # Confirm that as we click on the anchor and then on the zoomed image
+        # (in the aside), the class on the aside gets "zoomed" added/removed.
+        # Note that we click on the main anchor to do the zoom, but then the
+        # aside (since that's what's takng up the whole viewport) to do the
+        # un-zoom.
         self.assertEqual(aside.get_attribute("class"), "")
         anchor.click()
         self.assertEqual(aside.get_attribute("class"), "zoomed")
-        anchor.click()
+        aside.click()
         self.assertEqual(aside.get_attribute("class"), "")
 
     def _check_product_image_swap_arrows(self, expected):
@@ -231,6 +236,8 @@ class StoreSite(StoreClient):
         right = self.check_for_elem("a[@class='arrow right']", figure)
         self.assertEqual(left.value_of_css_property("cursor"), "pointer")
         self.assertEqual(right.value_of_css_property("cursor"), "pointer")
+        self.assertEqual(left.text, get_setting("product_left_image_text"))
+        self.assertEqual(right.text, get_setting("product_right_image_text"))
         # Starting off, the first thumbnail should match the main image
         thumbnails = self.check_for_elems(
             "/aside/a[@property='image'][@typeof='ImageObject']/img",
