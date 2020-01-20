@@ -119,6 +119,7 @@ function zoomedImageLinkClick() {
 	$(".zoomed a").off("click", zoomedImageLinkClick);
 	// Undo the clipping on the container.
 	$('body').css('overflow', 'inherit');
+	return false;
 }
 
 // ----------------------------------------------------------------------------
