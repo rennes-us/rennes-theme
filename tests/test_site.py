@@ -342,7 +342,7 @@ class TestSiteProducts(StoreSite):
         """Test product template for a completely out-of-stock product."""
         self.get(TEST_PRODUCTS["out-of-stock"])
         self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
-        self.check_product({"description_blurb": None, "availability": "SoldOut"})
+        self.check_product({"availability": "SoldOut"})
 
     def test_template_product_out_of_stock_variant(self):
         """Test product template for a product with one variant out of stock."""
