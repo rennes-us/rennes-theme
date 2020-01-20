@@ -109,7 +109,7 @@ class StoreSite(StoreClient):
         header = self.xp("/html/body/header")
         # the main title is a special case, no underline
         h1link = self.xp(".//h1/a", header)
-        self.check_decoration_on_hover(h1link, "none")
+        self.check_decoration_on_hover(h1link, "none ")
         cartlink = self.xp(".//a[@href='/cart']", header)
         self.check_decoration_on_hover(cartlink)
         self.xp(".//form[@action='/search']", header)
@@ -191,6 +191,16 @@ class StoreSite(StoreClient):
                 for inp in self.check_for_elems(tag + "//input[@type='radio']"):
                     if label.get_attribute("for") == inp.get_attribute("id"):
                         observed["variants"][label.text] = label.get_attribute("for")
+        # The add to cart button should get a black border on hover, or, on
+        # small screens, should always have a black border.
+        button = self.check_for_elem("/button[@type='submit']", offer)
+        with self.window_size(WINDOWSIZES["large"]):
+            self.check_decoration_on_hover(
+                button, "1px ", "0px ", "border")
+        with self.window_size(WINDOWSIZES["small"]):
+            self.check_decoration_on_hover(
+                button, "1px ", "1px ", "border")
+
 
     def _check_product_description(self, observed, expected):
         """Check the description portion of a product page.
@@ -453,9 +463,14 @@ class StoreSite(StoreClient):
         root = "//article[@typeof='SearchResultsPage']"
         self.check_for_elem(root + "/form[@action='/search'][@role='search']")
 
-    def check_decoration_on_hover(self, elem, value2="underline", value1="none"):
-        """Ensure an element's text-decoration appears on hover."""
-        css = lambda: elem.value_of_css_property("text-decoration")
-        self.assertTrue(css().startswith(value1 + " "))
+    def check_decoration_on_hover(self, elem, value2="underline ", value1="none ",
+            attr="text-decoration"):
+        """Ensure an element's text-decoration (or other CSS) appears on hover."""
+        css = lambda: elem.value_of_css_property(attr)
+        self.assertTrue(
+            css().startswith(value1),
+            "expected CSS property %s to start with %s but saw %s" % (attr, value1, css()))
         self.hover(elem)
-        self.assertTrue(css().startswith(value2 + " "))
+        self.assertTrue(
+            css().startswith(value2),
+            "expected CSS property %s to start with %s but saw %s" % (attr, value2, css()))

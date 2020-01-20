@@ -7,6 +7,7 @@ See the StoreClient class for the main part.
 import time
 import logging
 import unittest
+import contextlib
 
 # https://selenium-python.readthedocs.io/getting-started.html
 from selenium import webdriver
@@ -168,6 +169,16 @@ class StoreClient(unittest.TestCase):
                     return True
         log("tries exhausted")
         return False
+
+    @contextlib.contextmanager
+    def window_size(self, size):
+        """Use an alternate window size, then restore the original."""
+        orig_size = self.driver.get_window_size()
+        self.driver.set_window_size(size["width"], size["height"])
+        try:
+            yield
+        finally:
+            self.driver.set_window_size(orig_size["width"], orig_size["height"])
 
     def hover(self, elem):
         """Hover the mouse over the given element."""
