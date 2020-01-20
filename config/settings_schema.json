@@ -26,6 +26,16 @@
         "type": "text"
       },
       {
+        "id": "product_left_image_text",
+        "label": "Product image slider link text: left",
+        "type": "text"
+      },
+      {
+        "id": "product_right_image_text",
+        "label": "Product image slider link text: right",
+        "type": "text"
+      },
+      {
         "type": "header",
         "content": "Image Formatting"
       },

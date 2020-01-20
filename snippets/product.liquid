@@ -9,8 +9,8 @@
         <meta property="representativeOfPage" content="True">
         <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
       </a>
-      <a href="" class="arrow left">‹</a>
-      <a href="" class="arrow right">›</a>
+      <a href="" class="arrow left">{{settings.product_left_image_text}}</a>
+      <a href="" class="arrow right">{{settings.product_right_image_text}}</a>
       <aside>
       {%- for img in product.images -%}
         {%- include 'product_img' -%}
