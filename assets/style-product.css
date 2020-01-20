@@ -24,22 +24,28 @@ article[typeof="Product"] figure {
 figure a.arrow {
   position: absolute;
   color: white;
+  /* For an approach to make an outline, see: */
   /* https://stackoverflow.com/a/4269821/4499968 */
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  /* h-shadow v-shadow (blur-radius of 0) color; */
+  /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
+  filter: drop-shadow(0 0 2px black);
+  text-rendering: optimizeLegibility;
   top: 50%;
-  font-size: 220%;
+  font-size: 180%;
   padding: 10px;
 }
 
 figure a.left {
   left: 0;
+  transform: rotate(45deg);
 }
 figure a.right {
   right: 0;
+  transform: rotate(225deg);
 }
 figure a.arrow:hover {
   text-decoration: none;
-  font-weight: bold;
+  filter: drop-shadow(0 0 4px black);
 }
 
 /* Description, Title, and Form */
