@@ -204,7 +204,12 @@ class StoreClient(unittest.TestCase):
         log = lambda msg: LOGGER.debug("xp: %s", msg)
         time.sleep(TESTING_CONFIG["elem_delay"])
         if elem:
-            log("in %s: %s" % (elem.tag_name, xpath))
+            try:
+                log("in %s: %s" % (elem.tag_name, xpath))
+            except AttributeError:
+                raise ValueError(
+                    "given elem has no tag_name; Make sure this is a "
+                    "WebElement (and not an xpath string for example).")
             # As per the docs,
             #      This will select the first link under this element.
             #      myelement.find_element_by_xpath(".//a")
@@ -221,7 +226,12 @@ class StoreClient(unittest.TestCase):
         log = lambda msg: LOGGER.debug("xps: %s", msg)
         time.sleep(TESTING_CONFIG["elem_delay"])
         if elem:
-            log("in %s: %s" % (elem.tag_name, xpath))
+            try:
+                log("in %s: %s" % (elem.tag_name, xpath))
+            except AttributeError:
+                raise ValueError(
+                    "given elem has no tag_name; Make sure this is a "
+                    "WebElement (and not an xpath string for example).")
             xpath = self._relative(xpath)
             return elem.find_elements_by_xpath(xpath)
         log("in page: %s" % xpath)
