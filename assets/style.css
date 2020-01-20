@@ -70,12 +70,12 @@ button {
   font-size: inherit;
   margin: 5px auto;
   padding: 0;
-  width: 11em;
-  height: 11em;
+  width: 6em;
+  height: 6em;
 }
 button:hover {
   border: 1px solid black;
-  border-radius: 5.5em;
+  border-radius: 3em;
 }
 
 /* Alternate button styling on small screens: always a border. */
