@@ -37,8 +37,7 @@
 
     </table>
 
-    <button name="update" value="update" type="submit" title="Update your total">Update Shopping Bag</button>
-
+    <div class="controls">
     {% if settings.checkout_msg_enabled %}
     <label for="checkout-warning">
       {{ settings.checkout_msg | escape}}
@@ -46,7 +45,9 @@
     </label>
     {% endif %}
 
+    <button name="update" value="update" type="submit" title="Update your total">Update Shopping Bag</button>
     <button type="submit" value="Check Out" name="checkout" title="Checkout">Checkout</button>
+    </div>
 
   </form>
 

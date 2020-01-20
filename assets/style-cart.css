@@ -15,15 +15,31 @@ form[action="/cart"] table {
 }
 
 /* Product images will be 20% of the viewport height (but at least 100px). */
-form[action="/cart"] img {
+form[action="/cart"] table img {
   height: 20vh;
   min-height: 100px;
 }
 
-form[action="/cart"] label[for="checkout-warning"] {
-  display: block;
-  margin: 1em auto;
+/* Aside from the table of items, there's a controls container with the buttons
+ * and such. */
+form[action="/cart"] div.controls {
+  margin-left: auto;
+  margin-right: auto;
   max-width: 60em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Switch from the default centered block object to a small margin for
+ * side-by-side buttons. */
+form[action="/cart"] div.controls button {
+  margin: 5px;
+}
+
+form[action="/cart"] div.controls label[for="checkout-warning"] {
+  display: block;
+  margin: 1em auto 5px auto;
 }
 
 /* On wide enough screens, show to full "Remove" text (rather than just the
@@ -170,17 +186,7 @@ form[action="/cart"] tbody td:last-child a:hover {
 
   /* With this layout, we can afford to use a bit more of the viewport height
    * on the images.*/
-  form[action="/cart"] img {
+  form[action="/cart"] table img {
     height: 30vh;
-  }
-
-  /* More obvious button on small screens.  See also product style.*/
-  button {
-    background: #DBDBDB;
-    padding: 8px;
-    width: 100%;
-  }
-  button:hover {
-    background: #E3E3E3;
   }
 } 
