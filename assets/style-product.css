@@ -66,22 +66,6 @@ article[typeof="Product"] div[property="description"] p:first-child {
   margin-top: 0;
 }
 }
-/* ************* *
- * Try alternate button styling on small screens.  See also cart style.
- * ***************/
-@media only screen and (max-width: 600px) {
-  button {
-    background: #DBDBDB;
-    padding: 8px;
-    width: 100%;
-  }
-  /* I'm defining a style for hover, but now that I think of it, nobody's going
-   * to be using a mouse with these tiny screens. */
-  button:hover {
-    background: #E3E3E3;
-  }
-}
-/* ************* */
 
 /* Product images */
 
@@ -181,14 +165,6 @@ article[typeof=Product] figure aside.zoomed a {
 	max-width: 100vh;
 }
 }
-
-/* Fade purchase button until variant selected, if there are variants */
-/*form[property=offers] input[type=radio] ~ button {
-  opacity: 0.5;
-}
-form[property=offers] input[type=radio]:checked ~ button {
-  opacity: initial;
-}*/
 
 /*
  *

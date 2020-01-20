@@ -61,21 +61,29 @@ nav li {
   padding-right: 0.5vw;
 }
 
+/* In general we have big round buttons that get a border on hover. */
 button {
- background: none;
- border: none;
- border-radius: 3px;
- cursor: pointer;
- display: block;
- font-size: inherit;
- margin: 5px auto 5px auto;
- padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: block;
+  font-size: inherit;
+  margin: 5px auto;
+  padding: 0;
+  width: 6em;
+  height: 6em;
+}
+button:hover {
+  border: 1px solid black;
+  border-radius: 3em;
 }
 
-button:hover,
-button:focus {
-  font-style: italic;
-  outline: none;
+/* Alternate button styling on small screens: always a border. */
+@media only screen and (max-width: 600px) {
+  button {
+    border: 1px solid black;
+    border-radius: 5.5em;
+  }
 }
 
 /*
@@ -238,7 +246,7 @@ main > section:after {
 
 .popup > div {
   position: absolute;
-  top: 50%;
+  top: 60%;
   transform: translateY(-50%);
   width: initial;
 }
