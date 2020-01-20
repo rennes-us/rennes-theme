@@ -12,6 +12,11 @@ from .util import (TESTING_CONFIG, get_setting)
 
 LOGGER = logging.getLogger(__name__)
 
+WINDOWSIZES = {
+    "small": {"width": 320, "height": 568}, # iPhone SE
+    "medium": {"width": 1024, "height": 768}, # old-school computer
+    "large": {"width": 3840, "height": 2160} # My ASUS ZenBook
+    }
 
 class ElemsHaveText:
     """Selenium condition to verify that elements have visible text."""
@@ -379,6 +384,35 @@ class StoreSite(StoreClient):
             self.check_for_elem(
                 "//article[@class='products']/" +
                 "nav[@class='pagination']/span[@class='current']")
+        # Check the layout of the product sections.  These should flow smoothly
+        # with the CSS flex magic, showing 2, 3, and 4 products per row on
+        # small, medium, and large screens respectively.
+        sections = self.check_for_elems("//section[@typeof='Product']")
+        self.driver.set_window_size(
+            WINDOWSIZES["small"]["width"], WINDOWSIZES["small"]["height"])
+        self._check_wrap(sections, 2)
+        self.driver.set_window_size(
+            WINDOWSIZES["medium"]["width"], WINDOWSIZES["medium"]["height"])
+        self._check_wrap(sections, 3)
+        self.driver.set_window_size(
+            WINDOWSIZES["large"]["width"], WINDOWSIZES["large"]["height"])
+        self._check_wrap(sections, 4)
+
+    def _check_wrap(self, elems, num):
+        """Given a list of elements, check that they wrap as expected.
+
+        This checks the x and y coordinates of the first few items to make sure
+        the expected number are on the first row and first column (assuming a
+        grid-like layout).
+        """
+        # Elements 0 to num-1 should be on the same row (same y) while 0 and
+        # num should be on the same column (same x)
+        self.assertEqual(
+            int(elems[0].rect["y"]),
+            int(elems[num-1].rect["y"]))
+        self.assertEqual(
+            int(elems[0].rect["x"]),
+            int(elems[num].rect["x"]))
 
     def check_snippet_collection_designers(self):
         """Check the special designers collection snippet."""
