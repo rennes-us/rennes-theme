@@ -127,7 +127,10 @@ class StoreClient(unittest.TestCase):
         anything, despite the page being loaded, the element displayed and
         enabled, etc.  So here I just keep clicking the given element until
         that same element becomes stale (implying we went somewhere else so the
-        click actually worked), with a limit on the number of tries.
+        click actually worked), with a limit on the number of tries.  I would
+        think Selenium's Wait functionality would take care of this, but it
+        won't, because the clicks sometimes aren't handled no matter how long
+        we wait for (hence the re-clicking until something happens).
         """
         # If I just pull the href out and get the URL, that does work, so this
         # seems like a bug to me.  If I sleep for a few seconds before the
