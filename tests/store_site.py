@@ -122,7 +122,7 @@ class StoreSite(StoreClient):
         self.check_for_elem("/html/body/main/article[@class='%s']" % pageclass)
         self.check_instafeed()
 
-    def check_product(self, description_blurb, expected):
+    def check_product(self, expected):
         """Check the contents of a single product's page"""
         # Add URL prefix to appropriate attributes
         if "url" in expected:
@@ -131,31 +131,47 @@ class StoreSite(StoreClient):
             expected["condition"] = "http://schema.org/" + expected["condition"]
         if "availability" in expected:
             expected["availability"] = "http://schema.org/" + expected["availability"]
-        ### Get basic product structure and metadata
-        root = "//article[@typeof='Product']"
-        self.check_for_elem(root)
+        self.check_for_elem("//article[@typeof='Product']")
         observed = {}
-        prop = lambda t, p: self.check_for_elem((root + "/%s[@property='%s']") % (t, p))
+        prop = lambda t, p: self.check_for_elem(
+            ("//article[@typeof='Product']/%s[@property='%s']") % (t, p))
         observed["name"] = prop("/h2", "name").text
         observed["url"] = prop("link", "url").get_attribute("href")
         observed["mfg"] = prop("meta", "manufacturer").get_attribute("content")
-        ### Get figure and images
-        # TODO try using the image swapping
-        # TODO check styling things like anchor cursor
-        tag = root + "/figure/a[@property='image'][@typeof='ImageObject']"
-        self.check_for_elem(tag + "/meta[@property='representativeOfPage'][@content='True']")
-        imgset = self.check_for_elem(tag + '/img')
+        self._check_product_figure(observed, expected)
+        self._check_product_offer(observed, expected)
+        self._check_product_description(observed, expected)
+        self._check_product_image_zoom()
+        self._check_product_image_swap_arrows(expected)
+        for key in expected.keys():
+            self.assertEqual(observed[key], expected[key])
+
+    def _check_product_figure(self, observed, expected):
+        """Check the figure portion of a product page."""
+        # Check the figure and main image
+        figure = self.check_for_elem("//article[@typeof='Product']/figure")
+        anchor = self.check_for_elem("a[@property='image'][@typeof='ImageObject']", figure)
+        self.check_for_elem("meta[@property='representativeOfPage'][@content='True']", anchor)
+        imgset = self.check_for_elem('img', anchor)
         self.assertEqual(len(imgset.get_attribute("srcset").split(",")), 5)
         self.assertEqual(imgset.get_attribute("property"), "contentUrl")
         if "name" in expected:
             self.assertEqual(imgset.get_attribute("alt"), expected["name"])
-        path = root + "/figure/aside/a[@property='image'][@typeof='ImageObject']"
-        observed["num_images"] = len(self.check_for_elems(path))
-        ### Get cart form and price info
-        offer = self.check_for_elem(root + "//form[@property='offers']")
+        # check the cursor style on the main anchor
+        self.assertEqual(
+            anchor.value_of_css_property("cursor"),
+            "zoom-in")
+        # Check the thumbnails
+        aside_anchors = self.check_for_elems(
+            "aside/a[@property='image'][@typeof='ImageObject']", figure)
+        observed["num_images"] = len(aside_anchors)
+
+    def _check_product_offer(self, observed, expected):
+        """Check the offer (price and purchase info) portion of a product page."""
+        tag = "//article[@typeof='Product']//form[@property='offers']"
+        offer = self.check_for_elem(tag)
         self.assertEqual(offer.get_attribute("action"), self.url + "cart/add")
         self.assertEqual(offer.get_attribute("method"), "post")
-        tag = root + "//form[@property='offers']"
         prop = lambda t, p: self.check_for_elem((tag + "//%s[@property='%s']") % (t, p))
         observed["price"] = prop("span", "price").get_attribute("content")
         observed["currency"] = prop("span", "priceCurrency").get_attribute("content")
@@ -170,23 +186,39 @@ class StoreSite(StoreClient):
                 for inp in self.check_for_elems(tag + "//input[@type='radio']"):
                     if label.get_attribute("for") == inp.get_attribute("id"):
                         observed["variants"][label.text] = label.get_attribute("for")
-        ### Get description.
-        # This can be a big chunk of HTML so we'll just check that a piece of
-        # text is present.
-        description = self.check_for_elem(root + "//div[@property='description']").text
-        ### Check attributes and description
-        for key in expected.keys():
-            self.assertEqual(observed[key], expected[key])
-        if description_blurb:
-            self.assertIn(description_blurb, description)
 
-    def check_product_image_swap_arrows(self, num_images):
+    def _check_product_description(self, observed, expected):
+        """Check the description portion of a product page.
+
+        This can be a big chunk of HTML so we'll just check that a piece of
+        text is present.
+        """
+        observed["description"] = self.check_for_elem(
+            "//article[@typeof='Product']//div[@property='description']").text
+        ### Check attributes and description
+        if "description_blurb" in expected:
+            self.assertIn(expected["description_blurb"], observed["description"])
+            del expected["description_blurb"]
+
+    def _check_product_image_zoom(self):
+        """Check that clicking on the main product image zooms/unzooms."""
+        figure = self.xp("//article[@typeof='Product']/figure")
+        anchor = self.xp("a", figure)
+        aside = self.xp("aside", figure)
+        self.assertEqual(aside.get_attribute("class"), "")
+        anchor.click()
+        self.assertEqual(aside.get_attribute("class"), "zoomed")
+        anchor.click()
+        self.assertEqual(aside.get_attribute("class"), "")
+
+    def _check_product_image_swap_arrows(self, expected):
         """Check that clicking left/right arrows switches the product image.
 
         Clicking the left and right links should swap out the images in order.
         Going past the left edge should wrap around to the last image, and
         going past the right edge should wrap around to the first image.
         """
+        figure = self.check_for_elem("//article[@typeof='Product']/figure")
         getimg = lambda: self.check_for_elem(
             "/a[@property='image'][@typeof='ImageObject']/img",
             figure)
@@ -194,27 +226,32 @@ class StoreSite(StoreClient):
             getimg().get_attribute("src"),
             img.get_attribute("src"))
         figure = self.check_for_elem("//article[@typeof='Product']/figure")
+        # Check the left and right links
+        left = self.check_for_elem("a[@class='arrow left']", figure)
+        right = self.check_for_elem("a[@class='arrow right']", figure)
+        self.assertEqual(left.value_of_css_property("cursor"), "pointer")
+        self.assertEqual(right.value_of_css_property("cursor"), "pointer")
+        # Starting off, the first thumbnail should match the main image
         thumbnails = self.check_for_elems(
             "/aside/a[@property='image'][@typeof='ImageObject']/img",
             figure)
-        self.assertEqual(len(thumbnails), num_images)
+        num = expected["num_images"]
+        self.assertEqual(len(thumbnails), num)
         checksrc(thumbnails[0])
-        left = self.check_for_elem("a[@class='arrow left']", figure)
-        right = self.check_for_elem("a[@class='arrow right']", figure)
         # wrap around backwards
         left.click()
-        checksrc(thumbnails[num_images-1])
+        checksrc(thumbnails[num-1])
         # back to beginning
         right.click()
         # click through the rest.  The last click should wrap us around to the
         # first image
-        for click in range(num_images):
+        for click in range(num):
             checksrc(thumbnails[click])
             right.click()
         ## wrap around forwards
         checksrc(thumbnails[0])
 
-    def check_product_image_swap(self, altimg=1):
+    def _check_product_image_swap(self, altimg=1):
         """Check that clicking thumbnails switches out the main product image.
 
         We're not currently using this method; see the arrows method instead.

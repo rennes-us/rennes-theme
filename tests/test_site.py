@@ -194,23 +194,21 @@ class TestSite(StoreSite):
         self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product()
-        self.check_product(
-            description_blurb="This one has variants.",
-            expected={
-                "name": "Variants",
-                "url": "collections/testing/products/variants",
-                "mfg": "rennes-dev",
-                "price": "50.00",
-                "currency": "USD",
-                "condition": "NewCondition",
-                "availability": "InStock",
-                "num_images": 2,
-                "variants": {
-                    "small": "31622054412323",
-                    "large": "31622054445091",
-                    }
-                })
-        self.check_product_image_swap_arrows(2)
+        self.check_product({
+            "name": "Variants",
+            "description_blurb": "This one has variants.",
+            "url": "collections/testing/products/variants",
+            "mfg": "rennes-dev",
+            "price": "50.00",
+            "currency": "USD",
+            "condition": "NewCondition",
+            "availability": "InStock",
+            "num_images": 2,
+            "variants": {
+                "small": "31622054412323",
+                "large": "31622054445091",
+                }
+            })
 
     def test_template_search(self):
         """Test /search"""
@@ -344,7 +342,7 @@ class TestSiteProducts(StoreSite):
         """Test product template for a completely out-of-stock product."""
         self.get(TEST_PRODUCTS["out-of-stock"])
         self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
-        self.check_product(None, {"availability": "SoldOut"})
+        self.check_product({"description_blurb": None, "availability": "SoldOut"})
 
     def test_template_product_out_of_stock_variant(self):
         """Test product template for a product with one variant out of stock."""
