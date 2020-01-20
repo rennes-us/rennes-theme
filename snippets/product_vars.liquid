@@ -9,16 +9,24 @@ and sizes to provide a range of image sizes.
 {%- assign has_variants = false -%}{%- endif -%}
 
 {%- comment -%}
-Supposedly the money_without_trailing_zeros filter includes currency, but I'm
-not seeing that here.  If we want it for the trailing zeros case we could
-always put it in manually with a reference to shop.currency.
+The money_without_trailing_zeros filter should follow the shop's "HTML with
+currency" setting, according to Shopify's money filters documentation:
+https://help.shopify.com/en/themes/liquid/filters/money-filters
+But in practice, it looks to me like it's following the "HTML without
+currency."  But, in the live site we have the currency typed into the "HTML
+without currency" field in the store settings, which is definitely wrong either
+way.
+So for now, we'll do a manual filter to remove the currency after removing
+trailing zeros to force it no matter what.  In the long run we can fix the
+store setting to make more sense and confirm with shopify just what that filter
+should be doing anyway.
 {%- endcomment -%}
 {%- comment -%} Raw decimal value for product price, used in metadata {%- endcomment -%}
-{%- assign price = product.price | money_without_currency | remove: ','  -%}
+{%- assign price = product.price | money_without_currency | remove: ',' -%}
 {%- comment -%} Formatted value for product price, displayed in page {%- endcomment -%}
-{%- assign price_display = product.price | money_without_trailing_zeros -%}
+{%- assign price_display = product.price | money_without_trailing_zeros | remove: shop.currency -%}
 {%- comment -%} Formatted value for product price if discounted {%- endcomment -%}
-{%- assign compare_price = product.compare_at_price_min | money_without_trailing_zeros -%}
+{%- assign compare_price = product.compare_at_price_min | money_without_trailing_zeros | remove: shop.currency -%}
 {%- assign currency = shop.currency -%}
 
 {%- assign availability = "InStock" -%}
