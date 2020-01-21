@@ -344,6 +344,15 @@ class TestSiteProducts(StoreSite):
         self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
         self.check_product({"availability": "SoldOut", "num_images": 1})
 
+    def test_template_product_variants(self):
+        """Test product template for a product with multiple variants.
+
+        It should notify us if we try to add to cart without selecting one of
+        the variants.  When one is selected, it should be styled appropriately.
+        """
+        self.get(TEST_PRODUCTS["variants"])
+        self.skipTest("not yet implemented")
+
     def test_template_product_out_of_stock_variant(self):
         """Test product template for a product with one variant out of stock."""
         self.get(TEST_PRODUCTS["running-low"])
@@ -392,15 +401,6 @@ class TestSiteProducts(StoreSite):
         self.check_decoration_on_hover(link1, "underline", "underline")
         link2 = self.check_for_elem("p/a", proddesc)
         self.check_decoration_on_hover(link2, "underline", "underline")
-
-    def test_template_product_variants(self):
-        """Test product template for a product with multiple variants.
-
-        It should notify us if we try to add to cart without selecting one of
-        the variants.
-        """
-        self.get(TEST_PRODUCTS["variants"])
-        self.skipTest("not yet implemented")
 
 
 class TestSiteMailingList(StoreSite):
