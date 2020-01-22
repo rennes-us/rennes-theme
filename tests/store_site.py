@@ -144,8 +144,9 @@ class StoreSite(StoreClient):
         observed["url"] = prop("link", "url").get_attribute("href")
         observed["mfg"] = prop("meta", "manufacturer").get_attribute("content")
         self._check_product_figure(observed, expected)
-        self._check_product_offer(observed, expected)
         self._check_product_description(observed, expected)
+        self._check_product_offer(observed, expected)
+        self._check_product_aside(observed, expected)
         self._check_product_image_zoom()
         self._check_product_image_swap_arrows(expected)
         for key in expected.keys():
@@ -178,6 +179,8 @@ class StoreSite(StoreClient):
         self.assertEqual(offer.get_attribute("action"), self.url + "cart/add")
         self.assertEqual(offer.get_attribute("method"), "post")
         prop = lambda t, p: self.check_for_elem((tag + "//%s[@property='%s']") % (t, p))
+        if "compare_price" in expected:
+            observed["compare_price"] = self.check_for_elem(tag + "//s").text
         observed["price"] = prop("span", "price").get_attribute("content")
         observed["currency"] = prop("span", "priceCurrency").get_attribute("content")
         observed["condition"] = prop("link", "itemCondition").get_attribute("href")
@@ -191,16 +194,48 @@ class StoreSite(StoreClient):
                 for inp in self.check_for_elems(tag + "//input[@type='radio']"):
                     if label.get_attribute("for") == inp.get_attribute("id"):
                         observed["variants"][label.text] = label.get_attribute("for")
-        # The add to cart button should get a black border on hover, or, on
-        # small screens, should always have a black border.
-        button = self.check_for_elem("/button[@type='submit']", offer)
-        with self.window_size(WINDOWSIZES["large"]):
-            self.check_decoration_on_hover(
-                button, "1px ", "0px ", "border")
-        with self.window_size(WINDOWSIZES["small"]):
-            self.check_decoration_on_hover(
-                button, "1px ", "1px ", "border")
+        if expected["availability"] == "SoldOut":
+            self.assertIsNone(self.try_for_elem("button", offer))
+            self.assertEqual(offer.text, "100 USD None")
+        else:
+            # The add to cart button should get a black border on hover, or, on
+            # small screens, should always have a black border.
+            button = self.check_for_elem("/button[@type='submit']", offer)
+            with self.window_size(WINDOWSIZES["large"]):
+                self.check_decoration_on_hover(
+                    button, "1px ", "0px ", "border")
+            with self.window_size(WINDOWSIZES["small"]):
+                self.check_decoration_on_hover(
+                    button, "1px ", "1px ", "border")
 
+    def _check_product_aside(self, observed, expected):
+        """Check the aside portion of a product page.
+
+        This should always include a blurb linking to contact and policies, and
+        for sale pages, a second blurb about final sale.
+        """
+        # Note that there's another aside, inside the figure.  We don't want
+        # that one.
+        tag = "//article[@typeof='Product']/div/aside"
+        aside = self.check_for_elem(tag)
+        smalls = self.check_for_elems("small", aside)
+        anchors = self.check_for_elems("a", smalls[0])
+        links = [
+            ("contact", self.url + "pages/contact"),
+            ("policies", self.url + "pages/policies")]
+        for pair in zip(anchors, links):
+            exp = pair[1]
+            obs = ((pair[0].text), pair[0].get_attribute("href"))
+            self.assertEqual(obs, exp)
+            self.check_decoration_on_hover(pair[0], "underline", "underline")
+        if "compare_price" in expected and \
+            expected["compare_price"] > expected["price"]:
+            self.assertEqual(len(smalls), 2)
+            self.assertEqual(
+                smalls[1].get_attribute("class"),
+                "sale-disclaimer")
+        else:
+            self.assertEqual(len(smalls), 1)
 
     def _check_product_description(self, observed, expected):
         """Check the description portion of a product page.
@@ -464,7 +499,7 @@ class StoreSite(StoreClient):
         self.check_for_elem(root + "/form[@action='/search'][@role='search']")
 
     def check_decoration_on_hover(self, elem, value2="underline ", value1="none ",
-            attr="text-decoration"):
+                                  attr="text-decoration"):
         """Ensure an element's text-decoration (or other CSS) appears on hover."""
         css = lambda: elem.value_of_css_property(attr)
         self.assertTrue(

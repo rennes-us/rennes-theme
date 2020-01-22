@@ -375,14 +375,21 @@ class TestSiteProducts(StoreSite):
         """Test product template for a product whose price was lowered.
 
         For this case there should be a strikethrough version of the original
-        price alongside the current price.
+        price alongside the current price, and an additional disclaimer at the
+        bottom of the product details container.
         """
         self.get(TEST_PRODUCTS["now-cheaper"])
-        # Make sure the original price is shown in strikethrough next to
-        # the new price
-        # Should these show a disclaimer like the "sale" collection?  Should
-        # this *be* the sale collection?
-        self.skipTest("not yet implemented")
+        self.check_product({
+            "name": "Now Cheaper",
+            "description_blurb": "It used to cost more, but now, it costs less!!",
+            "url": "collections/testing/products/now-cheaper",
+            "mfg": "rennes-dev",
+            "price": "10.00",
+            "compare_price": "1000.00",
+            "currency": "USD",
+            "condition": "NewCondition",
+            "availability": "InStock",
+            "num_images": 1})
 
     def test_template_product_complex_description(self):
         """Test product template for a product with weird description content.
