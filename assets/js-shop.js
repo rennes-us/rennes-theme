@@ -45,13 +45,13 @@ function setupProductImageSwappingArrows() {
 		if (classes.indexOf("left") >= 0) {
 			var elem = $(current_thumbnail).prev();
 			if (elem.length == 0) {
-				var elem = $("aside a").last();
+				var elem = $("figure aside a").last();
 			}
 		}
 		if (classes.indexOf("right") >= 0) {
 			var elem = $(current_thumbnail).next();
 			if (elem.length == 0) {
-				var elem = $("aside a").first();
+				var elem = $("figure aside a").first();
 			}
 		}
 		if (elem.length > 0) {
