@@ -45,7 +45,7 @@ a:hover {
 }
 
 
-article[typeof=Product] div[property=description] a, p a {
+article[typeof=Product] div a, p a {
   text-decoration: underline;
 }
 
