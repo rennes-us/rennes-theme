@@ -385,7 +385,7 @@ class TestSiteProducts(StoreSite):
             "url": "collections/testing/products/now-cheaper",
             "mfg": "rennes-dev",
             "price": "10.00",
-            "compare_price": "1000.00",
+            "compare_price_txt": "1,000 USD",
             "currency": "USD",
             "condition": "NewCondition",
             "availability": "InStock",

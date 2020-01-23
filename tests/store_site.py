@@ -5,6 +5,7 @@ See the StoreSite class for the main part.
 """
 
 import logging
+import re
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from .store_client import StoreClient
@@ -179,8 +180,8 @@ class StoreSite(StoreClient):
         self.assertEqual(offer.get_attribute("action"), self.url + "cart/add")
         self.assertEqual(offer.get_attribute("method"), "post")
         prop = lambda t, p: self.check_for_elem((tag + "//%s[@property='%s']") % (t, p))
-        if "compare_price" in expected:
-            observed["compare_price"] = self.check_for_elem(tag + "//s").text
+        if "compare_price_txt" in expected:
+            observed["compare_price_txt"] = self.check_for_elem(tag + "//s").text
         observed["price"] = prop("span", "price").get_attribute("content")
         observed["currency"] = prop("span", "priceCurrency").get_attribute("content")
         observed["condition"] = prop("link", "itemCondition").get_attribute("href")
@@ -228,8 +229,9 @@ class StoreSite(StoreClient):
             obs = ((pair[0].text), pair[0].get_attribute("href"))
             self.assertEqual(obs, exp)
             self.check_decoration_on_hover(pair[0], "underline", "underline")
-        if "compare_price" in expected and \
-            expected["compare_price"] > expected["price"]:
+        numify = lambda txt: float(re.sub("[^0-9.]", "", txt))
+        if "compare_price_txt" in expected and \
+            numify(expected["compare_price_txt"]) > numify(expected["price"]):
             self.assertEqual(len(smalls), 2)
             self.assertEqual(
                 smalls[1].get_attribute("class"),
