@@ -172,25 +172,32 @@ article[typeof=Product] figure aside.zoomed a {
  *
  * */
 
-/* Product description and offer form */
+/* Product description, offer form, and fine print */
 article[typeof=Product] div[property=description] {
-  margin: 0 0.5em;
+  margin: 0 3vw;
+  padding: 1em 0;
   text-align: justify;
 }
 form[property=offers] {
   border-bottom: 1px solid black;
   border-top: 1px solid black;
-  margin: 0 0.5em;
+  margin: 0 3vw;
+  padding: 1em 0;
   text-align: center;
 }
 
-small {
-  display: block;
-  font-size: inherit;
-  margin: 0.5em;
+article[typeof=Product] div aside {
+  margin: 0 3vw;
+  padding: 1em 0;
 }
 
-small.sale-disclaimer {
+article[typeof=Product] div aside small {
+  display: block;
+  font-size: inherit;
+  margin: 1em 0;
+}
+
+article[typeof=Product] div aside small.sale-disclaimer {
   font-weight: bold;
   text-decoration: underline;
 }
