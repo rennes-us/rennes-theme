@@ -27,6 +27,10 @@ body {
   padding: 5px;
 }
 
+input, button {
+  font-family: "Lora", serif;
+}
+
 /* LINKS
  *
  * Generally, underline on hover.  For links embedded in text (defined as text
