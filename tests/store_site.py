@@ -195,13 +195,13 @@ class StoreSite(StoreClient):
                 for inp in self.check_for_elems(tag + "//input[@type='radio']"):
                     if label.get_attribute("for") == inp.get_attribute("id"):
                         observed["variants"][label.text] = label.get_attribute("for")
-        if expected["availability"] == "SoldOut":
-            self.assertIsNone(self.try_for_elem("button", offer))
-            self.assertEqual(offer.text, "100 USD None")
+        button = self.check_for_elem("/button[@type='submit']", offer)
+        if "/SoldOut" in expected["availability"]:
+            self.assertEqual(button.get_attribute("disabled"), "true")
+            self.assertEqual(offer.text, "100 USD\nSold Out")
         else:
             # The add to cart button should get a black border on hover, or, on
             # small screens, should always have a black border.
-            button = self.check_for_elem("/button[@type='submit']", offer)
             with self.window_size(WINDOWSIZES["large"]):
                 self.check_decoration_on_hover(
                     button, "1px ", "0px ", "border")

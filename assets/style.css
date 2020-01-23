@@ -77,6 +77,14 @@ button {
 button:hover {
   border: 1px solid black;
 }
+/* Disabled buttons are in gray with a special cursor. */
+button:disabled {
+  border: 1px solid lightgray;
+}
+button[disabled]:hover {
+  cursor: not-allowed;
+  border: 1px solid lightgray;
+}
 
 /* Alternate button styling on small screens: always a border. */
 @media only screen and (max-width: 600px) {

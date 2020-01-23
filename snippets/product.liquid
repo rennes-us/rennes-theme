@@ -56,8 +56,7 @@
           {%- endif %}
         <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option"{% endif %}>Add to bag</button>
         {%- else %}
-        Sold Out
-        {% comment %} TODO maybe make this a disabled button instead of just raw text like this {% endcomment %}
+        <button type="submit" name="add" value="Add to bag" disabled>Sold Out</button>
   {% endif %}
       </form>
 			<aside>
