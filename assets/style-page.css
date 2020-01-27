@@ -17,6 +17,42 @@ article.page p {
   text-align: justify;
 }
 
+
+/* Shipping details page */
+
+body#shipping main p,
+body#shipping-page main p {
+  max-width: 70em;
+}
+
+body#shipping main h2,
+body#shipping-page main h2 {
+  font-size: 100%;
+  text-align: center;
+}
+
+table.shipping {
+  margin: 2em 1em;
+  width: 100%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
+}
+
+table.shipping small {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 90%;
+  display: block;
+}
+
+table.shipping td, table.shipping th {
+  padding: 10px;
+  border: 1px solid black;
+  min-width: 5em;
+}
+
 /*
  * Two-column layout for individual pages as activated by choosing the
  * page.columns template in the UI.
