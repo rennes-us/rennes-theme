@@ -146,7 +146,6 @@ form[action="/cart"] tbody td:last-child a:hover {
   form[action="/cart"] tbody th {
     /* Behave  like a "row" */
     border: none;
-    border-bottom: 1px solid #eee;
     position: relative;
     padding-left: 30%;
   }
