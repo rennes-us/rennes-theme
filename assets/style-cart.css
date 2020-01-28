@@ -67,7 +67,7 @@ form[action="/cart"] table {
 /* Padding inside all the table cells, proportional to the viewport size. */
 form[action="/cart"] td,
 form[action="/cart"] th {
-  padding: 1vh 2vw;
+  padding: 0.5vh 1vw;
 }
 
 /* Cart table header */
