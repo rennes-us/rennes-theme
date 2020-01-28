@@ -40,8 +40,8 @@
     <div class="controls">
     {% if settings.checkout_msg_enabled %}
     <label for="checkout-warning">
-      {{ settings.checkout_msg | escape}}
       <input type="checkbox" id="checkout-warning" value="checkout-warning" required>
+      {{ settings.checkout_msg | escape}}
     </label>
     {% endif %}
 

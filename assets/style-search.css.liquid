@@ -34,10 +34,11 @@ form[action="/search"] input[type="text"]:focus {
 
 form[action="/search"] input[type="submit"] {
   background: url({{ 'img-search.svg' | asset_url }});
-  background-position: left 0 top 5px;
   background-repeat: no-repeat;
   border: none;
   width: 15px;
+  position: relative;
+  top: 5px;
 }
 
 form[action="/search"] input[type="submit"]:hover {
