@@ -206,6 +206,10 @@ article[typeof=Product] div aside small.sale-disclaimer {
 
 form[property=offers] .pick-an-option {
   font-weight: bold;
+  padding: 5px;
+  margin: 5px;
+  min-height: 2.5em;
+  line-height: 2.5em;
 }
 
 .variants {
