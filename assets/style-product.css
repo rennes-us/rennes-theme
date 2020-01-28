@@ -18,7 +18,7 @@ article[typeof="Product"] figure {
   position: relative;
   flex-basis: 100%;
   margin: 0;
-  max-width: 600px;
+  max-width: 800px;
   height: fit-content;
 }
 
@@ -58,7 +58,7 @@ article[typeof="Product"] > div {
 /* ****************
  * If space allows, show figure and other product details side-by-side.
  * ***************/
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 800px) {
 article[typeof="Product"] > figure { flex-basis: 50%; }
 article[typeof="Product"] > div { flex-basis: 50%; max-width: 50%; }
 article[typeof="Product"] div[property="description"] p:first-child {
@@ -161,7 +161,7 @@ article[typeof=Product] figure aside.zoomed a {
 /* Aiming for one reasonable approach across viewport dimensions for the
  * maximum width in zoom mode, once we're beyond the smallest screens.  100% of
  * the viewport height seems OK. */
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 800px) {
 article[typeof=Product] figure aside.zoomed a {
   max-width: 100vh;
 }
