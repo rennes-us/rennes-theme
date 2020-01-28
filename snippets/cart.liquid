@@ -18,7 +18,7 @@
             <td><img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" src="{{ img_url }}" alt="{{ img.alt | escape }}">
             <th scope="row"><a href="{{ item.url }}">{{ item.title }}</a></th>
             <td>{{ item.price | money_with_currency }}</td>
-            <td><input type="text" name="updates[{{ item.id }}]" id="updates_{{ item.id }}" value="{{ item.quantity }}"></td>
+            <td><input type="number" name="updates[{{ item.id }}]" id="updates_{{ item.id }}" value="{{ item.quantity }}" min="0"></td>
             <td>{{ item.line_price | money_with_currency }}</td>
             <td><a href="/cart/change/{{ item.variant.id }}?quantity=0" title="Remove Item"><abbr title="Remove">✘</abbr></a></td>
           </tr>

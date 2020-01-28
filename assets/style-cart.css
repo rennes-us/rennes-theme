@@ -101,7 +101,7 @@ form[action="/cart"] tbody th[scope=row] {
 }
 
 /* Quantity box */
-form[action="/cart"] tbody td input[type=text] {
+form[action="/cart"] tbody td input[type=number] {
   width: 3em;
 }
 
