@@ -92,7 +92,7 @@ form[action="/cart"] tfoot tr:first-child {
 
 /* product image */
 form[action="/cart"] tbody td:first-child {
-  text-align: right;
+  text-align: center;
 }
 
 /* product title */
