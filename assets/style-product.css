@@ -19,6 +19,7 @@ article[typeof="Product"] figure {
   flex-basis: 100%;
   margin: 0;
   max-width: 600px;
+  height: fit-content;
 }
 
 figure a.arrow {
@@ -59,7 +60,7 @@ article[typeof="Product"] > div {
  * ***************/
 @media only screen and (min-width: 600px) {
 article[typeof="Product"] > figure { flex-basis: 50%; }
-article[typeof="Product"] > div { flex-basis: 50%; }
+article[typeof="Product"] > div { flex-basis: 50%; max-width: 50%; }
 article[typeof="Product"] div[property="description"] p:first-child {
   /* So the text is flush with the top of the figure, if they're
    * side-by-side. */
