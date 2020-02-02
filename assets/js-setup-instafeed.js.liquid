@@ -3,14 +3,14 @@ $(document).ready(setup_instagramfeed);
 // our credentials are not currently accepted with this method
 function setup_instafeed()
 {
-	feed = new Instafeed({
-	accessToken: '{{ settings.instafeed_access_token }}',
-	userId: '{{ settings.instafeed_user_id }}',
-	get: 'user',
-	sortBy: 'most-recent',
-	limit: '{{ settings.instafeed_limit }}',
-	resolution: '{{ settings.instafeed_resolution }}' });
-	feed.run();
+  feed = new Instafeed({
+  accessToken: '{{ settings.instafeed_access_token }}',
+  userId: '{{ settings.instafeed_user_id }}',
+  get: 'user',
+  sortBy: 'most-recent',
+  limit: '{{ settings.instafeed_limit }}',
+  resolution: '{{ settings.instafeed_resolution }}' });
+  feed.run();
 }
 
 function setup_instagramfeed()
