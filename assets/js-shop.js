@@ -8,6 +8,7 @@ function mainShop() {
   setupProductImageZoom(); // Full-page zoom main product img when clicked
   setupVariantCheck(); // Check if product variant chosen for "add to bag"
   setupBagUpdate(); // Auto-click the disclaimer when just updating the cart
+  setupQtyButtons(); // enable minus/plus buttons for cart quantity field
 }
 
 // ----------------------------------------------------------------------------
@@ -142,15 +143,35 @@ function addCartHandler() {
 }
 
 // ----------------------------------------------------------------------------
+// Cart Features
+
 // There are two buttons in the cart: Update Bag and Checkout.  With Checkout
 // we want the required input check box to be checked, but we don't care for
 // Update Bag.  I don't see any HTML/CSS way to make this happen so we'll just
 // check the box ourselves when Update Bag is clicked.
-
 function setupBagUpdate() {
   $('form[action="/cart"] button[value="update"]').click(function() {
     // NOTE we don't want to return false here, because we do want the
     // click to have its usual effect.
     $('input#checkout-warning').click();
+  });
+}
+
+// Modern browsers have built-in number spinner buttons but they don't have
+// much flexibility in styling them, so we'll make our own.
+function setupQtyButtons() {
+  // The decrement button should change the value of the element it's for to be
+  // one lower than it currently is, but no lower than zero.  (This is also
+  // defined in the HTML as min="0" but the javascript apparently can override
+  // it.)
+  $('form[action="/cart"] .decrement').click(function() {
+    var input = $("#".concat($(this).attr("for")));
+    input.val(Math.max(0, Number(input.val()) - 1));
+  });
+  // The increment button should change the value of the element it's for to be
+  // one higher than it currently is.
+  $('form[action="/cart"] .increment').click(function() {
+    var input = $("#".concat($(this).attr("for")));
+    input.val(Number(input.val()) + 1);
   });
 }
