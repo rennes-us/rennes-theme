@@ -225,7 +225,7 @@ class TestSite(StoreSite):
         xp_form = "//article[@typeof='SearchResultsPage']/form[@role='search']"
         form = self.xp(xp_form)
         # Features
-        query = "socks"
+        query = "ichi"
         elem = self.check_for_elem("input[@type='text']", form)
         elem.send_keys(query)
         elem.send_keys(Keys.RETURN)
