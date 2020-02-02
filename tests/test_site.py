@@ -267,7 +267,7 @@ class TestSite(StoreSite):
         header_input = "//header//form[@role='search']/input[@type='text']"
         results = "//article[@typeof='SearchResultsPage']/section[@typeof='Product']"
         elem = self.xp(header_input)
-        query = "socks"
+        query = "ichi"
         elem.send_keys(query)
         elem.send_keys(Keys.RETURN)
         self.check_snippet_searchresults('searching for "%s"' % query)
