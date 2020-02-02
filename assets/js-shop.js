@@ -7,6 +7,7 @@ function mainShop() {
 	setupProductImageSwappingArrows(); // Select product images from arrows
 	setupProductImageZoom(); // Full-page zoom main product img when clicked
 	setupVariantCheck(); // Check if product variant chosen for "add to bag"
+    setupBagUpdate(); // Auto-click the disclaimer when just updating the cart
 }
 
 // ----------------------------------------------------------------------------
@@ -138,4 +139,18 @@ function addCartHandler() {
       $('article[typeof="Product"] form label').last().after('<span class="pick-an-option">⬅ Pick an option first</span>');
       return false;
     }
+}
+
+// ----------------------------------------------------------------------------
+// There are two buttons in the cart: Update Bag and Checkout.  With Checkout
+// we want the required input check box to be checked, but we don't care for
+// Update Bag.  I don't see any HTML/CSS way to make this happen so we'll just
+// check the box ourselves when Update Bag is clicked.
+
+function setupBagUpdate() {
+    $('form[action="/cart"] button[value="update"]').click(function() {
+        // NOTE we don't want to return false here, because we do want the
+        // click to have its usual effect.
+        $('input#checkout-warning').click();
+    });
 }

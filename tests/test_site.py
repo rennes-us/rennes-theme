@@ -82,36 +82,37 @@ class TestSite(StoreSite):
         self.add_to_cart(product, prodvar)
         self.check_header(bagsize=1)
         button = self.xp("//button[@title='Checkout']")
-        self.assertFalse(self.click(button))
+        self.assertFalse(
+            self.click(button),
+            "Checkout button took effect but disclaimer box was unchecked.")
         # Nope, not yet, need to check the checkbox
-        self.assertNotIn("Checkout", self.driver.title)
+        self.assertNotIn(
+            "Checkout", self.driver.title,
+            "Reached checkout page without checking disclaimer box.")
         checkbox = self.xp("//input[@id='checkout-warning']")
         checkbox.click()
-        self.assertTrue(self.click(button))
+        self.assertTrue(self.click(button), "Checkout button didn't take effect.")
         # Now we've reached checkout
-        self.assertIn("Checkout", self.driver.title)
+        self.assertIn("Checkout", self.driver.title, "Not on checkout page.")
 
         # Back to the cart page, check one more thing: the update button.
         # Update the quantity field for one row and click the button.  This
         # should remove the item by setting the quantity to zero, rather than
         # just clicking the remove link as above.
         self.get("cart")
-        # TODO this should not be necessary!  Only when clicking the Checkout
-        # button, not the Update Shopping Bag button.
-        checkbox = self.xp("//input[@id='checkout-warning']")
-        checkbox.click()
         qty = self.xp("//input", self.get_cart_row(product, prodid))
+        qty.send_keys(Keys.ARROW_RIGHT)
         qty.send_keys(Keys.BACKSPACE)
         qty.send_keys("0")
         button = self.xp("//button[@title='Update your total']")
-        self.assertTrue(self.click(button))
+        self.assertTrue(self.click(button), "Cart update button didn't take effect.")
         # At this point we should have nothing in the cart (otherwise it'll
         # throw off other tests since # we're sharing one browser session!)
         # Probably should handle this more generally to make sure
         # failures/exceptions in one test are isolated and the cart is still
         # properly cleared.
         trow = self.get_cart_row(product, prodid)
-        self.assertIsNone(trow)
+        self.assertIsNone(trow, "Product still found in cart when it should be absent.")
         self.check_header(bagsize=0)
 
     def test_template_collection(self):
