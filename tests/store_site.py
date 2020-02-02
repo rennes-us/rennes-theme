@@ -15,9 +15,13 @@ LOGGER = logging.getLogger(__name__)
 
 WINDOWSIZES = {
     "small": {"width": 320, "height": 568}, # iPhone SE
-    "medium": {"width": 1024, "height": 768}, # old-school computer
+    "medium": {"width": 1024, "height": 768}, # iPad landscape, or old-school computer
     "large": {"width": 3840, "height": 2160} # My ASUS ZenBook
     }
+
+def rotate(windowsize):
+    """Swap width/height on a windowsize dictionary."""
+    return {"width": windowsize["height"], "height": windowsize["width"]}
 
 class ElemsHaveText:
     """Selenium condition to verify that elements have visible text."""
@@ -150,6 +154,22 @@ class StoreSite(StoreClient):
         self._check_product_aside(observed, expected)
         self._check_product_image_zoom()
         self._check_product_image_swap_arrows(expected)
+        product_parts = [
+            self.xp("//article[@typeof='Product']/figure"),
+            self.xp("//article[@typeof='Product']/div")]
+        # Ensure that the figure and the rest of the product information are
+        # stacked vertically on small screens and side-by-side on large
+        # screens.  The switch should happen between a portrait iPad (rotated
+        # medium size) on the smaller end and a landscape iPad on the larger
+        # end.
+        with self.window_size(WINDOWSIZES["small"]):
+            self._check_wrap(product_parts, 1)
+        with self.window_size(rotate(WINDOWSIZES["medium"])):
+            self._check_wrap(product_parts, 1)
+        with self.window_size(WINDOWSIZES["medium"]):
+            self._check_wrap(product_parts, 2)
+        with self.window_size(WINDOWSIZES["large"]):
+            self._check_wrap(product_parts, 2)
         for key in expected.keys():
             self.assertEqual(observed[key], expected[key])
 
@@ -435,31 +455,37 @@ class StoreSite(StoreClient):
         # with the CSS flex magic, showing 2, 3, and 4 products per row on
         # small, medium, and large screens respectively.
         sections = self.check_for_elems("//section[@typeof='Product']")
-        self.driver.set_window_size(
-            WINDOWSIZES["small"]["width"], WINDOWSIZES["small"]["height"])
-        self._check_wrap(sections, 2)
-        self.driver.set_window_size(
-            WINDOWSIZES["medium"]["width"], WINDOWSIZES["medium"]["height"])
-        self._check_wrap(sections, 3)
-        self.driver.set_window_size(
-            WINDOWSIZES["large"]["width"], WINDOWSIZES["large"]["height"])
-        self._check_wrap(sections, 4)
+        with self.window_size(WINDOWSIZES["small"]):
+            self._check_wrap(sections, 2)
+        with self.window_size(WINDOWSIZES["medium"]):
+            self._check_wrap(sections, 3)
+        with self.window_size(WINDOWSIZES["large"]):
+            self._check_wrap(sections, 4)
 
     def _check_wrap(self, elems, num):
         """Given a list of elements, check that they wrap as expected.
+
+        There should be num elements per row, so num+1 is the start of the next
+        row (if present).  elems should be at least num elements long.
 
         This checks the x and y coordinates of the first few items to make sure
         the expected number are on the first row and first column (assuming a
         grid-like layout).
         """
+        if len(elems) < num:
+            raise ValueError(
+                "Need more than %d elems to check for wrapping every %d" % (len(elems), num))
         # Elements 0 to num-1 should be on the same row (same y) while 0 and
         # num should be on the same column (same x)
         self.assertEqual(
             int(elems[0].rect["y"]),
-            int(elems[num-1].rect["y"]))
-        self.assertEqual(
-            int(elems[0].rect["x"]),
-            int(elems[num].rect["x"]))
+            int(elems[num-1].rect["y"]),
+            "Vertical position mismatch for elements on first row")
+        if len(elems) > num:
+            self.assertEqual(
+                int(elems[0].rect["x"]),
+                int(elems[num].rect["x"]),
+                "Horizontal position mismatch betwen first and second row")
 
     def check_snippet_collection_designers(self):
         """Check the special designers collection snippet."""
