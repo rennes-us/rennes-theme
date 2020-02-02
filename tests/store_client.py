@@ -171,13 +171,42 @@ class StoreClient(unittest.TestCase):
         return False
 
     @contextlib.contextmanager
-    def window_size(self, size):
-        """Use an alternate window size, then restore the original."""
+    def window_size(self, size, sentinel=None, timeout=2):
+        """Use an alternate window size, then restore the original.
+
+        size should be a dict with width and height entries.  sentinel, if
+        given, is an element whose rect attribute is expected to change once
+        the window size change has taken place.  The function will wait until
+        this happens after applying the change before yielding, up to the
+        specified timeout in seconds (in practice this seems to take a sizeable
+        fraction of a second for the page to respond to the change in window
+        size).  If sentinel is None, the HTML body element is used.
+        """
+        if not sentinel:
+            sentinel = self.xp("//body")
+        rect_orig = sentinel.rect
         orig_size = self.driver.get_window_size()
+        LOGGER.debug(
+            "changing window from %dx%d to %dx%d",
+            orig_size["width"], orig_size["height"],
+            size["width"], size["height"])
         self.driver.set_window_size(size["width"], size["height"])
+        delay = 0
+        while rect_orig == sentinel.rect:
+            if delay > timeout:
+                msg = "Timeout waiting for window size change to take effect."
+                LOGGER.error(msg)
+                raise StoreError(msg)
+            LOGGER.debug(
+                "waiting for element to react to size change... (%d s)", delay)
+            time.sleep(0.02)
+            delay += 0.02
         try:
             yield
         finally:
+            LOGGER.debug(
+                "restoring original window size of %dx%d",
+                orig_size["width"], orig_size["height"])
             self.driver.set_window_size(orig_size["width"], orig_size["height"])
 
     def hover(self, elem):
