@@ -138,7 +138,7 @@ class TestSite(StoreSite):
         self.check_snippet_mailing_list()
         self.check_nav_site()
         self.check_nav_product(clothing_menu_starts="block")
-        self.check_snippet_collection()
+        self.check_snippet_collection(paginate=False)
 
     @unittest.skip("not yet implemented")
     def test_template_collection_designers(self):
