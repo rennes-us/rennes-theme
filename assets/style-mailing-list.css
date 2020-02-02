@@ -12,4 +12,6 @@
   border-bottom: 1px solid black;
   outline-width: 0;
   width: 15em;
+  /* https://stackoverflow.com/a/2918716 */
+  border-radius: 0;
 }
