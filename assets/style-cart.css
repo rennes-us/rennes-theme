@@ -42,14 +42,6 @@ form[action="/cart"] div.controls label[for="checkout-warning"] {
   margin: 1em auto 5px auto;
 }
 
-/* On wide enough screens, show to full "Remove" text (rather than just the
- * abbreviation).  TODO remove the X. */
-/* Couldn't get this to work: https://stackoverflow.com/a/22054588 */
-@media only screen and (min-width: 600px) {
-form[action="/cart"] tbody td:last-child a abbr::after {
-  content: attr(title);
-}
-}
 /*
  *
  * Cart - styling
@@ -71,12 +63,6 @@ form[action="/cart"] th {
 }
 
 /* Cart table header */
-
-/* "Options" column can be left implicit */
-form[action="/cart"] thead th:last-child,
-form[action="/cart"] tfoot td:last-child {
-  display: none;
-}
 
 form[action="/cart"] thead th {
   font-weight: normal;
@@ -119,14 +105,6 @@ form[action="/cart"] tbody td label.decrement,
 form[action="/cart"] tbody td label.increment {
   cursor: pointer;
   user-select: none;
-}
-
-/* "Remove" link */
-form[action="/cart"] tbody td:last-child a {
-  color: #aaa;
-}
-form[action="/cart"] tbody td:last-child a:hover {
-  color: #777;
 }
 
 /*****************************************************************************/
