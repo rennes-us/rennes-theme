@@ -91,7 +91,7 @@ form[action="/cart"] tbody th[scope=row] {
  * https://stackoverflow.com/a/6394497 */
 form[action="/cart"] tbody td input[type=number] {
   font-size: inherit;
-  width: 3em;
+  width: 2em;
 }
 /* It seems like styling the number spinner buttons is tricky currently and I'm
  * mostly just seeing people hide them and implement their own. */
@@ -104,6 +104,7 @@ form[action="/cart"] tbody td input[type=number]::-webkit-outer-spin-button {
 form[action="/cart"] tbody td label.decrement,
 form[action="/cart"] tbody td label.increment {
   cursor: pointer;
+  font-weight: bold;
   user-select: none;
 }
 
