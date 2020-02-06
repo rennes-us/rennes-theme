@@ -34,6 +34,7 @@ figure a.arrow {
   top: 50%;
   font-size: 180%;
   padding: 10px;
+  user-select: none;
 }
 
 figure a.left {
