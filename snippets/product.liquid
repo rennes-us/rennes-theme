@@ -5,20 +5,17 @@
     <meta property="brand" content="{{ product.vendor }}">
 
     <figure>
-      <a property="image" typeof="ImageObject" href="{{ img_url }}">
-        <meta property="representativeOfPage" content="True">
-        <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
-      </a>
-      <a href="" class="arrow left">{{settings.product_left_image_text}}</a>
-      <a href="" class="arrow right">{{settings.product_right_image_text}}</a>
-      <aside>
       {%- for img in product.images -%}
         {%- include 'product_img' -%}
-        <a property="image" typeof="ImageObject" href="{{ img_url }}"{% if img == product.images.first %} class="current_thumbnail"{% endif %}>
+        <a property="image" typeof="ImageObject" href="{{ img_url }}">
+          {% if img == product.images.first %}
+          <meta property="representativeOfPage" content="True">
+          {% endif %}
           <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
         </a>
       {%- endfor %}
-      </aside>
+      <a href="" class="arrow left">{{settings.product_left_image_text}}</a>
+      <a href="" class="arrow right">{{settings.product_right_image_text}}</a>
     </figure>
 
     {% comment %} Description and purchase form {% endcomment %}
