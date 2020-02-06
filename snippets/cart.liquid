@@ -19,8 +19,10 @@
             <td>{{ item.price | money_with_currency }}</td>
             <td>
               <input type="number" name="updates[{{ item.id }}]" id="updates_{{ item.id }}" value="{{ item.quantity }}" min="0">
-              <label class="decrement" for="updates_{{ item.id }}" title="Remove One">-</label>
-              <label class="increment" for="updates_{{ item.id }}" title="Add One">+</label>
+              <span class="number-controls">
+                <label class="decrement" for="updates_{{ item.id }}" title="Remove One">-</label>
+                <label class="increment" for="updates_{{ item.id }}" title="Add One">+</label>
+              </span>
             </td>
             <td>{{ item.line_price | money_with_currency }}</td>
           </tr>

@@ -101,11 +101,14 @@ form[action="/cart"] tbody td input[type=number]::-webkit-outer-spin-button {
   display: none;
   -webit-appearance: none;
 }
+
+form[action="/cart"] tbody td span.number-controls {
+  user-select: none;
+  font-weight: bold;
+}
 form[action="/cart"] tbody td label.decrement,
 form[action="/cart"] tbody td label.increment {
   cursor: pointer;
-  font-weight: bold;
-  user-select: none;
 }
 
 /*****************************************************************************/
