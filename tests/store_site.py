@@ -366,6 +366,9 @@ class StoreSite(StoreClient):
             expected = pair[1]
             observed = ((pair[0].text), pair[0].get_attribute("href").strip("/"))
             self.assertEqual(observed, expected)
+            # links to elsewhere should have target attribute set
+            if not expected[1].startswith(self.url):
+                self.assertEqual(pair[0].get_attribute("target"), "_blank")
             self.check_decoration_on_hover(pair[0])
 
     def check_nav_product(self, clothing_menu_starts="none"):
