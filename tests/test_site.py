@@ -106,15 +106,8 @@ class TestSite(StoreSite):
     def test_template_collection(self):
         """Collection page"""
         self.get("collections/new")
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_snippet_collection()
-        self.check_pagination()
 
     @unittest.skip("not yet implemented")
     def test_template_gift_card(self):
@@ -123,25 +116,13 @@ class TestSite(StoreSite):
     def test_template_index(self):
         """Index page should show a collection"""
         self.get()
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_snippet_collection()
 
     def test_template_list_collections(self):
         """Collections page should show a few products for each collection"""
         self.get("collections")
-        self.check_layout()
-        self.check_header()
-        #self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_for_elem("//article[@class='collections']/section[@class='products']")
         self.check_pagination()
 
@@ -151,13 +132,7 @@ class TestSite(StoreSite):
         if self.is404():
             self.skipTest("testing collection not available")
         self.assertIn("Variants", self.driver.title)
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_product({
             "name": "Variants",
             "description_blurb": "This one has variants.",

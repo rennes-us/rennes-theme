@@ -108,7 +108,7 @@ class StoreSite(StoreClient):
             elem.get_attribute("content"),
             get_setting("google_site_verification"))
 
-    def check_layout_and_parts(self):
+    def check_layout_and_parts(self, clothing_menu_starts="none"):
         """Check the common parts from the default layout."""
         self.check_layout()
         self.check_header()
@@ -116,7 +116,7 @@ class StoreSite(StoreClient):
         self.check_snippet_address()
         self.check_snippet_mailing_list()
         self.check_nav_site()
-        self.check_nav_product()
+        self.check_nav_product(clothing_menu_starts)
 
     def check_header(self, bagsize=0):
         """Check the header element (the cart link and such, not <head>)"""
