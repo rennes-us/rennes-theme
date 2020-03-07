@@ -5,13 +5,15 @@ A single product in a collection, search result, etc.
         <header>
           <div property="name">{{ product.title }}</div>
           <p property="offers" typeof="OfferForPurchase">
+            {%- if product.compare_at_price_min > product.price %}
+            <s>{{ compare_price }} {{ currency }}</s>
+            {%- endif %}
             <span property="schema:price"         content="{{ price }}">{{ price_display }}</span>
             <span property="schema:priceCurrency">{{ currency }}</span>
             <link property="availability"         href="http://schema.org/{{availability}}">
             <link property="schema:itemCondition" href="http://schema.org/NewCondition">
           </p>
         </header>
-        {%- comment -%} TODO use srcset and sizes {%- endcomment -%}
         <a property="url" href="{{ product.url | within: collection }}" title="View {{ product.title | escape }}">
           <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="image" src="{{ img_url_collection }}" alt="{{ product.title | escape }}">
         </a>

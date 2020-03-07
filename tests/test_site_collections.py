@@ -33,12 +33,31 @@ class TestSiteCollections(StoreSite):
 
     def test_template_collection_empty(self):
         """An empty collection should just show some placeholder text."""
-        self.get("collections/testing-empty")
-        if self.is404():
-            self.skipTest("testing-empty collection not available")
+        self.get_maybe("testing-empty")
         self.check_layout_and_parts()
         # Make sure we get the expected text for an empty collection, but
         # disregard whitespace.
         self.assertEqual(
             re.sub(r"\s", "", self.xp("//article[@class='products']").text),
             re.sub(r"\s", "", get_setting("collection_empty_text")))
+
+    def test_template_collection_sale(self):
+        """A collection listing items that are on sale.
+
+        These should show the current price below the strikethrough'd original
+        price.
+        """
+        self.get_maybe("testing-sale")
+        self.check_layout_and_parts()
+        offer = self.check_for_elem(
+            "//section[@typeof='Product']/header/p[@typeof='OfferForPurchase']")
+        compare_price = self.check_for_elem("./s", offer)
+        new_price = self.check_for_elem("./span[@property='schema:price']", offer)
+        num = lambda el: float(re.sub(r"[^0-9\.]", "", el.text))
+        self.assertTrue(num(compare_price) > num(new_price))
+
+    def get_maybe(self, collection):
+        """Get a collection page, or skip the test if not available."""
+        self.get("collections/" + collection)
+        if self.is404():
+            self.skipTest(collection + " collection not available")
