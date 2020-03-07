@@ -9,8 +9,8 @@ instead, defined by another snippet.
 {% include 'collection_designers' %}
 {% else %}
   <article class="products">
-        
-{%- paginate collection.products by settings.collection_paginate_num -%}
+  {% if collection.products.size != 0 %}
+    {%- paginate collection.products by settings.collection_paginate_num -%}
         
     {% for product in collection.products %}
     {% assign product_context = 'collection' %}
@@ -18,6 +18,9 @@ instead, defined by another snippet.
     {% include 'collection_item' %}
     {%- endfor %}
     {% include 'pagenums' %}
-{% endpaginate %}
-    </article>
+    {% endpaginate %}
+  {% else %}
+  <p class="alert-noproducts">{{settings.collection_empty_text}}</p>
+  {% endif %}
+  </article>
 {% endif %}

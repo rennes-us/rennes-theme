@@ -108,6 +108,16 @@ class StoreSite(StoreClient):
             elem.get_attribute("content"),
             get_setting("google_site_verification"))
 
+    def check_layout_and_parts(self, clothing_menu_starts="none"):
+        """Check the common parts from the default layout."""
+        self.check_layout()
+        self.check_header()
+        self.check_instafeed()
+        self.check_snippet_address()
+        self.check_snippet_mailing_list()
+        self.check_nav_site()
+        self.check_nav_product(clothing_menu_starts)
+
     def check_header(self, bagsize=0):
         """Check the header element (the cart link and such, not <head>)"""
         LOGGER.info("check_header (bagsize: %d)", bagsize)
@@ -131,6 +141,35 @@ class StoreSite(StoreClient):
         self.assertIn(pagetitle or pagename, self.driver.title)
         self.check_for_elem("/html/body/main/article[@class='%s']" % pageclass)
         self.check_instafeed()
+
+    def check_pagination(self):
+        """Check that pagination links work as expected.
+
+        This will verify there's no "previous" link to start with, click the
+        first link (which should be for page 2), and then click the previous
+        link.  behavior with multiple pagination elements on the page is not
+        curently defined.
+        """
+        log = lambda msg: LOGGER.info("check_pagination: %s", msg)
+        nav = self.xp("//nav[@class='pagination']")
+        log("try for first link elem")
+        first_link = self.try_for_elem("a", elem=nav)
+        log("check that previous is NOT in first link text (\"%s\")" % first_link.text)
+        self.assertFalse("previous" in first_link.text.lower())
+        log("click first link")
+        self.click(first_link)
+        nav = self.xp("//nav[@class='pagination']")
+        log("try for first link elem again")
+        first_link = self.try_for_elem("a", elem=nav)
+        log("check that previous IS in first link text (\"%s\")" % first_link.text)
+        self.assertTrue("previous" in first_link.text.lower())
+        log("click first link again")
+        self.click(first_link)
+        nav = self.xp("//nav[@class='pagination']")
+        log("try for first link elem #3")
+        first_link = self.try_for_elem("a", elem=nav)
+        log("check that previous is NOT in first link text (\"%s\")" % first_link.text)
+        self.assertFalse("previous" in first_link.text.lower())
 
     def check_product(self, expected):
         """Check the contents of a single product's page"""
@@ -366,6 +405,9 @@ class StoreSite(StoreClient):
             expected = pair[1]
             observed = ((pair[0].text), pair[0].get_attribute("href").strip("/"))
             self.assertEqual(observed, expected)
+            # links to elsewhere should have target attribute set
+            if not expected[1].startswith(self.url):
+                self.assertEqual(pair[0].get_attribute("target"), "_blank")
             self.check_decoration_on_hover(pair[0])
 
     def check_nav_product(self, clothing_menu_starts="none"):

@@ -39,8 +39,9 @@
 
   <nav class="main site-nav">
     <ul>
+      {%- comment -%}Relative links will open in the same frame; absolute links starting with http will open in a new tab/window.{%- endcomment -%}
       {%- for link in linklists[settings.nav_handle_main].links %}
-      <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+      {%- assign url_prefix = link.url | slice: 0, 4 %}      <li><a href="{{ link.url }}"{% if url_prefix == "http" %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
       {%- endfor -%}
     </ul>
   </nav>

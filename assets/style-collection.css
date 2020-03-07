@@ -70,6 +70,12 @@ section.products [typeof="Product"] p[typeof="OfferForPurchase"] {
   text-align: center;
 }
 
+/* On collections pages the old price, if there is one, is on its own line as a
+ * block element. */
+article.products [typeof="Product"] p[typeof="OfferForPurchase"] s {
+  display: block;
+}
+
 /* The product image. */
 article.products [typeof="Product"] img,
 section.products [typeof="Product"] img {

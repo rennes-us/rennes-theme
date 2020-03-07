@@ -6,17 +6,12 @@ handled in other child classes here.  This module is searched with unittest for
 test discovery.  See util.main for that part.
 """
 
-import logging
 import unittest
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 from .store_site import StoreSite
-from .util import (get_setting, TEST_PRODUCTS)
-
-LOGGER = logging.getLogger(__name__)
+from .test_site_products import TestSiteProducts
+from .test_site_collections import TestSiteCollections
+from .test_site_mailinglist import TestSiteMailingList
 
 class TestSite(StoreSite):
     """Test suite for store.
@@ -111,40 +106,8 @@ class TestSite(StoreSite):
     def test_template_collection(self):
         """Collection page"""
         self.get("collections/new")
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_snippet_collection()
-        self.check_pagination()
-
-    def test_template_collection_submenu(self):
-        """A collection page for a collection that is with in another category."""
-        self.get("collections/skirts")
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product(clothing_menu_starts="block")
-        self.check_snippet_collection(paginate=False)
-
-    @unittest.skip("not yet implemented")
-    def test_template_collection_designers(self):
-        """The collection page for the list of designers."""
-        self.get("collections/designers")
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
-        self.check_snippet_collection_designers()
 
     @unittest.skip("not yet implemented")
     def test_template_gift_card(self):
@@ -153,25 +116,13 @@ class TestSite(StoreSite):
     def test_template_index(self):
         """Index page should show a collection"""
         self.get()
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_snippet_collection()
 
     def test_template_list_collections(self):
         """Collections page should show a few products for each collection"""
         self.get("collections")
-        self.check_layout()
-        self.check_header()
-        #self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_for_elem("//article[@class='collections']/section[@class='products']")
         self.check_pagination()
 
@@ -181,13 +132,7 @@ class TestSite(StoreSite):
         if self.is404():
             self.skipTest("testing collection not available")
         self.assertIn("Variants", self.driver.title)
-        self.check_layout()
-        self.check_header()
-        self.check_instafeed()
-        self.check_snippet_address()
-        self.check_snippet_mailing_list()
-        self.check_nav_site()
-        self.check_nav_product()
+        self.check_layout_and_parts()
         self.check_product({
             "name": "Variants",
             "description_blurb": "This one has variants.",
@@ -281,157 +226,3 @@ class TestSite(StoreSite):
         self.assertIsNone(self.try_for_elem("//nav[@class='pagination']"))
 
     ### Tests - Helpers
-
-
-    def check_pagination(self):
-        """Check that pagination links work as expected.
-
-        This will verify there's no "previous" link to start with, click the
-        first link (which should be for page 2), and then click the previous
-        link.  behavior with multiple pagination elements on the page is not
-        curently defined.
-        """
-        log = lambda msg: LOGGER.info("check_pagination: %s", msg)
-        nav = self.xp("//nav[@class='pagination']")
-        log("try for first link elem")
-        first_link = self.try_for_elem("a", elem=nav)
-        log("check that previous is NOT in first link text (\"%s\")" % first_link.text)
-        self.assertFalse("previous" in first_link.text.lower())
-        log("click first link")
-        self.click(first_link)
-        nav = self.xp("//nav[@class='pagination']")
-        log("try for first link elem again")
-        first_link = self.try_for_elem("a", elem=nav)
-        log("check that previous IS in first link text (\"%s\")" % first_link.text)
-        self.assertTrue("previous" in first_link.text.lower())
-        log("click first link again")
-        self.click(first_link)
-        nav = self.xp("//nav[@class='pagination']")
-        log("try for first link elem #3")
-        first_link = self.try_for_elem("a", elem=nav)
-        log("check that previous is NOT in first link text (\"%s\")" % first_link.text)
-        self.assertFalse("previous" in first_link.text.lower())
-
-
-class TestSiteProducts(StoreSite):
-    """Test suite for store - product cases.
-
-    This checks various specific cases for product pages.  It uses a special
-    collection, testing, and will skip these tests if that collection is not
-    present.  (This way we can eventually use the same test suite to check on
-    the production site, if we also tease apart the add-to-cart step and
-    anything else that actually messes with the site.)
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        """Set up browser session, but skip unit if collection is missing."""
-        super().setUpClass()
-        driver = cls.get_driver()
-        driver.get(cls.url + "collections/testing")
-        if "Page Not Found" in driver.title:
-            raise unittest.SkipTest("testing collection not available")
-
-    def test_template_product_out_of_stock(self):
-        """Test product template for a completely out-of-stock product."""
-        self.get(TEST_PRODUCTS["out-of-stock"])
-        self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
-        self.check_product({"availability": "SoldOut", "num_images": 1})
-
-    def test_template_product_variants(self):
-        """Test product template for a product with multiple variants.
-
-        It should notify us if we try to add to cart without selecting one of
-        the variants.  When one is selected, it should be styled appropriately.
-        """
-        self.get(TEST_PRODUCTS["variants"])
-        self.skipTest("not yet implemented")
-
-    def test_template_product_out_of_stock_variant(self):
-        """Test product template for a product with one variant out of stock."""
-        self.get(TEST_PRODUCTS["running-low"])
-        # check that only one of two variants is available
-        self.skipTest("not yet implemented")
-
-    def test_template_product_lots_of_photos(self):
-        """Test product template for a product with a lot of photos.
-
-        These get tricky to display sensibly and flexibly while trying to keep
-        the flex CSS working right.
-        """
-        self.get(TEST_PRODUCTS["lots-of-photos"])
-        # check whatever should be checked for when we have a ton of
-        # photos.  Make sure the width/height of the thumbnails makes sense,
-        # maybe?
-        self.skipTest("not yet implemented")
-
-    def test_template_product_on_sale(self):
-        """Test product template for a product whose price was lowered.
-
-        For this case there should be a strikethrough version of the original
-        price alongside the current price, and an additional disclaimer at the
-        bottom of the product details container.
-        """
-        self.get(TEST_PRODUCTS["now-cheaper"])
-        self.check_product({
-            "name": "Now Cheaper",
-            "description_blurb": "It used to cost more, but now, it costs less!!",
-            "url": "collections/testing/products/now-cheaper",
-            "mfg": "rennes-dev",
-            "price": "10.00",
-            "compare_price_txt": "1,000 USD",
-            "currency": "USD",
-            "condition": "NewCondition",
-            "availability": "InStock",
-            "num_images": 1})
-
-    def test_template_product_complex_description(self):
-        """Test product template for a product with weird description content.
-
-        Since the descriptions can be filled in with the WYSIWYG editor they
-        can have all sorts of formatting weirdness in them, and styling them
-        consistently is a bit of a pain.  We'll check some basic things here.
-        This might not be best organized as a single test but it'll do for now.
-        """
-        # Links here count as "in text" rather than menu links or what have you
-        # so they should always be underlined.
-        self.get(TEST_PRODUCTS["complex-description"])
-        proddesc = self.check_for_elem(
-            "//article[@typeof='Product']/div/div[@property='description']")
-        link1 = self.check_for_elem("a", proddesc)
-        self.check_decoration_on_hover(link1, "underline", "underline")
-        link2 = self.check_for_elem("p/a", proddesc)
-        self.check_decoration_on_hover(link2, "underline", "underline")
-
-
-class TestSiteMailingList(StoreSite):
-    """Test suite for store - mailing list features"""
-
-    def test_mailing_list(self):
-        """Mailing list should only pop up on first visit
-
-        This takes a while.
-        """
-        if not get_setting("mlpopup_enabled"):
-            self.skipTest("mailing list pop-up not enabled")
-        self.get()
-        self.check_ml_popup()
-        self.get()
-        self.check_ml_popup(False)
-
-    def check_ml_popup(self, should_pop=True):
-        """Check the mailing list popup element.
-
-        This takes a while to run, since there's a delay before it appears on
-        screen.
-        """
-        condition = EC.presence_of_element_located((By.CLASS_NAME, "popup"))
-        try:
-            delay = get_setting("mlpopup_delay")/1000 + 5
-            WebDriverWait(self.driver, delay).until(condition)
-        except TimeoutException:
-            if should_pop:
-                self.fail("mailing list popup not found")
-        else:
-            if not should_pop:
-                self.fail("mailing list popup triggered but shouldn't have")

@@ -63,6 +63,11 @@
         "id": "collection_paginate_num",
         "label": "Number of products per page",
         "type": "text"
+      },
+      {
+        "id": "collection_empty_text",
+        "label": "Text to show for empty collections",
+        "type": "text"
       }
     ]
   },
