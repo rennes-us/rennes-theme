@@ -20,6 +20,17 @@ article[typeof="Product"] figure {
   margin: 0;
   max-width: 800px;
   height: fit-content;
+  position: relative;
+}
+
+figure a {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+figure a:first-child {
+  z-index: 99;
 }
 
 figure a.arrow {
