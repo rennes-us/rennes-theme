@@ -62,6 +62,17 @@ function setupProductImageSwappingArrows() {
       return false;
     }
   });
+
+  // Handle swipe gestures too.  Note that swiping left means we're going to
+  // the right image, and swiping right means the left image.
+  var hammertime = new Hammer($("figure")[0]);
+  hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+  hammertime.on('swipeleft', function(ev) {
+    $("figure a.right").click();
+  });
+  hammertime.on('swiperight', function(ev) {
+    $("figure a.left").click();
+  });
 }
 
 // Old method: thumbnail clicking
