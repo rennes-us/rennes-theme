@@ -44,19 +44,21 @@ function setupProductImageSwappingArrows() {
     // There might not actually be a next or previous element, if
     // we were already at the edge of the set of images.  In that
     // case wrap around to the first/last depending on the case.
+    var elem = null;
     if (classes.indexOf("left") >= 0) {
-      var elem = $(current_thumbnail).prev();
+      elem = $(current_thumbnail).prev();
       if (elem.length == 0) {
-        var elem = $("figure aside a").last();
+        elem = $("figure aside a").last();
       }
-    }
-    if (classes.indexOf("right") >= 0) {
-      var elem = $(current_thumbnail).next();
+    } else if (classes.indexOf("right") >= 0) {
+      elem = $(current_thumbnail).next();
       if (elem.length == 0) {
-        var elem = $("figure aside a").first();
+        elem = $("figure aside a").first();
       }
+    } else {
+      console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
     }
-    if (elem.length > 0) {
+    if (elem && elem.length > 0) {
       return swapImage(elem);
     } else {
       return false;
