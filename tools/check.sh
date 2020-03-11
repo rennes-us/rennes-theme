@@ -14,11 +14,11 @@ function check_javascript_all {
 	)
 }
 
-# CSS Lint
-# This excludes liquid-templated CSS because I'm not sure how to get csslint to
+# CSS Lint with stylelint
+# This excludes liquid-templated CSS because I'm not sure how to get stylelint to
 # handle it.
 function check_css_all {
-	csslint assets/style*.css
+	stylelint assets/style*.css
 }
 
 # Liquid Lint
