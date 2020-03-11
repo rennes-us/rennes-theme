@@ -10,24 +10,30 @@
  * row of items.  To make it center with padding do justify-content:
  * space-around
  * */
-article.products, section.products {
+article.products,
+section.products {
   display: flex;
+
   /* In general do two across */
   flex-basis: 50%;
   flex-flow: wrap;
 }
 
 /* An individual product. */
+
 /* Having a flexible width will let the contained product image scale, but
  * only to a reasonable min/max.  Combined with display: flex on the
  * container the layout will handle a wide range of screen sizes. */
-article.products [typeof="Product"], section.products [typeof="Product"] {
+article.products [typeof="Product"],
+section.products [typeof="Product"] {
   /* Margin relative to viewport width.  Effectively sets the minimum spacing
    * between our flexible elements. */
   margin: 2vw 1vw;
+
   /* Need to account for side-to-side margins */
   width: calc(50% - 2vw);
   display: flex;
+
   /* The column/flex-end combo will have items "bottom justified" which helps
    * with varying product title length and wrapping */
   flex-direction: column-reverse;
@@ -38,17 +44,29 @@ article.products [typeof="Product"], section.products [typeof="Product"] {
  * On larger screens do more products across
  * ***************/
 @media only screen and (min-width: 740px) {
-  article.products, section.products { flex-basis: 33.3%; }
-  article.products [typeof="Product"], section.products [typeof="Product"] {
+  article.products,
+  section.products {
+    flex-basis: 33.3%;
+  }
+
+  article.products [typeof="Product"],
+  section.products [typeof="Product"] {
     width: calc(33.3% - 2vw);
   }
 }
+
 @media only screen and (min-width: 1200px) {
-  article.products, section.products { flex-basis: 25%; }
-  article.products [typeof="Product"], section.products [typeof="Product"] {
+  article.products,
+  section.products {
+    flex-basis: 25%;
+  }
+
+  article.products [typeof="Product"],
+  section.products [typeof="Product"] {
     width: calc(25% - 2vw);
   }
 }
+
 /* ************* */
 
 article.products [typeof="Product"] div[property="name"],
@@ -59,7 +77,8 @@ section.products [typeof="Product"] div[property="name"] {
 }
 
 /* The product link, wrapping the image. */
-article.products [typeof="Product"] a, section.products [typeof="Product"] a {
+article.products [typeof="Product"] a,
+section.products [typeof="Product"] a {
   background: white;
   display: block;
 }
@@ -97,21 +116,20 @@ nav.pagination {
 @media only screen and (min-width: 1200px) {
   /* Remove the heading's margin for the hovering case */
   article.products [typeof="Product"] span[property="name"],
-  section.products [typeof="Product"] span[property="name"]  {
+  section.products [typeof="Product"] span[property="name"] {
     margin-top: 0;
     padding: 8px;
   }
+
   article.products [typeof="Product"] header p,
   section.products [typeof="Product"] header p {
     padding: 8px;
   }
 }
 
-
 /* Designers list */
 
-ul.designers
-{
+ul.designers {
   text-align: center;
 }
 

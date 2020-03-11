@@ -17,7 +17,6 @@ article.page p {
   text-align: justify;
 }
 
-
 /* Shipping details page */
 
 body#shipping main p,
@@ -47,7 +46,8 @@ table.shipping small {
   display: block;
 }
 
-table.shipping td, table.shipping th {
+table.shipping td,
+table.shipping th {
   padding: 10px;
   border: 1px solid black;
   min-width: 5em;

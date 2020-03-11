@@ -25,10 +25,9 @@ article[typeof="Product"] figure {
 figure a.arrow {
   position: absolute;
   color: white;
-  /* For an approach to make an outline, see: */
-  /* https://stackoverflow.com/a/4269821/4499968 */
-  /* h-shadow v-shadow (blur-radius of 0) color; */
-  /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
+
+  /* For an approach to make an outline, see:
+   * https://stackoverflow.com/a/4269821/4499968 */
   filter: drop-shadow(0 0 2px black);
   text-rendering: optimizeLegibility;
   top: 50%;
@@ -41,10 +40,12 @@ figure a.left {
   left: 0;
   transform: rotate(45deg);
 }
+
 figure a.right {
   right: 0;
   transform: rotate(225deg);
 }
+
 figure a.arrow:hover {
   text-decoration: none;
   filter: drop-shadow(0 0 4px black);
@@ -60,13 +61,18 @@ article[typeof="Product"] > div {
  * If space allows, show figure and other product details side-by-side.
  * ***************/
 @media only screen and (min-width: 800px) {
-article[typeof="Product"] > figure { flex-basis: 50%; }
-article[typeof="Product"] > div { flex-basis: 50%; max-width: 50%; }
-article[typeof="Product"] div[property="description"] p:first-child {
+  article[typeof="Product"] > figure { flex-basis: 50%; }
+
+  article[typeof="Product"] > div {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
   /* So the text is flush with the top of the figure, if they're
-   * side-by-side. */
-  margin-top: 0;
-}
+  * side-by-side. */
+  article[typeof="Product"] div[property="description"] p:first-child {
+    margin-top: 0;
+  }
 }
 
 /* Product images */
@@ -75,13 +81,15 @@ article[typeof="Product"] figure > a[property="image"] {
   cursor: zoom-in;
 }
 
-/* The images in the aside will be side-by-side thumbnails. */
-/* Not currently shown on the page; using the left/right arrows instead. */
+/* The images in the aside will be side-by-side thumbnails.
+ * Not currently shown on the page; using the left/right arrows instead. */
 article[typeof=Product] figure aside {
   display: none;
+
   /* This will allow the children image links to wrap if necessary, based on
    * the number of children and the value of flex-basis below. */
   flex-wrap: wrap;
+
   /* For cases where there's extra whitespace (that might only come up when the
    * images hit the max-width below and there's still extra room) this will
    * center them horizontally inside the figure. */
@@ -89,19 +97,33 @@ article[typeof=Product] figure aside {
 }
 
 /* Each separate product thumbnail, wrapped in a link. */
+
 /* Each link will grow and shrink so the whole set of them fits inside the
  * width of the enclosing aside. */
 article[typeof="Product"] figure aside a {
   display: block;
-  /*flex-basis effectively sets the minimum width, since if the width had to go
-   * lower than that to fit everything it'll just wrap to another line
-   * instead.*/
+
+  /* flex-basis effectively sets the minimum width, since if the width had to
+   * go lower than that to fit everything it'll just wrap to another line
+   * instead. */
   flex-basis: 10%;
   flex-grow: 1;
   flex-shrink: 1;
+
   /* Since the number of images can vary from product to product, we set a
    * maximum width for the thumbnails for cases of just a few total images. */
   max-width: 50%;
+
+  /* Some margins on the thumbnails, proportional to the aside width */
+  margin: 1%;
+}
+
+article[typeof="Product"] figure aside a:first-child {
+  margin-left: 0;
+}
+
+article[typeof="Product"] figure aside a:last-child {
+  margin-right: 0;
 }
 
 /* Restrain the images to the size of the containing link, which is managed by
@@ -110,18 +132,6 @@ article[typeof="Product"] figure aside a {
 article[typeof="Product"] figure img {
   width: 100%;
 }
-
-/* Some margins on the thumbnails, proportional to the aside width */
-article[typeof="Product"] figure aside a {
-  margin: 1%;
-}
-article[typeof="Product"] figure aside a:first-child {
-  margin-left: 0;
-}
-article[typeof="Product"] figure aside a:last-child {
-  margin-right: 0;
-}
-
 
 /* For when product images are zoomed.
  *
@@ -140,12 +150,13 @@ article[typeof=Product] figure aside.zoomed {
   top: 0;
   width: 100%;
   z-index: 99;
+
   /* This webkit thing is needed for the expected sort of scrolling behavior in
    * mobile Safari.  Note that this gives both the "momentum-based scrolling"
    * you otherwise get, but also fixes weirdness where elements with lower
    * z-index were inadvertantly getting scrolled instead.  "auto" instead of
-   * "touch" still gives the messed-up scrolling behavior.  So touch it is! */
-  /* Possibly related:
+   * "touch" still gives the messed-up scrolling behavior.  So touch it is!
+   * Possibly related:
    *  * https://github.com/scottjehl/Device-Bugs/issues/14
    *  * https://github.com/willmcpo/body-scroll-lock
    *  * https://stackoverflow.com/a/38505679 */
@@ -159,13 +170,14 @@ article[typeof=Product] figure aside.zoomed a {
   margin: 5px auto;
   max-width: 100%;
 }
+
 /* Aiming for one reasonable approach across viewport dimensions for the
  * maximum width in zoom mode, once we're beyond the smallest screens.  100% of
  * the viewport height seems OK. */
 @media only screen and (min-width: 800px) {
-article[typeof=Product] figure aside.zoomed a {
-  max-width: 100vh;
-}
+  article[typeof=Product] figure aside.zoomed a {
+    max-width: 100vh;
+  }
 }
 
 /*
@@ -180,6 +192,7 @@ article[typeof=Product] div[property=description] {
   padding: 1em 0;
   text-align: justify;
 }
+
 form[property=offers] {
   border-bottom: 1px solid black;
   border-top: 1px solid black;
@@ -225,6 +238,7 @@ form[property=offers] .pick-an-option {
 form[property=offers] .variants input[type=radio] {
   display: none;
 }
+
 form[property=offers] .variants input[type=radio] + label {
   padding: 5px;
   margin: 5px;
@@ -234,9 +248,11 @@ form[property=offers] .variants input[type=radio] + label {
   text-transform: lowercase;
   display: block;
 }
+
 form[property=offers] .variants input[type=radio]:enabled + label {
   cursor: pointer;
 }
+
 form[property=offers] .variants input[type=radio]:disabled + label {
   color: gray;
   cursor: not-allowed;

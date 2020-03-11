@@ -7,11 +7,13 @@
 .mailing-list label {
   display: block;
 }
+
 .mailing-list input[type="email"] {
   border: none;
   border-bottom: 1px solid black;
   outline-width: 0;
   width: 15em;
+
   /* https://stackoverflow.com/a/2918716 */
   border-radius: 0;
 }

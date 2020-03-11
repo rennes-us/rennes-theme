@@ -8,18 +8,6 @@ form[action="/cart"] {
   text-align: center;
 }
 
-form[action="/cart"] table {
-/*  width: 100%;*/
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Product images will be 20% of the viewport height (but at least 100px). */
-form[action="/cart"] table img {
-  height: 20vh;
-  min-height: 100px;
-}
-
 /* Aside from the table of items, there's a controls container with the buttons
  * and such. */
 form[action="/cart"] div.controls {
@@ -50,10 +38,19 @@ form[action="/cart"] div.controls label[for="checkout-warning"] {
 
 /* Main cart table properties */
 
-/* Borders on parent elements of td/th in tables don't seem to work unless we
- * collapse borders  */
 form[action="/cart"] table {
+  margin-left: auto;
+  margin-right: auto;
+
+  /* Borders on parent elements of td/th in tables don't seem to work unless we
+   * collapse borders  */
   border-collapse: collapse;
+}
+
+/* Product images will be 20% of the viewport height (but at least 100px). */
+form[action="/cart"] table img {
+  height: 20vh;
+  min-height: 100px;
 }
 
 /* Padding inside all the table cells, proportional to the viewport size. */
@@ -67,9 +64,11 @@ form[action="/cart"] th {
 form[action="/cart"] thead th {
   font-weight: normal;
 }
+
 form[action="/cart"] thead tr {
   border-bottom: 1px solid #999;
 }
+
 form[action="/cart"] tfoot tr:first-child {
   border-top: 1px solid #999;
 }
@@ -87,14 +86,17 @@ form[action="/cart"] tbody th[scope=row] {
 }
 
 /* Quantity box */
+
 /* Mobile browsers zoom on input fields when the text is small.
  * https://stackoverflow.com/a/6394497 */
 form[action="/cart"] tbody td input[type=number] {
   font-size: inherit;
   width: 2em;
 }
+
 /* It seems like styling the number spinner buttons is tricky currently and I'm
  * mostly just seeing people hide them and implement their own. */
+
 /* https://stackoverflow.com/a/21775054 */
 form[action="/cart"] tbody td input[type=number]::-webkit-inner-spin-button,
 form[action="/cart"] tbody td input[type=number]::-webkit-outer-spin-button {
@@ -106,12 +108,13 @@ form[action="/cart"] tbody td span.number-controls {
   user-select: none;
   font-weight: bold;
 }
+
 form[action="/cart"] tbody td label.decrement,
 form[action="/cart"] tbody td label.increment {
   cursor: pointer;
 }
 
-/*****************************************************************************/
+/* ************************************************************************* */
 
 /* Adapted from:
  * https://css-tricks.com/responsive-data-tables/
@@ -119,7 +122,6 @@ form[action="/cart"] tbody td label.increment {
  * */
 
 @media only screen and (max-width: 600px) {
-
   /* Force table to not be like tables anymore */
   form[action="/cart"] table,
   form[action="/cart"] thead,
@@ -138,7 +140,10 @@ form[action="/cart"] tbody td label.increment {
     top: -9999px;
   }
 
-  form[action="/cart"] tbody tr { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; }
+  form[action="/cart"] tbody tr {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
 
   form[action="/cart"] tbody td,
   form[action="/cart"] tbody th {
@@ -155,20 +160,21 @@ form[action="/cart"] tbody td label.increment {
   form[action="/cart"] tfoot tr:first-child { border-top: none; }
 
   /* Label the data */
+
   /* The first one is just an image so we'll style it up special */
   form[action="/cart"] tbody td:nth-of-type(1) {
     padding-left: initial;
     text-align: center;
   }
-  /* The rest get labels.  But careful now, I'm using a th for one.  */
-  form[action="/cart"] tbody td:nth-of-type(2):before { content: "Price: "; }
-  form[action="/cart"] tbody td:nth-of-type(3):before { content: "Quantity: "; }
-  form[action="/cart"] tbody td:nth-of-type(4):before { content: "Total: "; }
 
+  /* The rest get labels.  But careful now, I'm using a th for one.  */
+  form[action="/cart"] tbody td:nth-of-type(2)::before { content: "Price: "; }
+  form[action="/cart"] tbody td:nth-of-type(3)::before { content: "Quantity: "; }
+  form[action="/cart"] tbody td:nth-of-type(4)::before { content: "Total: "; }
 
   /* With this layout, we can afford to use a bit more of the viewport height
-   * on the images.*/
+   * on the images. */
   form[action="/cart"] table img {
     height: 30vh;
   }
-} 
+}
