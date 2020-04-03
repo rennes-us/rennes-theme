@@ -16,6 +16,7 @@ function mainShop() {
 
 // This will make sub-menus slide up/down.
 function setupToggleMenus() {
+  console.log("setupToggleMenus");
   $("nav ul ul").css('display', 'none');
   // For any nested ul also inside a nav, get the anchor just before it,
   // and slideToggle the ul when the anchor is clicked.
@@ -35,51 +36,56 @@ function setupToggleMenus() {
 
 // New method: arrow clicking
 function setupProductImageSwappingArrows() {
+  console.log("setupProductImageSwappingArrows");
   // When an arrow is clicked, swap out for the next or previous image
-  $('[typeof="Product"] figure a.arrow').click(function() {
-    // What kind of arrow is this?
-    // https://stackoverflow.com/a/10159062/4499968
-    var classes = $(this).attr("class").split(/\s+/);
-    var current_thumbnail = $(".current_thumbnail");
-    // There might not actually be a next or previous element, if
-    // we were already at the edge of the set of images.  In that
-    // case wrap around to the first/last depending on the case.
-    var elem = null;
-    if (classes.indexOf("left") >= 0) {
-      elem = $(current_thumbnail).prev();
-      if (elem.length == 0) {
-        elem = $("figure aside a").last();
+  var arrows = $('[typeof="Product"] figure a.arrow');
+  if (arrows.length) {
+    arrows.click(function() {
+      // What kind of arrow is this?
+      // https://stackoverflow.com/a/10159062/4499968
+      var classes = $(this).attr("class").split(/\s+/);
+      var current_thumbnail = $(".current_thumbnail");
+      // There might not actually be a next or previous element, if
+      // we were already at the edge of the set of images.  In that
+      // case wrap around to the first/last depending on the case.
+      var elem = null;
+      if (classes.indexOf("left") >= 0) {
+        elem = $(current_thumbnail).prev();
+        if (elem.length == 0) {
+          elem = $("figure aside a").last();
+        }
+      } else if (classes.indexOf("right") >= 0) {
+        elem = $(current_thumbnail).next();
+        if (elem.length == 0) {
+          elem = $("figure aside a").first();
+        }
+      } else {
+        console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
       }
-    } else if (classes.indexOf("right") >= 0) {
-      elem = $(current_thumbnail).next();
-      if (elem.length == 0) {
-        elem = $("figure aside a").first();
+      if (elem && elem.length > 0) {
+        return swapImage(elem);
+      } else {
+        return false;
       }
-    } else {
-      console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
-    }
-    if (elem && elem.length > 0) {
-      return swapImage(elem);
-    } else {
-      return false;
-    }
-  });
+    });
 
-  // Handle swipe gestures too.  Note that swiping left means we're going to
-  // the right image, and swiping right means the left image.
-  var hammertime = new Hammer($("figure")[0]);
-  hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
-  hammertime.on('swipeleft', function(ev) {
-    $("figure a.right").click();
-  });
-  hammertime.on('swiperight', function(ev) {
-    $("figure a.left").click();
-  });
+    // Handle swipe gestures too.  Note that swiping left means we're going to
+    // the right image, and swiping right means the left image.
+    var hammertime = new Hammer($("figure")[0]);
+    hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+    hammertime.on('swipeleft', function(ev) {
+      $("figure a.right").click();
+    });
+    hammertime.on('swiperight', function(ev) {
+      $("figure a.left").click();
+    });
+  }
 }
 
 // Old method: thumbnail clicking
 // Not currently used, see the arrows version instead.
 function setupProductImageSwapping() {
+  console.log("setupProductImageSwapping");
   // When a small image is clicked, set it as the current image
   $('[typeof="Product"] figure aside a').click(function() {
     return swapImage(this);
@@ -105,6 +111,7 @@ function swapImage(el) {
 // For showing a zoomed version of the product images when the main image is
 // clicked
 function setupProductImageZoom() {
+  console.log("setupProductImageZoom");
   $('[typeof="Product"] figure > a[property="image"]').click(zoomProductImages);
 }
 
@@ -142,6 +149,7 @@ function zoomedImageLinkClick() {
 // Only set the handler if there are actually variants to choose from, though.
 
 function setupVariantCheck() {
+  console.log("setupVariantCheck");
   if ($('article[typeof="Product"] form input[type="radio"]').length > 0)
     $('article[typeof="Product"] form button').click(function() {return addCartHandler();});
 }
@@ -163,6 +171,7 @@ function addCartHandler() {
 // Update Bag.  I don't see any HTML/CSS way to make this happen so we'll just
 // unset the required attributeourselves when Update Bag is clicked.
 function setupBagUpdate() {
+  console.log("setupBagUpdate");
   $('form[action="/cart"] button[value="update"]').click(function() {
     // NOTE we don't want to return false here, because we do want the
     // click to have its usual effect.
@@ -173,6 +182,7 @@ function setupBagUpdate() {
 // Modern browsers have built-in number spinner buttons but they don't have
 // much flexibility in styling them, so we'll make our own.
 function setupQtyButtons() {
+  console.log("setupQtyButtons");
   // The decrement button should change the value of the element it's for to be
   // one lower than it currently is, but no lower than zero.  (This is also
   // defined in the HTML as min="0" but the javascript apparently can override
