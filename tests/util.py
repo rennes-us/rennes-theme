@@ -69,6 +69,7 @@ TEST_PRODUCTS = {
     "lots-of-photos":      "collections/testing/products/lots-of-photos",
     "now-cheaper":         "collections/testing/products/now-cheaper",
     "variants":            "collections/testing/products/variants",
+    "varying-prices":      "collections/testing/products/varying-prices",
     "complex-description": "collections/testing/products/complex-description"}
 
 

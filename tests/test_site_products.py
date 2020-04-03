@@ -42,6 +42,15 @@ class TestSiteProducts(StoreSite):
         self.get(TEST_PRODUCTS["variants"])
         self.skipTest("not yet implemented")
 
+    def test_template_product_varying_prices(self):
+        """Test product template for a product with differently-priced variants.
+
+        It should notify us if we try to add to cart without selecting one of
+        the variants.  When one is selected, it should be styled appropriately.
+        """
+        self.get(TEST_PRODUCTS["varying-prices"])
+        self.skipTest("not yet implemented")
+
     def test_template_product_out_of_stock_variant(self):
         """Test product template for a product with one variant out of stock."""
         self.get(TEST_PRODUCTS["running-low"])
