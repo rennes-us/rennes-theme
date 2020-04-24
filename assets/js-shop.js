@@ -34,8 +34,9 @@ function setupToggleMenus() {
 // ----------------------------------------------------------------------------
 // Product image swapping
 
-// Cycle through product images for arrow_class either "left" or "right"
-function _swapProductImage(arrow_class) {
+// get the anchor element of either the "left" or "right" thumbnail, wrapping
+// as needed.
+function _getAdjacentThumbnail(arrow_class) {
   var current_thumbnail = $(".current_thumbnail");
   // There might not actually be a next or previous element, if
   // we were already at the edge of the set of images.  In that
@@ -52,11 +53,74 @@ function _swapProductImage(arrow_class) {
       elem = $("figure aside a").first();
     }
   }
+  return elem;
+}
+
+// Cycle through product images for arrow_class either "left" or "right"
+function _swapProductImage(arrow_class) {
+  var elem = _getAdjacentThumbnail(arrow_class);
   if (elem && elem.length > 0) {
     return swapImage(elem);
   } else {
     return false;
   }
+}
+
+// Swipe (as triggered via a gesture) the product image either "left" or
+// "right" (in the direction the images should move, not the direction of the
+// swipe).
+// This acts as a wrapper around the swap function to handle the animation.
+// This is pretty convoluted but has the benefit of leaving the original DOM very
+// simple and semantic.
+function _swipeProductImage(arrow_class) {
+  // First, set up placeholders to be positioned to the left, on top of, and to
+  // the right of the main image and hide content outside of the figure
+  // element.  Remove the semantic stuff so these placeholders don't get
+  // interpreted as the real thing.
+  // This part is the same no matter the arrow_class argument.
+  var figure = $('[typeof="Product"] figure');
+  figure.css("overflow", "hidden");
+  var img = $('[typeof="Product"] figure > a[typeof="ImageObject"]');
+  var width = img.width().toString().concat("px");
+  var left = _getAdjacentThumbnail("left").clone();
+  var center = img.clone();
+  var right = _getAdjacentThumbnail("right").clone();
+  function floatit(elem) {
+    elem.css("z-index", "99");
+    elem.css("position", "absolute");
+    elem.css("width", "100%");
+    elem.css("height", "100%");
+    elem.attr("property", "");
+    elem.attr("typeOf", "");
+    elem.addClass("-main-image");
+  }
+  floatit(left);
+  floatit(center);
+  floatit(right);
+  left.css("left", "-".concat(width));
+  right.css("right", "-".concat(width));
+
+  center.insertBefore(img);
+  left.insertBefore(center);
+  right.insertAfter(center);
+  // Slide the main image and placeholders left or right as requested and do
+  // the actual image swap.  Have the placeholders remove themselves when the
+  // animation stops (by which time the "real" image should be in place so it's
+  // seamless).
+  var animation = null;
+  var selector = null;
+  if (arrow_class == "right") {
+    animation = {left: "-=".concat(width)};
+    selector = "figure a.right";
+  } else {
+    animation = {left: "+=".concat(width)};
+    selector = "figure a.left";
+  }
+  $(".-main-image").animate(
+    properties=animation,
+    duration=1000,
+    complete=function() {$(".-main-image").remove();});
+  _swapProductImage(arrow_class);
 }
 
 // Is focus currently inside of an element that takes text input?  This is not
@@ -105,12 +169,8 @@ function setupProductImageSwappingArrows() {
     // the right image, and swiping right means the left image.
     var hammertime = new Hammer($("figure")[0]);
     hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
-    hammertime.on('swipeleft', function(ev) {
-      $("figure a.right").click();
-    });
-    hammertime.on('swiperight', function(ev) {
-      $("figure a.left").click();
-    });
+    hammertime.on('swipeleft', function(ev) { _swipeProductImage("right"); });
+    hammertime.on('swiperight', function(ev) { _swipeProductImage("left"); });
   }
 }
 
@@ -132,7 +192,7 @@ function swapImage(el) {
   $(".current_thumbnail").removeClass("current_thumbnail");
   $(el).addClass("current_thumbnail");
   var img = $(el).children('img');
-  var current_img = $('[typeof="Product"] figure > a img');
+  var current_img = $('[typeof="Product"] figure > a[typeof="ImageObject"] img');
   current_img.replaceWith(img.clone());
   return false;
 }
