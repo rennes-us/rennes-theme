@@ -81,7 +81,7 @@ function _swipeProductImage(arrow_class) {
   var figure = $('[typeof="Product"] figure');
   figure.css("overflow", "hidden");
   var img = $('[typeof="Product"] figure > a[typeof="ImageObject"]');
-  var width = img.width().toString().concat("px");
+  var width = img.width() + "px";
   var left = _getAdjacentThumbnail("left").clone();
   var center = img.clone();
   var right = _getAdjacentThumbnail("right").clone();
@@ -97,8 +97,8 @@ function _swipeProductImage(arrow_class) {
   floatit(left);
   floatit(center);
   floatit(right);
-  left.css("left", "-".concat(width));
-  right.css("right", "-".concat(width));
+  left.css("left", "-" + width);
+  right.css("right", "-" + width);
 
   center.insertBefore(img);
   left.insertBefore(center);
@@ -110,10 +110,10 @@ function _swipeProductImage(arrow_class) {
   var animation = null;
   var selector = null;
   if (arrow_class == "right") {
-    animation = {left: "-=".concat(width)};
+    animation = {left: "-=" + width};
     selector = "figure a.right";
   } else {
-    animation = {left: "+=".concat(width)};
+    animation = {left: "+=" + width};
     selector = "figure a.left";
   }
   $(".-main-image").animate(
@@ -155,7 +155,7 @@ function setupProductImageSwappingArrowsClicks(arrows) {
     } else if (classes.indexOf("right") >= 0) {
       arrow_class = "right";
     } else {
-      console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
+      console.log("figure arrow class not recognized: " + $(this).attr("class"));
     }
     return _swapProductImage(arrow_class);
   });
@@ -235,9 +235,9 @@ function zoomProductImages() {
   }
   console.log(
     "zoomProductImages: " +
-    "img " + imgwidth.toString() + "px, " +
-    "viewport " + displaywidth.toString() + "px " +
-    "(" + widthpct.toString() + "%) -> " + verdict);
+    "img " + imgwidth + "px, " +
+    "viewport " + displaywidth + "px " +
+    "(" + widthpct + "%) -> " + verdict);
   if (verdict == "skip") {
     return false;
   }
@@ -312,13 +312,13 @@ function setupQtyButtons() {
   // defined in the HTML as min="0" but the javascript apparently can override
   // it.)
   $('form[action="/cart"] .decrement').click(function() {
-    var input = $("#".concat($(this).attr("for")));
+    var input = $("#" + $(this).attr("for"));
     input.val(Math.max(0, Number(input.val()) - 1));
   });
   // The increment button should change the value of the element it's for to be
   // one higher than it currently is.
   $('form[action="/cart"] .increment').click(function() {
-    var input = $("#".concat($(this).attr("for")));
+    var input = $("#" + $(this).attr("for"));
     input.val(Number(input.val()) + 1);
   });
 }
