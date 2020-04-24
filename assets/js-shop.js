@@ -224,6 +224,23 @@ function setupProductImageZoom() {
 
 // Display the full list of images at large size one below the other
 function zoomProductImages() {
+  // This is only worth doing if the main product image doesn't already take up
+  // most of the viewport.  We'll compare the widths to see.
+  var displaywidth = Math.round($(window).width());
+  var imgwidth = Math.round($('[typeof="Product"] figure').width());
+  var widthpct = Math.round(imgwidth/displaywidth*100);
+  var verdict = "zoom";
+  if (widthpct > 65) {
+    verdict = "skip";
+  }
+  console.log(
+    "zoomProductImages: " +
+    "img " + imgwidth.toString() + "px, " +
+    "viewport " + displaywidth.toString() + "px " +
+    "(" + widthpct.toString() + "%) -> " + verdict);
+  if (verdict == "skip") {
+    return false;
+  }
   // We already have CSS defined for the zoomed case, so all that's
   // needed to zoom is adding the class to the element.
   $('[typeof="Product"] figure aside').addClass("zoomed");
