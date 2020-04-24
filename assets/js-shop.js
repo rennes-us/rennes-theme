@@ -34,7 +34,41 @@ function setupToggleMenus() {
 // ----------------------------------------------------------------------------
 // Product image swapping
 
-// New method: arrow clicking
+// Cycle through product images for arrow_class either "left" or "right"
+function _swapProductImage(arrow_class) {
+  var current_thumbnail = $(".current_thumbnail");
+  // There might not actually be a next or previous element, if
+  // we were already at the edge of the set of images.  In that
+  // case wrap around to the first/last depending on the case.
+  var elem = null;
+  if (arrow_class == "left") {
+    elem = $(current_thumbnail).prev();
+    if (elem.length == 0) {
+      elem = $("figure aside a").last();
+    }
+  } else if (arrow_class == "right") {
+    elem = $(current_thumbnail).next();
+    if (elem.length == 0) {
+      elem = $("figure aside a").first();
+    }
+  }
+  if (elem && elem.length > 0) {
+    return swapImage(elem);
+  } else {
+    return false;
+  }
+}
+
+// Is focus currently inside of an element that takes text input?  This is not
+// a perfect way to detect when it's appropriate to do something special with
+// keyboard input but for our purposes it should be enough.
+function insideTextElement() {
+  var tagName = $(document.activeElement).prop("tagName").toUpperCase();
+  var textTags = ["INPUT", "TEXTAREA"];
+  return textTags.indexOf(tagName) != -1;
+}
+
+// New product image swap method: arrow clicking
 function setupProductImageSwappingArrows() {
   console.log("setupProductImageSwappingArrows");
   // When an arrow is clicked, swap out for the next or previous image
@@ -44,31 +78,29 @@ function setupProductImageSwappingArrows() {
       // What kind of arrow is this?
       // https://stackoverflow.com/a/10159062/4499968
       var classes = $(this).attr("class").split(/\s+/);
-      var current_thumbnail = $(".current_thumbnail");
-      // There might not actually be a next or previous element, if
-      // we were already at the edge of the set of images.  In that
-      // case wrap around to the first/last depending on the case.
-      var elem = null;
+      var arrow_class = null;
       if (classes.indexOf("left") >= 0) {
-        elem = $(current_thumbnail).prev();
-        if (elem.length == 0) {
-          elem = $("figure aside a").last();
-        }
+        arrow_class = "left";
       } else if (classes.indexOf("right") >= 0) {
-        elem = $(current_thumbnail).next();
-        if (elem.length == 0) {
-          elem = $("figure aside a").first();
-        }
+        arrow_class = "right";
       } else {
         console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
       }
-      if (elem && elem.length > 0) {
-        return swapImage(elem);
-      } else {
-        return false;
+      return _swapProductImage(arrow_class);
+    });
+    // Handle left and right keyboard keys.
+    // https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+    $("body").keydown(function(e) {
+      // Don't swap images around if focus is in an input/textarea/etc. though.
+      if (insideTextElement()) {
+        return;
+      }
+      if (e.which == 37) {
+        _swapProductImage("left");
+      } else if (e.which == 39) {
+        _swapProductImage("right");
       }
     });
-
     // Handle swipe gestures too.  Note that swiping left means we're going to
     // the right image, and swiping right means the left image.
     var hammertime = new Hammer($("figure")[0]);
@@ -82,7 +114,7 @@ function setupProductImageSwappingArrows() {
   }
 }
 
-// Old method: thumbnail clicking
+// Old product image swap method: thumbnail clicking
 // Not currently used, see the arrows version instead.
 function setupProductImageSwapping() {
   console.log("setupProductImageSwapping");
