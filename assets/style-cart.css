@@ -61,6 +61,12 @@ form[action="/cart"] th {
 
 /* Cart table header */
 
+/* "Options" column can be left implicit */
+form[action="/cart"] thead th:last-child,
+form[action="/cart"] tfoot td:last-child {
+  display: none;
+}
+
 form[action="/cart"] thead th {
   font-weight: normal;
 }
@@ -92,6 +98,15 @@ form[action="/cart"] tbody th[scope=row] {
 form[action="/cart"] tbody td input[type=number] {
   font-size: inherit;
   width: 2em;
+}
+
+/* "Remove" link */
+form[action="/cart"] tbody td:last-child a {
+  color: #aaa;
+  text-decoration: none;
+}
+form[action="/cart"] tbody td:last-child a:hover {
+  color: #777;
 }
 
 /* It seems like styling the number spinner buttons is tricky currently and I'm

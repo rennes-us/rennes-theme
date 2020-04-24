@@ -68,6 +68,12 @@ class TestSite(StoreSite):
         self.check_header(bagsize=1)
         trow = self.get_cart_row(product, prodid)
         self.assertIsNotNone(trow)
+        trow.find_element_by_xpath("//a[@title='Remove Item']").click()
+        self.check_header(bagsize=0)
+        trow = self.get_cart_row(product, prodid)
+        self.assertIsNone(trow)
+        # Let's add it back in, and try to check out.
+        self.add_to_cart(product, prodvar)
         self.check_header(bagsize=1)
         button = self.xp("//button[@title='Checkout']")
         self.assertFalse(

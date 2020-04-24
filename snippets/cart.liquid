@@ -8,6 +8,7 @@
           <th>Price</th>
           <th>Qty</th>
           <th>Total</th>
+          <th>Options</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,7 @@
               </span>
             </td>
             <td>{{ item.line_price | money_with_currency }}</td>
+            <td><a href="/cart/change/{{ item.variant.id }}?quantity=0" title="Remove Item"><abbr title="Remove">✘</abbr></a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -35,6 +37,7 @@
           <td></td>
           <td></td>
           <td id="total-cost">{{ cart.total_price | money_with_currency }}</td>
+          <td></td>
         </tr>
       </tfoot>
 
