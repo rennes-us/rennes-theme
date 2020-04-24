@@ -387,6 +387,11 @@ class StoreSite(StoreClient):
         # should not change the image, then.
         self.xp("//input").send_keys(Keys.ARROW_RIGHT)
         checksrc(thumbnails[0])
+        # Finally, check swiping.  We'll pretend by calling the appropriate
+        # javascript manually.  Not ideal, but better than nothing.
+        swappy(
+            lambda: self.driver.execute_script('_swipeProductImage("left");'),
+            lambda: self.driver.execute_script('_swipeProductImage("right");'))
 
     def _check_product_image_swap(self, altimg=1):
         """Check that clicking thumbnails switches out the main product image.
