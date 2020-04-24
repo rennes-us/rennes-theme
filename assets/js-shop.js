@@ -138,40 +138,55 @@ function setupProductImageSwappingArrows() {
   // When an arrow is clicked, swap out for the next or previous image
   var arrows = $('[typeof="Product"] figure a.arrow');
   if (arrows.length) {
-    arrows.click(function() {
-      // What kind of arrow is this?
-      // https://stackoverflow.com/a/10159062/4499968
-      var classes = $(this).attr("class").split(/\s+/);
-      var arrow_class = null;
-      if (classes.indexOf("left") >= 0) {
-        arrow_class = "left";
-      } else if (classes.indexOf("right") >= 0) {
-        arrow_class = "right";
-      } else {
-        console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
-      }
-      return _swapProductImage(arrow_class);
-    });
-    // Handle left and right keyboard keys.
-    // https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
-    $("body").keydown(function(e) {
-      // Don't swap images around if focus is in an input/textarea/etc. though.
-      if (insideTextElement()) {
-        return;
-      }
-      if (e.which == 37) {
-        _swapProductImage("left");
-      } else if (e.which == 39) {
-        _swapProductImage("right");
-      }
-    });
-    // Handle swipe gestures too.  Note that swiping left means we're going to
-    // the right image, and swiping right means the left image.
-    var hammertime = new Hammer($("figure")[0]);
-    hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
-    hammertime.on('swipeleft', function(ev) { _swipeProductImage("right"); });
-    hammertime.on('swiperight', function(ev) { _swipeProductImage("left"); });
+    setupProductImageSwappingArrowsClicks(arrows);
+    setupProductImageSwappingArrowsKeyboard();
+    setupProductImageSwappingArrowsSwipe();
   }
+}
+
+function setupProductImageSwappingArrowsClicks(arrows) {
+  arrows.click(function() {
+    // What kind of arrow is this?
+    // https://stackoverflow.com/a/10159062/4499968
+    var classes = $(this).attr("class").split(/\s+/);
+    var arrow_class = null;
+    if (classes.indexOf("left") >= 0) {
+      arrow_class = "left";
+    } else if (classes.indexOf("right") >= 0) {
+      arrow_class = "right";
+    } else {
+      console.log("figure arrow class not recognized: ".concat($(this).attr("class")));
+    }
+    return _swapProductImage(arrow_class);
+  });
+}
+
+function setupProductImageSwappingArrowsKeyboard() {
+  // Handle left and right keyboard keys.
+  // https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+  $("body").keydown(function(e) {
+    // Don't swap images around if focus is in an input/textarea/etc. though.
+    if (insideTextElement()) {
+      return;
+    }
+    if (e.which == 37) {
+      _swapProductImage("left");
+    } else if (e.which == 39) {
+      _swapProductImage("right");
+    }
+  });
+}
+
+function setupProductImageSwappingArrowsSwipe() {
+  // Handle swipe gestures in the same way as clicking the arrow links.  Note
+  // that swiping left means we're going to the right image, and swiping right
+  // means the left image.
+  // HammerJS works very nicely for this though it seems to interfere
+  // sporadically with the native iOS Safari's zoom on the figure as soon as
+  // the Hammer object is initialized.  Need to look into that more.
+  var hammertime = new Hammer($("figure")[0]);
+  hammertime.on('swipeleft', function(ev) { _swipeProductImage("right"); });
+  hammertime.on('swiperight', function(ev) { _swipeProductImage("left"); });
 }
 
 // Old product image swap method: thumbnail clicking
