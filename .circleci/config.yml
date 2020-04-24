@@ -10,6 +10,7 @@ jobs:
           name: Setup Environment
           command: |
             echo "export SHOPIFY_CHECK_INSTA=$SHOPIFY_CHECK_INSTA" >> $BASH_ENV
+            cat $BASH_ENV
       - run:
           name: Test
           command: echo hi
