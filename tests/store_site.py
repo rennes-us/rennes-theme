@@ -6,6 +6,7 @@ See the StoreSite class for the main part.
 
 import logging
 import re
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from .store_client import StoreClient
@@ -332,15 +333,25 @@ class StoreSite(StoreClient):
 
         Clicking the left and right links should swap out the images in order.
         Going past the left edge should wrap around to the last image, and
-        going past the right edge should wrap around to the first image.
+        going past the right edge should wrap around to the first image.  The
+        keyboard arrows keys should switch images too, but not when text is
+        being entered elsewhere.
         """
         figure = self.check_for_elem("//article[@typeof='Product']/figure")
+        thumbnails = self.check_for_elems(
+            "/aside/a[@property='image'][@typeof='ImageObject']/img",
+            figure)
+        thumbnails_srcs = [img.get_attribute("src") for img in thumbnails]
         getimg = lambda: self.check_for_elem(
             "/a[@property='image'][@typeof='ImageObject']/img",
             figure)
         checksrc = lambda img: self.assertEqual(
             getimg().get_attribute("src"),
-            img.get_attribute("src"))
+            img.get_attribute("src"),
+            "Expected img %d, observed %d" % (
+                thumbnails_srcs.index(img.get_attribute("src")),
+                thumbnails_srcs.index(getimg().get_attribute("src")))
+            )
         figure = self.check_for_elem("//article[@typeof='Product']/figure")
         # Check the left and right links
         left = self.check_for_elem("a[@class='arrow left']", figure)
@@ -349,24 +360,32 @@ class StoreSite(StoreClient):
         self.assertEqual(right.value_of_css_property("cursor"), "pointer")
         self.assertEqual(left.text, get_setting("product_left_image_text"))
         self.assertEqual(right.text, get_setting("product_right_image_text"))
+
+        def swappy(left, right):
+            """Use given left/right functions to swap out product image."""
+            checksrc(thumbnails[0])
+            left() # wrap around backwards
+            checksrc(thumbnails[expected["num_images"]-1])
+            right() # back to beginning
+            # click through the rest.  The last click should wrap us around to
+            # the first image
+            for click in range(expected["num_images"]):
+                checksrc(thumbnails[click])
+                right()
+            checksrc(thumbnails[0])
+
         # Starting off, the first thumbnail should match the main image
-        thumbnails = self.check_for_elems(
-            "/aside/a[@property='image'][@typeof='ImageObject']/img",
-            figure)
-        num = expected["num_images"]
-        self.assertEqual(len(thumbnails), num)
+        self.assertEqual(len(thumbnails), expected["num_images"])
         checksrc(thumbnails[0])
-        # wrap around backwards
-        left.click()
-        checksrc(thumbnails[num-1])
-        # back to beginning
-        right.click()
-        # click through the rest.  The last click should wrap us around to the
-        # first image
-        for click in range(num):
-            checksrc(thumbnails[click])
-            right.click()
-        ## wrap around forwards
+        # Make sure cycling behavior works when clicking left/right arrows
+        swappy(left.click, right.click)
+        # Likewise, but for left/right arrow keys on keyboard
+        swappy(
+            lambda: self.xp("//body").send_keys(Keys.ARROW_LEFT),
+            lambda: self.xp("//body").send_keys(Keys.ARROW_RIGHT))
+        # But wait, what if we're in an input element?  The keyboard keys
+        # should not change the image, then.
+        self.xp("//input").send_keys(Keys.ARROW_RIGHT)
         checksrc(thumbnails[0])
 
     def _check_product_image_swap(self, altimg=1):
