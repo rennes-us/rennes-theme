@@ -1,0 +1,9 @@
+version: 2.1
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          command: echo hi
+          name: Test
