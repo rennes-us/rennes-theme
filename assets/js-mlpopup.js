@@ -1,12 +1,7 @@
 // Mailing list signup form that appears only once per recognized visitor.
 // Depends on existing element on the page to duplicate into the popup circle.
 
-var mlpopup_enabled = {{ settings.mlpopup_enabled }}; // enable popup callback?
-var mlpopup_timeout = {{ settings.mlpopup_delay }}; // ms delay for popup
-var mlpopup_cookie = "mailinglistpopup"; // name of cookie
-var mlpopup_classadd = "mailing-list"; // class of existing section element to duplicate
-
-if (mlpopup_enabled) {
+if (SHOP_CONFIG.get("mlpopup_enabled")) {
   $(document).ready(setup_popup);
 }
 
@@ -14,8 +9,8 @@ if (mlpopup_enabled) {
 // If the browser looks mobile or the cookie indicates it's
 // been shown before, don't.
 function setup_popup() {
-  if (! (ismobile() || popup_cookie_exists()) && $("." + mlpopup_classadd).length > 0)
-    setTimeout(popup, mlpopup_timeout);
+  if (! (ismobile() || popup_cookie_exists()) && $("." + SHOP_CONFIG.get("mlpopup_classadd")).length > 0)
+    setTimeout(popup, SHOP_CONFIG.get("mlpopup_delay"));
 }
 
 function ismobile() {
@@ -25,6 +20,7 @@ function ismobile() {
 // Display the mailing list popup.  Set up event handlers
 // for closing the popup, and a cookie to prevent it from showing again.
 function popup() {
+  var mlpopup_classadd = SHOP_CONFIG.get("mlpopup_classadd");
   $("body").append($("<div class='popup'/>"));
   // clone() isn't really correct since I end up
   // with duplicated IDs, but whatever, it works out OK.
@@ -40,18 +36,18 @@ function popup() {
 
 // True if the cookie is found signifying the popup has occurred for this browser.
 function popup_cookie_exists() {
-  return(Boolean(document.cookie.match(mlpopup_cookie)));
+  return(Boolean(document.cookie.match(SHOP_CONFIG.get("mlpopup_cookie"))));
 }
 
 // Set a cookie to signify that the popup has occurred for this browser.
 function set_popup_cookie() {
-  document.cookie = mlpopup_cookie.concat("=True; expires=Fri, 1 Jan 2100 12:00:00 UTC; path=/");
+  document.cookie = SHOP_CONFIG.get("mlpopup_cookie").concat("=True; expires=Fri, 1 Jan 2100 12:00:00 UTC; path=/");
 }
 
 // Clear the cookie (via a past expiration date)
 // Nothing actually calls this here; it's just a helper for testing.
 function clear_popup_cookie() {
-  document.cookie = mlpopup_cookie.concat("=True; expires=Mon, 1 Jan 1900 12:00:00 UTC; path=/");
+  document.cookie = SHOP_CONFIG.get("mlpopup_cookie").concat("=True; expires=Mon, 1 Jan 1900 12:00:00 UTC; path=/");
 }
 
 // Remove the popup element,

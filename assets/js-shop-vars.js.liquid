@@ -1,0 +1,11 @@
+{% comment %}
+Various shop settings used in javascript.  These are centralized here so we can
+keep the config defined in one place, and limit the amount of liquid mixed with
+javascript so linting and such is easier.
+{% endcomment %}
+var SHOP_CONFIG = new Map();
+SHOP_CONFIG.set("product_img_swipe_speed", {{settings.product_img_swipe_speed}});
+SHOP_CONFIG.set("mlpopup_enabled", {{ settings.mlpopup_enabled }}); // enable popup callback?
+SHOP_CONFIG.set("mlpopup_delay", {{ settings.mlpopup_delay }}); // ms delay for popup
+SHOP_CONFIG.set("mlpopup_cookie", "mailinglistpopup"); // name of cookie
+SHOP_CONFIG.set("mlpopup_classadd", "mailing-list"); // class of existing section element to duplicate

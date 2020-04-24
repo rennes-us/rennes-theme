@@ -118,7 +118,7 @@ function _swipeProductImage(arrow_class) {
   }
   $(".-main-image").animate(
     properties=animation,
-    duration=1000,
+    duration=SHOP_CONFIG.get("product_img_swipe_speed"),
     complete=function() {$(".-main-image").remove();});
   _swapProductImage(arrow_class);
 }

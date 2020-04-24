@@ -36,6 +36,11 @@
         "type": "text"
       },
       {
+        "id": "product_img_swipe_speed",
+        "label": "Speed when swiping product images (ms)",
+        "type": "text"
+      },
+      {
         "type": "header",
         "content": "Image Formatting"
       },
