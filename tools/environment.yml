@@ -8,6 +8,7 @@ dependencies:
   - pylint
   - pyyaml
   - selenium
+  - nodejs
   # Requires an actual xvfb X server too.  There's a conda one
   # (xorg-x11-server-xvfb-cos6-x86_64) but I'm just using the Ubuntu xvfb
   # package.
