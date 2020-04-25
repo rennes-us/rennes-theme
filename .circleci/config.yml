@@ -11,7 +11,7 @@ jobs:
   build:
     executor: python/default
     docker:
-      - image: circleci/python-browsers:latest
+      - image: circleci/python:latest-browsers
     steps:
       - checkout
       - run:
