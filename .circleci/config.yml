@@ -22,7 +22,7 @@ jobs:
           name: Setup Dependencies
           command: |
             pip install selenium PyYAML xvfbwrapper
-            curl https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip | gunzip > chromedriver
+            curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > chromedriver
             chmod +x chromedriver
       - run:
           name: Check Dependencies
