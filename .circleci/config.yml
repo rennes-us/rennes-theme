@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Setup Dependencies
           command: |
-            pip install selenium PyYAML
+            pip install selenium PyYAML xvfbwrapper
       - run:
           name: Test
           command: python -m unittest
