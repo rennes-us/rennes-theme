@@ -10,6 +10,8 @@ orbs:
 jobs:
   build:
     executor: python/default
+    docker:
+      - image: circleci/python-browsers:latest
     steps:
       - checkout
       - run:
