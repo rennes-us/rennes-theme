@@ -25,6 +25,12 @@ jobs:
             curl https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip | gunzip > chromedriver
             chmod +x chromedriver
       - run:
+          name: Check Dependencies
+          command: |
+            echo $(which python) $(python --version)
+            ./chromedriver --version
+            echo $(which google-chrome) $(google-chrome --version)
+      - run:
           name: Test
           command: PATH=.:$PATH python -m unittest
 workflows:
