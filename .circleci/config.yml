@@ -24,7 +24,7 @@ jobs:
             chmod +x chromedriver
       - run:
           name: Test
-          command: python -m unittest
+          command: PATH=.:$PATH python -m unittest
 workflows:
   main:
     jobs:
