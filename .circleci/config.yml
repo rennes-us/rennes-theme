@@ -1,6 +1,9 @@
 # https://circleci.com/docs/2.0/language-python/
 # https://circleci.com/docs/2.0/browser-testing/
 # https://stackoverflow.com/questions/22022319/selenium-testing-with-circleci
+# The argument about zip versus gz is understandable but Alex Skrypnyk is
+# correct!  gzip is capable of decompressing a zip file with a single member.
+# See the man page.
 version: 2.1
 orbs:
   python: circleci/python@0.2.1
@@ -17,6 +20,8 @@ jobs:
           name: Setup Dependencies
           command: |
             pip install selenium PyYAML xvfbwrapper
+            curl https://chromedriver.storage.googleapis.com/79.0.3945.36/chromedriver_linux64.zip | gunzip > chromedriver
+            chmod +x chromedriver
       - run:
           name: Test
           command: python -m unittest
