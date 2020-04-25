@@ -1,3 +1,6 @@
+# https://circleci.com/docs/2.0/language-python/
+# https://circleci.com/docs/2.0/browser-testing/
+# https://stackoverflow.com/questions/22022319/selenium-testing-with-circleci
 version: 2.1
 orbs:
   python: circleci/python@0.2.1
@@ -13,7 +16,7 @@ jobs:
       - run:
           name: Setup Dependencies
           command: |
-            pip install selenium
+            pip install selenium PyYAML
       - run:
           name: Test
           command: python -m unittest
