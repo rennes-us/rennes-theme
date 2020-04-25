@@ -11,6 +11,10 @@ jobs:
           command: |
             echo "export SHOPIFY_CHECK_INSTA=$SHOPIFY_CHECK_INSTA" >> $BASH_ENV
       - run:
+          name: Setup Dependencies
+          command: |
+            pip install selenium
+      - run:
           name: Test
           command: python -m unittest
 workflows:
