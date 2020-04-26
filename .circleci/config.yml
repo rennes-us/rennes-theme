@@ -36,8 +36,8 @@ jobs:
             echo $(which chromedriver) $(chromedriver --version)
             echo $(which google-chrome) $(google-chrome --version)
             echo $(which npm) $(npm --version)
-            echo $(which jshint) $(npm --version)
-            echo $(which stylelint) $(npm --version)
+            echo $(which jshint) $(jshint --version)
+            echo $(which stylelint) $(stylelint --version)
       - run:
           name: Lint
           command: |
