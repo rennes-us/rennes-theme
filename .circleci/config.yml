@@ -27,6 +27,7 @@ jobs:
             curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > bin/chromedriver
             chmod +x bin/chromedriver
             npm install jshint stylelint
+            find node_modules/stylelint -type f
             ln -s $PWD/node_modules/jshint/bin/jshint bin/
             ln -s $PWD/node_modules/stylelint/bin/stylelint bin/
       - run:
