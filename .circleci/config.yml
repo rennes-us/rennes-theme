@@ -42,7 +42,12 @@ jobs:
       - run:
           name: Lint
           command: |
-            bash tools/check.sh || echo $?
+            source tools/check.sh
+            retval=0
+            check_javascript_all || retval=$?
+            echo $retval; retval=0
+            check_css_all || retval=$?
+            echo $retval
       - run:
           name: Test
           command: PATH=.:$PATH python -m unittest
