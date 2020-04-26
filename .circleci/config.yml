@@ -32,7 +32,8 @@ jobs:
             echo $(which google-chrome) $(google-chrome --version)
       - run:
           name: Lint
-          command: bash tools/check.sh || echo $?
+          command: |
+            bash tools/check.sh || echo $?
       - run:
           name: Test
           command: PATH=.:$PATH python -m unittest
