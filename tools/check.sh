@@ -44,7 +44,7 @@ function check_liquid_all {
 function check_main {
 	check_javascript_all || retval=$?
 	check_css_all || retval=$?
-	check_liquid_all || retval=$?
+	#check_liquid_all || retval=$?
 	return $retval
 }
 
