@@ -30,6 +30,7 @@ jobs:
             echo $(which python) $(python --version)
             ./chromedriver --version
             echo $(which google-chrome) $(google-chrome --version)
+            echo $(which npm) $(npm --version)
       - run:
           name: Lint
           command: |
