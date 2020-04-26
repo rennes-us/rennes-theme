@@ -4,7 +4,7 @@
 function check_javascript_all {
 	(
 	set -o errexit -o pipefail
-	find . -name '*.js' -a ! -name '*.min.js' -exec jshint {} +
+	find assets -name '*.js' -a ! -name '*.min.js' -exec jshint {} +
 	)
 }
 
