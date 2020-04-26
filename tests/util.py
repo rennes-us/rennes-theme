@@ -22,7 +22,7 @@ def __load_theme_config():
                 "config.yml not found; "
                 "define SHOPIFY_THEME_CONFIG_DATA with "
                 "base64-encoded configuration instead.")
-        config = json.loads(base64.b64decode(txt))
+        config = yaml.safe_load(base64.b64decode(txt))
     return config
 
 def __load_settings_data():
