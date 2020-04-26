@@ -24,7 +24,6 @@ jobs:
             pip install selenium PyYAML xvfbwrapper
             curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > chromedriver
             chmod +x chromedriver
-            apt-get install -y npm
       - run:
           name: Check Dependencies
           command: |
