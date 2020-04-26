@@ -16,7 +16,13 @@ def __load_theme_config():
         with open("config.yml") as f_in:
             config = yaml.safe_load(f_in)
     except FileNotFoundError:
-        config = {}
+        txt = os.getenv("SHOPIFY_THEME_CONFIG_DATA")
+        if txt is None:
+            raise RuntimeError(
+                "config.yml not found; "
+                "define SHOPIFY_THEME_CONFIG_DATA with "
+                "base64-encoded configuration instead.")
+        config = yaml.safe_load(base64.b64decode(txt))
     return config
 
 def __load_settings_data():

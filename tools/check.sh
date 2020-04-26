@@ -4,13 +4,7 @@
 function check_javascript_all {
 	(
 	set -o errexit -o pipefail
-	# First, plain ol' javascript
-	find . -name '*.js' -a ! -name '*.min.js' -exec jshint {} +
-	# Separately handle liquid-templated-javascript with a kludgy bit of
-	# sed to hide it from jshint
-	find . -name '*.js.liquid' | while read fn; do
-		jshint <(sed "s/{{.*}}/0/" "$fn") | sed -r "s:^/dev/fd/[0-9]+:$fn:"
-	done
+	find assets -name '*.js' -a ! -name '*.min.js' -exec jshint {} +
 	)
 }
 
@@ -50,7 +44,7 @@ function check_liquid_all {
 function check_main {
 	check_javascript_all || retval=$?
 	check_css_all || retval=$?
-	check_liquid_all || retval=$?
+	#check_liquid_all || retval=$?
 	return $retval
 }
 

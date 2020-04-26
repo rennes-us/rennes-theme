@@ -1,0 +1,57 @@
+# https://circleci.com/docs/2.0/language-python/
+# https://circleci.com/docs/2.0/browser-testing/
+# https://stackoverflow.com/questions/22022319/selenium-testing-with-circleci
+# The argument about zip versus gz is understandable but Alex Skrypnyk is
+# correct!  gzip is capable of decompressing a zip file with a single member.
+# See the man page.
+version: 2.1
+orbs:
+  python: circleci/python@0.2.1
+jobs:
+  build:
+    executor: python/default
+    docker:
+      - image: circleci/python:latest-node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Setup Environment
+          command: |
+            echo "export SHOPIFY_CHECK_INSTA=$SHOPIFY_CHECK_INSTA" >> $BASH_ENV
+            echo "export PATH=/home/circleci/project/bin:$PATH" >> $BASH_ENV
+      - run:
+          name: Setup Dependencies
+          command: |
+            mkdir bin
+            pip install selenium PyYAML xvfbwrapper
+            curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > bin/chromedriver
+            chmod +x bin/chromedriver
+            npm install jshint stylelint stylelint-config-standard
+            find node_modules/stylelint/bin -type f
+            ln -s $PWD/node_modules/jshint/bin/jshint bin/
+            ln -s $PWD/node_modules/stylelint/bin/stylelint.js bin/stylelint
+      - run:
+          name: Check Dependencies
+          command: |
+            echo $(which python) $(python --version)
+            echo $(which chromedriver) $(chromedriver --version)
+            echo $(which google-chrome) $(google-chrome --version)
+            echo $(which npm) $(npm --version)
+            echo $(which jshint) $(jshint --version)
+            echo $(which stylelint) $(stylelint --version)
+      - run:
+          name: Lint
+          command: |
+            source tools/check.sh
+            retval=0
+            check_javascript_all || retval=$?
+            echo $retval; retval=0
+            check_css_all || retval=$?
+            echo $retval
+      - run:
+          name: Test
+          command: PATH=.:$PATH python -m unittest
+workflows:
+  main:
+    jobs:
+      - build
