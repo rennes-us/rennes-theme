@@ -18,20 +18,26 @@ jobs:
           name: Setup Environment
           command: |
             echo "export SHOPIFY_CHECK_INSTA=$SHOPIFY_CHECK_INSTA" >> $BASH_ENV
+            echo "export PATH=/home/circleci/project/bin:$PATH" >> $BASH_ENV
       - run:
           name: Setup Dependencies
           command: |
+            mkdir bin
             pip install selenium PyYAML xvfbwrapper
-            curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > chromedriver
-            chmod +x chromedriver
+            curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > bin/chromedriver
+            chmod +x bin/chromedriver
             npm install jshint stylelint
+            ln -s $PWD/node_modules/jshint/bin/jshint bin/
+            ln -s $PWD/node_modules/stylelint/bin/stylelint bin/
       - run:
           name: Check Dependencies
           command: |
             echo $(which python) $(python --version)
-            ./chromedriver --version
+            echo $(which chromedriver) $(chromedriver --version)
             echo $(which google-chrome) $(google-chrome --version)
             echo $(which npm) $(npm --version)
+            echo $(which jshint) $(npm --version)
+            echo $(which stylelint) $(npm --version)
       - run:
           name: Lint
           command: |
