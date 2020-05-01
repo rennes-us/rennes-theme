@@ -3,12 +3,30 @@
 $(document).ready(mainShop);
 
 function mainShop() {
+  setupDebug(); // Special debug element unhiding
   setupToggleMenus(); // Slide sub-menus in and out when clicked
   setupProductImageSwappingArrows(); // Select product images from arrows
   setupProductImageZoom(); // Full-page zoom main product img when clicked
   setupVariantCheck(); // Check if product variant chosen for "add to bag"
   setupBagUpdate(); // Auto-click the disclaimer when just updating the cart
   setupQtyButtons(); // enable minus/plus buttons for cart quantity field
+}
+
+// ----------------------------------------------------------------------------
+// Debug
+
+// Unhide the debug element when capslock is pressed.  This will only take
+// effect if debug mode is enabled server-side in the theme settings.
+function setupDebug() {
+  console.log("setupDebug");
+  $("body").keydown(function(e) {
+    if (insideTextElement()) {
+      return;
+    }
+    if (e.which == 20) {
+      $(".debug").css("display", "block");
+    }
+  });
 }
 
 // ----------------------------------------------------------------------------

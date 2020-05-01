@@ -282,3 +282,14 @@ main > section::after {
   transform: translateY(-50%);
   width: initial;
 }
+
+/* A placeholder for preformatted text while troubleshooting */
+.debug {
+  display: none;
+  font-family: monospace;
+  white-space: pre;
+  border: 1px solid #666;
+  padding: 3px;
+  margin: 3px auto;
+  max-width: 60em;
+}
