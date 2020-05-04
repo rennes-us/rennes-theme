@@ -1,12 +1,3 @@
-{% if settings.debug %}
-<div class="debug">title: {{product.title}}
-url: {{product.url}}
-vendor: {{product.vendor}}
-product.images:
-{%- for img in product.images %}
-  {{img}}{% endfor %}
-</div>
-{% endif %}
   <article vocab="http://schema.org/" typeof="Product">
 
     <link property="url" href="{{ product.url | within: collection }}">

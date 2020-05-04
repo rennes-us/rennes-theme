@@ -1,3 +1,6 @@
+{% if settings.debug %}
+  {%- include 'product_debug' -%}
+{% endif %}
 {%- include 'product_vars' -%}
 {%- include 'product' -%}
 {%- include 'instafeed' -%}

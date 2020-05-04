@@ -1,0 +1,41 @@
+<div class="debug">title: {{product.title}}
+handle: {{product.handle}}
+id: {{product.id}}
+template_suffix: {{product.template_suffix}}
+available: {{product.available}}
+url: {{product.url}}
+type: {{product.type}}
+vendor: {{product.vendor}}
+has_only_default_variant: {{product.has_only_default_variant}}
+first_available_variant: {{product.first_available_variant.title}}
+selected_variant: {{product.selected_variant.title}}
+selected_or_first_available_variant: {{product.selected_or_first_available_variant.title}}
+price: {{product.price}}
+price_min: {{product.price_min}}
+price_max: {{product.price_max}}
+price_varies: {{product.price_varies}}
+compare_at_price: {{product.compare_at_price}}
+compare_at_price_min: {{product.compare_at_price_min}}
+compare_at_price_max: {{product.compare_at_price_max}}
+compare_at_price_varies: {{product.compare_at_price_varies}}
+created_at: {{product.created_at}}
+published_at: {{product.published_at}}
+
+collections ({{product.collections.size}}):
+{%- for collection in product.collections %}
+  {{collection.title}}{% endfor %}
+
+tags ({{product.tags.size}}):
+{%- for tag in product.tags %}
+  {{tag}}{% endfor %}
+options ({{ product.options.size }}):
+{%- for option in product.options %}
+  {{ option }}{% endfor %}
+
+images ({{ product.images.size}}):
+{%- for img in product.images %}
+  {{img}}{% endfor %}
+
+description:
+  {{product.description}}
+</div>
