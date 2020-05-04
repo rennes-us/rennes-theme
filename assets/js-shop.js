@@ -15,7 +15,7 @@ function mainShop() {
 // ----------------------------------------------------------------------------
 // Debug
 
-// Unhide the debug element when capslock is pressed.  This will only take
+// Unhide the debug element when slash is pressed.  This will only take
 // effect if debug mode is enabled server-side in the theme settings.
 function setupDebug() {
   console.log("setupDebug");
@@ -23,7 +23,7 @@ function setupDebug() {
     if (insideTextElement()) {
       return;
     }
-    if (e.which == 20) {
+    if (e.which == 191) {
       $(".debug").css("display", "block");
     }
   });
