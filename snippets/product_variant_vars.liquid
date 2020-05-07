@@ -1,0 +1,19 @@
+{% if variant.available %}
+{% assign variant_disabled = '' %}
+{% assign variant_availability = 'InStock' %}
+{% else %}
+{% assign variant_disabled = ' disabled="true"' %}
+{% assign variant_availability = 'SoldOut' %}
+{% endif %}
+
+{%- comment -%}
+See the notes in product_vars.liquid about the goofy pricing stuff here.
+{%- endcomment -%}
+
+{%- comment -%} Raw decimal value for variant price, used in metadata {%- endcomment -%}
+{%- assign price = variant.price | money_without_currency | remove: ',' -%}
+{%- comment -%} Formatted value for variant price, displayed in page {%- endcomment -%}
+{%- assign price_display = variant.price | money_without_trailing_zeros | remove: shop.currency -%}
+{%- comment -%} Formatted value for variant price if discounted {%- endcomment -%}
+{%- assign compare_price = variant.compare_at_price | money_without_trailing_zeros | remove: shop.currency -%}
+{%- assign currency = shop.currency -%}

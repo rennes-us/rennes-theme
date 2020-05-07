@@ -5,9 +5,6 @@ and sizes to provide a range of image sizes.
 {%- assign product_img_size_collection = '1024x1024' -%}
 {%- assign product_img_size_main = '2048x2048' -%}
 
-{%- if product.variants.size > 1 -%}{%- assign has_variants = true -%}{%- else -%}
-{%- assign has_variants = false -%}{%- endif -%}
-
 {%- comment -%}
 The money_without_trailing_zeros filter should follow the shop's "HTML with
 currency" setting, according to Shopify's money filters documentation:

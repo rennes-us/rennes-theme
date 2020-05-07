@@ -7,9 +7,9 @@ url: {{product.url}}
 type: {{product.type}}
 vendor: {{product.vendor}}
 has_only_default_variant: {{product.has_only_default_variant}}
-first_available_variant: {{product.first_available_variant.title}}
-selected_variant: {{product.selected_variant.title}}
-selected_or_first_available_variant: {{product.selected_or_first_available_variant.title}}
+first_available_variant title: {{product.first_available_variant.title}}
+selected_variant title: {{product.selected_variant.title}}
+selected_or_first_available_variant title: {{product.selected_or_first_available_variant.title}}
 price: {{product.price}}
 price_min: {{product.price_min}}
 price_max: {{product.price_max}}
@@ -31,6 +31,33 @@ tags ({{product.tags.size}}):
 options ({{ product.options.size }}):
 {%- for option in product.options %}
   {{ option }}{% endfor %}
+
+variants ({{ product.variants.size}}):
+{%- for variant in product.variants %}
+  "{{variant.title}}"
+    title: {{variant.title}}
+    id: {{variant.id}}
+    url {{variant.url}}
+    weight: {{variant.weight}}
+    weight_unit: {{variant.weight_unit}}
+    weight_in_unit: {{variant.weight_in_unit}}
+    sku: {{variant.sku}}
+    taxable: {{variant.taxable}}
+    selected: {{variant.selected}}
+    image: {{variant.image}}
+    incoming: {{variant.incoming}}
+    available: {{variant.available}}
+    barcode: {{variant.barcode}}
+    price: {{variant.price}}
+    compare_at_price: {{variant.compare_at_price}}
+    inventory_quantity: {{variant.inventory_quantity}}
+    inventory_policy: {{variant.inventory_policy}}
+    inventory_management: {{variant.inventory_management}}
+    next_incoming_date: {{variant.next_incoming_date}}
+    option1: {{variant.option1}}
+    option2: {{variant.option2}}
+    option3: {{variant.option3}}
+    requires_shipping: {{variant.requires_shipping}}{% endfor %}
 
 images ({{ product.images.size}}):
 {%- for img in product.images %}

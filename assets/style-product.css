@@ -193,7 +193,7 @@ article[typeof=Product] div[property=description] {
   text-align: justify;
 }
 
-form[property=offers] {
+form[action=/cart/add] {
   border-bottom: 1px solid black;
   border-top: 1px solid black;
   margin: 0 3vw;
@@ -219,7 +219,7 @@ article[typeof=Product] div aside small.sale-disclaimer {
 
 /* Offer form */
 
-form[property=offers] .pick-an-option {
+article[typeof=Product] form .pick-an-option {
   font-weight: bold;
   padding: 5px;
   margin: 5px;
@@ -235,11 +235,11 @@ form[property=offers] .pick-an-option {
 }
 
 /* We hide the radio buttons themselves and style everything with the labels */
-form[property=offers] .variants input[type=radio] {
+article[typeof=Product] form .variants input[type=radio] {
   display: none;
 }
 
-form[property=offers] .variants input[type=radio] + label {
+article[typeof=Product] form .variants input[type=radio] + label {
   padding: 5px;
   margin: 5px;
   min-width: 2.5em;
@@ -249,11 +249,11 @@ form[property=offers] .variants input[type=radio] + label {
   display: block;
 }
 
-form[property=offers] .variants input[type=radio]:enabled + label {
+article[typeof=Product] form .variants input[type=radio]:enabled + label {
   cursor: pointer;
 }
 
-form[property=offers] .variants input[type=radio]:disabled + label {
+article[typeof=Product] form .variants input[type=radio]:disabled + label {
   color: gray;
   cursor: not-allowed;
   text-decoration: line-through;
@@ -262,7 +262,7 @@ form[property=offers] .variants input[type=radio]:disabled + label {
 /* Aiming for a simple black circle around a label when checked.  It's a bit
  * tricky since it's an inline element and we don't know for sure how wide the
  * text will be. */
-form[property=offers] .variants input[type=radio]:checked + label {
+article[typeof=Product] form .variants input[type=radio]:checked + label {
   border-radius: 25em;
   box-shadow: inset 0 0 0 1px #000;
 }
