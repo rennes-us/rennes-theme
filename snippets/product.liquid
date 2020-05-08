@@ -39,7 +39,7 @@
         {%- endif %}
         </div>
         {%- if product.available %}
-          {%- if has_variants -%}
+          {%- unless product.has_only_default_variant -%}
         <div class="variants">
             {%- for variant in product.variants -%}
             {% if variant.available %}
@@ -53,7 +53,7 @@
         </div>
           {%- else %}
         <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
-          {%- endif %}
+          {%- endunless %}
         <button type="submit" name="add" value="Add to bag" {% if has_variants %}title="Select an option"{% endif %}>Add to bag</button>
         {%- else %}
         <button type="submit" name="add" value="Add to bag" disabled>Sold Out</button>
