@@ -142,7 +142,7 @@ class TestSite(StoreSite):
         self.check_product({
             "name": "Variants",
             "description_blurb": "This one has variants.",
-            "url": "collections/testing/products/variants",
+            "url": "products/variants",
             "mfg": "rennes-dev",
             "price": "50.00",
             "currency": "USD",
