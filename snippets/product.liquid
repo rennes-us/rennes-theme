@@ -54,7 +54,7 @@
           {%- else %}
         <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
           {%- endunless %}
-        <button type="submit" name="add" value="Add to bag" {% unless product.has_only_default_variant %}title="Select an option"{% endif %}>Add to bag</button>
+        <button type="submit" name="add" value="Add to bag" {% unless product.has_only_default_variant %}title="Select an option"{% endunless %}>Add to bag</button>
         {%- else %}
         <button type="submit" name="add" value="Add to bag" disabled>Sold Out</button>
   {% endif %}
