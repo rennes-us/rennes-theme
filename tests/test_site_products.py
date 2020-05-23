@@ -35,7 +35,8 @@ class TestSiteProducts(StoreSite):
         """
         self.get(TEST_PRODUCTS["out-of-stock"])
         self.assertIsNone(self.try_for_elem("section[@typeof='Product']//button"))
-        self.check_product({"availability": "SoldOut", "num_images": 1})
+        # TODO check availability
+        self.check_product({"num_images": 1})
 
     def test_template_product_variants(self):
         """Test product template for a product with multiple variants.
@@ -79,7 +80,6 @@ class TestSiteProducts(StoreSite):
             "price": "50.00",
             "currency": "USD",
             "condition": "NewCondition",
-            "availability": "InStock",
             "num_images": 2})
 
     def test_template_product_varying_prices(self):
@@ -143,7 +143,6 @@ class TestSiteProducts(StoreSite):
             "price": "50.00",
             "currency": "USD",
             "condition": "NewCondition",
-            "availability": "InStock",
             "num_images": 2})
 
     def test_template_product_out_of_stock_variant(self):
@@ -197,7 +196,6 @@ class TestSiteProducts(StoreSite):
             "price": "420.00",
             "currency": "USD",
             "condition": "NewCondition",
-            "availability": "InStock",
             "num_images": 2})
 
     def test_template_product_lots_of_photos(self):
@@ -229,7 +227,6 @@ class TestSiteProducts(StoreSite):
             "compare_price_txt": "1,000 USD",
             "currency": "USD",
             "condition": "NewCondition",
-            "availability": "InStock",
             "num_images": 1})
 
     def test_template_product_complex_description(self):
@@ -257,7 +254,6 @@ class TestSiteProducts(StoreSite):
             "price": "0.00",
             "currency": "USD",
             "condition": "NewCondition",
-            "availability": "InStock",
             "num_images": 0})
 
     def check_variant_required(self):

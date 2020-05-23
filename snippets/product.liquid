@@ -4,7 +4,7 @@
     <link property="manufacturer" content="{{ product.vendor }}" href="https://schema.org/Organization">
     <link property="brand" content="{{ product.vendor }}" href="https://schema.org/Organization">
     <link property="itemCondition" href="http://schema.org/NewCondition">
-    <link property="availability" href="http://schema.org/{{availability}}">
+    <span property="sku" content="{{ product.id }}"></span>
 
     <figure>
       <a property="image" typeof="ImageObject" href="{{ img_url }}">
@@ -51,9 +51,9 @@
             once and we have no need to have a real input available.
             {%- endcomment -%}
             {% if product.has_only_default_variant %}
-            <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
+            <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}" property="sku" content="{{ variant.id }}">
             {% else %}
-            <input type="radio"{{ variant_disabled }} name="id" id="{{variant.id}}" value="{{variant.id}}" {% if is_selected_variant %} checked{% endif %}>
+            <input type="radio"{{ variant_disabled }} name="id" id="{{variant.id}}" value="{{variant.id}}" {% if is_selected_variant %} checked{% endif %} property="sku" content="{{ variant.id }}">
             <label for="{{variant.id}}">{{variant.title}}</label>
             {%- endif %}
           </span>

@@ -179,8 +179,6 @@ class StoreSite(StoreClient):
             expected["url"] = self.url + expected["url"]
         if "condition" in expected:
             expected["condition"] = "http://schema.org/" + expected["condition"]
-        if "availability" in expected:
-            expected["availability"] = "http://schema.org/" + expected["availability"]
         self.check_for_elem("//article[@typeof='Product']")
         observed = {}
         prop = lambda t, p: self.check_for_elem(
@@ -189,8 +187,6 @@ class StoreSite(StoreClient):
         observed["url"] = prop("link", "url").get_attribute("href")
         observed["mfg"] = prop("link", "manufacturer").get_attribute("content")
         observed["condition"] = prop("link", "itemCondition").get_attribute("href")
-        # There's also a per-variant availability; this one is for the overall product
-        observed["availability"] = prop("link", "availability").get_attribute("href")
         self._check_product_figure(observed, expected)
         self._check_product_description(observed, expected)
         self._check_product_form(observed, expected)
@@ -262,10 +258,7 @@ class StoreSite(StoreClient):
                     if label.get_attribute("for") == inp.get_attribute("id"):
                         observed["variants"][label.text] = label.get_attribute("for")
         button = self.check_for_elem("/button[@type='submit']", form)
-        if "/SoldOut" in expected["availability"]:
-            self.assertEqual(button.get_attribute("disabled"), "true")
-            self.assertEqual(form.text, "100 USD\nSold Out")
-        else:
+        if not button.get_attribute("disabled"):
             # The add to cart button should get a black border on hover, or, on
             # small screens, should always have a black border.
             with self.window_size(WINDOWSIZES["large"]):

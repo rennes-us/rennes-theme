@@ -26,9 +26,6 @@ should be doing anyway.
 {%- assign compare_price = product.compare_at_price_min | money_without_trailing_zeros | remove: shop.currency -%}
 {%- assign currency = shop.currency -%}
 
-{%- assign availability = "InStock" -%}
-{%- unless product.available %}{% assign availability = "SoldOut" %}{% endunless -%}
-
 {%- comment -%} Rather than using the featured image attribute, we just use the first in the list {%- endcomment -%}
 {% assign img = product.images.first %}
 {%- include 'product_img' -%}
