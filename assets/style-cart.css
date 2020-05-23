@@ -116,7 +116,7 @@ form[action="/cart"] tbody td:last-child a:hover {
 form[action="/cart"] tbody td input[type=number]::-webkit-inner-spin-button,
 form[action="/cart"] tbody td input[type=number]::-webkit-outer-spin-button {
   display: none;
-  -webit-appearance: none;
+  -webkit-appearance: none;
 }
 
 form[action="/cart"] tbody td span.number-controls {
