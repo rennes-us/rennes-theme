@@ -147,7 +147,6 @@ class TestSite(StoreSite):
             "price": "50.00",
             "currency": "USD",
             "condition": "NewCondition",
-            "availability": "InStock",
             "num_images": 2,
             "variants": {
                 "small": "31622054412323",
