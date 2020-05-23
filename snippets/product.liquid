@@ -1,6 +1,6 @@
 <article vocab="http://schema.org/" typeof="Product" resource="{{product.url}}">
 
-    <link property="url" href="{{ product.url | within: collection }}">
+    <link property="url" href="{{ product.url }}">
     <link property="manufacturer" content="{{ product.vendor }}" href="https://schema.org/Organization">
     <link property="brand" content="{{ product.vendor }}" href="https://schema.org/Organization">
     <link property="itemCondition" href="http://schema.org/NewCondition">

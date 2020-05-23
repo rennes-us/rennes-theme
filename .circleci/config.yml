@@ -24,7 +24,7 @@ jobs:
           command: |
             mkdir bin
             pip install selenium PyYAML xvfbwrapper
-            curl https://chromedriver.storage.googleapis.com/80.0.3987.16/chromedriver_linux64.zip | gunzip > bin/chromedriver
+            curl https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_linux64.zip | gunzip > bin/chromedriver
             chmod +x bin/chromedriver
             npm install jshint stylelint stylelint-config-standard
             find node_modules/stylelint/bin -type f
