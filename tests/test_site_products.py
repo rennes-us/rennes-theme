@@ -80,7 +80,7 @@ class TestSiteProducts(StoreSite):
         self.check_product({
             "name": "Now Cheaper",
             "description_blurb": "It used to cost more, but now, it costs less!!",
-            "url": "collections/testing/products/now-cheaper",
+            "url": "products/now-cheaper",
             "mfg": "rennes-dev",
             "price": "10.00",
             "compare_price_txt": "1,000 USD",
