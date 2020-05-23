@@ -6,6 +6,29 @@
 {% assign variant_availability = 'SoldOut' %}
 {% endif %}
 
+{% comment %}
+first_available is a default that applies no matter what, including if there's
+only one variant.  selected happens when a product URL includes the ?variant=
+to explicitly specify a variant. selected_or_first_available layers the two,
+with selected overriding first_available.
+{% endcomment %}
+
+{% if product.selected_variant == variant %}
+{% assign is_selected_variant = true %}
+{% else %}
+{% assign is_selected_variant = false %}
+{% endif %}
+{% if product.first_available_variant == variant %}
+{% assign is_default_variant = true %}
+{% else %}
+{% assign is_default_variant = false %}
+{% endif %}
+{% if product.selected_or_first_available_variant == variant %}
+{% assign is_selected_or_default_variant = true %}
+{% else %}
+{% assign is_selected_or_default_variant = false %}
+{% endif %}
+
 {%- comment -%}
 See the notes in product_vars.liquid about the goofy pricing stuff here.
 {%- endcomment -%}

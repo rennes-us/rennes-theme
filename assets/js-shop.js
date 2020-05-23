@@ -7,7 +7,7 @@ function mainShop() {
   setupToggleMenus(); // Slide sub-menus in and out when clicked
   setupProductImageSwappingArrows(); // Select product images from arrows
   setupProductImageZoom(); // Full-page zoom main product img when clicked
-  setupVariantCheck(); // Check if product variant chosen for "add to bag"
+  setupVariantHandling(); // Special handling for multiple variants
   setupBagUpdate(); // Auto-click the disclaimer when just updating the cart
   setupQtyButtons(); // enable minus/plus buttons for cart quantity field
 }
@@ -287,15 +287,21 @@ function zoomedImageLinkClick() {
 }
 
 // ----------------------------------------------------------------------------
-// For ensuring a variant is picked before the item is added to the cart.
-// Only set the handler if there are actually variants to choose from, though.
 
-function setupVariantCheck() {
-  console.log("setupVariantCheck");
-  if ($('article[typeof="Product"] form input[type="radio"]').length > 0)
+// Handle variant select and switching, if there are variants to choose from.
+function setupVariantHandling() {
+  console.log("setupVariantHandling");
+  if ($('article[typeof="Product"] form input[type="radio"]').length > 0) {
+    $('input[type=radio]').change(function() {
+      $("div[property=priceSpecification]").attr("data-selected-variant", "false");
+      var elem = $("div[property=priceSpecification][data-variant-id=" + $(this).attr("id") + "]");
+      elem.attr("data-selected-variant", "true");
+    });
     $('article[typeof="Product"] form button').click(function() {return addCartHandler();});
+  }
 }
 
+// For ensuring a variant is picked before the item is added to the cart.
 function addCartHandler() {
   if ($('article[typeof="Product"] form input[type="radio"]:checked').length > 0)
     return true;
