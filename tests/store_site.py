@@ -75,7 +75,7 @@ class StoreSite(StoreClient):
         self.get("products/" + product)
         if variant:
             label = None
-            for label in self.xps("//form[@typeof='OfferForPurchase']//label"):
+            for label in self.xps("//form[@action='/cart/add']//label"):
                 if label.text == variant:
                     break
             else:
@@ -84,10 +84,10 @@ class StoreSite(StoreClient):
             option = self.xp("//input[@id='" + label.get_attribute("for") + "']")
             self.click(label, checker=option.is_selected)
         else:
-            if self.try_for_elems("//form[@typeof='OfferForPurchase']//label"):
+            if self.try_for_elems("//form[@action='/cart/add']//label"):
                 raise ValueError(
                     "product %s: no variant given but variants available")
-        button = self.xp("//form[@typeof='OfferForPurchase']/button[@type='submit']")
+        button = self.xp("//form[@action='/cart/add']/button[@type='submit']")
         self.click(button)
         cartlink = self.xp("//body/header//a[@href='/cart']")
         self.assertNotEqual(cartlink.text, "my bag")
@@ -187,13 +187,16 @@ class StoreSite(StoreClient):
             ("//article[@typeof='Product']/%s[@property='%s']") % (t, p))
         observed["name"] = prop("/h2", "name").text
         observed["url"] = prop("link", "url").get_attribute("href")
-        observed["mfg"] = prop("meta", "manufacturer").get_attribute("content")
+        observed["mfg"] = prop("link", "manufacturer").get_attribute("content")
+        observed["condition"] = prop("link", "itemCondition").get_attribute("href")
+        # There's also a per-variant availability; this one is for the overall product
+        observed["availability"] = prop("link", "availability").get_attribute("href")
         self._check_product_figure(observed, expected)
         self._check_product_description(observed, expected)
-        self._check_product_offer(observed, expected)
+        self._check_product_form(observed, expected)
         self._check_product_aside(observed, expected)
-        self._check_product_image_zoom()
-        self._check_product_image_swap_arrows(expected)
+        self._check_product_image_zoom(observed)
+        self._check_product_image_swap_arrows(observed, expected)
         product_parts = [
             self.xp("//article[@typeof='Product']/figure"),
             self.xp("//article[@typeof='Product']/div")]
@@ -218,34 +221,37 @@ class StoreSite(StoreClient):
         # Check the figure and main image
         figure = self.check_for_elem("//article[@typeof='Product']/figure")
         anchor = self.check_for_elem("a[@property='image'][@typeof='ImageObject']", figure)
-        self.check_for_elem("meta[@property='representativeOfPage'][@content='True']", anchor)
-        imgset = self.check_for_elem('img', anchor)
-        self.assertEqual(len(imgset.get_attribute("srcset").split(",")), 5)
-        self.assertEqual(imgset.get_attribute("property"), "contentUrl")
-        if "name" in expected:
-            self.assertEqual(imgset.get_attribute("alt"), expected["name"])
+        self.check_for_elem("link[@property='representativeOfPage'][@content='True']", anchor)
+        # Check the thumbnails
+        aside_anchors = self.try_for_elems(
+            "aside/a[@property='image'][@typeof='ImageObject']", figure)
+        if aside_anchors:
+            observed["num_images"] = len(aside_anchors)
+        else:
+            observed["num_images"] = 0
+        if observed["num_images"]:
+            imgset = self.check_for_elem('img', anchor)
+            self.assertEqual(len(imgset.get_attribute("srcset").split(",")), 5)
+            self.assertEqual(imgset.get_attribute("property"), "contentUrl")
+            if "name" in expected:
+                self.assertEqual(imgset.get_attribute("alt"), expected["name"])
         # check the cursor style on the main anchor
         self.assertEqual(
             anchor.value_of_css_property("cursor"),
             "zoom-in")
-        # Check the thumbnails
-        aside_anchors = self.check_for_elems(
-            "aside/a[@property='image'][@typeof='ImageObject']", figure)
-        observed["num_images"] = len(aside_anchors)
 
-    def _check_product_offer(self, observed, expected):
-        """Check the offer (price and purchase info) portion of a product page."""
-        tag = "//article[@typeof='Product']//form[@property='offers']"
-        offer = self.check_for_elem(tag)
-        self.assertEqual(offer.get_attribute("action"), self.url + "cart/add")
-        self.assertEqual(offer.get_attribute("method"), "post")
+    def _check_product_form(self, observed, expected):
+        """Check the form (price and purchase info) portion of a product page."""
+        tag = "//article[@typeof='Product']//form"
+        form = self.check_for_elem(tag)
+        self.assertEqual(form.get_attribute("action"), self.url + "cart/add")
+        self.assertEqual(form.get_attribute("method"), "post")
         prop = lambda t, p: self.check_for_elem((tag + "//%s[@property='%s']") % (t, p))
         if "compare_price_txt" in expected:
             observed["compare_price_txt"] = self.check_for_elem(tag + "//s").text
+        # TODO rearrange these, they're really per-variant
         observed["price"] = prop("span", "price").get_attribute("content")
         observed["currency"] = prop("span", "priceCurrency").get_attribute("content")
-        observed["condition"] = prop("link", "itemCondition").get_attribute("href")
-        observed["availability"] = prop("link", "availability").get_attribute("href")
         ### Check variants
         # Make sure there's a label and input for each
         # expected variant.
@@ -255,10 +261,10 @@ class StoreSite(StoreClient):
                 for inp in self.check_for_elems(tag + "//input[@type='radio']"):
                     if label.get_attribute("for") == inp.get_attribute("id"):
                         observed["variants"][label.text] = label.get_attribute("for")
-        button = self.check_for_elem("/button[@type='submit']", offer)
+        button = self.check_for_elem("/button[@type='submit']", form)
         if "/SoldOut" in expected["availability"]:
             self.assertEqual(button.get_attribute("disabled"), "true")
-            self.assertEqual(offer.text, "100 USD\nSold Out")
+            self.assertEqual(form.text, "100 USD\nSold Out")
         else:
             # The add to cart button should get a black border on hover, or, on
             # small screens, should always have a black border.
@@ -312,7 +318,7 @@ class StoreSite(StoreClient):
             self.assertIn(expected["description_blurb"], observed["description"])
             del expected["description_blurb"]
 
-    def _check_product_image_zoom(self):
+    def _check_product_image_zoom(self, observed):
         """Check that clicking on the main product image zooms/unzooms."""
         figure = self.xp("//article[@typeof='Product']/figure")
         anchor = self.xp("a", figure)
@@ -322,13 +328,14 @@ class StoreSite(StoreClient):
         # Note that we click on the main anchor to do the zoom, but then the
         # aside (since that's what's takng up the whole viewport) to do the
         # un-zoom.
-        self.assertEqual(aside.get_attribute("class"), "")
-        anchor.click()
-        self.assertEqual(aside.get_attribute("class"), "zoomed")
-        aside.click()
-        self.assertEqual(aside.get_attribute("class"), "")
+        if observed["num_images"]:
+            self.assertEqual(aside.get_attribute("class"), "")
+            anchor.click()
+            self.assertEqual(aside.get_attribute("class"), "zoomed")
+            aside.click()
+            self.assertEqual(aside.get_attribute("class"), "")
 
-    def _check_product_image_swap_arrows(self, expected):
+    def _check_product_image_swap_arrows(self, observed, expected):
         """Check that clicking left/right arrows switches the product image.
 
         Clicking the left and right links should swap out the images in order.
@@ -338,6 +345,8 @@ class StoreSite(StoreClient):
         being entered elsewhere.
         """
         figure = self.check_for_elem("//article[@typeof='Product']/figure")
+        if not observed["num_images"]:
+            return
         thumbnails = self.check_for_elems(
             "/aside/a[@property='image'][@typeof='ImageObject']/img",
             figure)

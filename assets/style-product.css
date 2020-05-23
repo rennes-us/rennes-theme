@@ -219,6 +219,11 @@ article[typeof=Product] div aside small.sale-disclaimer {
 
 /* Offer form */
 
+/* Only the currently-selected variant's price information is shown. */
+form[action="/cart/add"] div[property=priceSpecification][data-selected-variant=false] {
+  display: none;
+}
+
 form[action="/cart/add"] .pick-an-option {
   font-weight: bold;
   padding: 5px;

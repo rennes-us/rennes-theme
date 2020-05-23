@@ -1,12 +1,14 @@
-  <article vocab="http://schema.org/" typeof="Product">
+<article vocab="http://schema.org/" typeof="Product" resource="{{product.url}}">
 
     <link property="url" href="{{ product.url }}">
-    <meta property="manufacturer" content="{{ product.vendor }}">
-    <meta property="brand" content="{{ product.vendor }}">
+    <link property="manufacturer" content="{{ product.vendor }}" href="https://schema.org/Organization">
+    <link property="brand" content="{{ product.vendor }}" href="https://schema.org/Organization">
+    <link property="itemCondition" href="http://schema.org/NewCondition">
+    <link property="availability" href="http://schema.org/{{availability}}">
 
     <figure>
       <a property="image" typeof="ImageObject" href="{{ img_url }}">
-        <meta property="representativeOfPage" content="True">
+        <link property="representativeOfPage" content="True" href="https://schema.org/Boolean">
         <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" property="contentUrl" src="{{ img_url }}" alt="{{ img.alt | escape }}">
       </a>
       <a href="" class="arrow left">{{settings.product_left_image_text}}</a>
@@ -28,32 +30,36 @@
         {{ product.description }}
       </div>
 
-      <form property="offers" typeof="OfferForPurchase" action="/cart/add" method="post">
-        <link property="itemCondition" href="http://schema.org/NewCondition">
-        <link property="availability"  href="http://schema.org/{{availability}}">
-        <div property="PriceSpecification">
+      <form action="/cart/add" method="post">
+        {%- for variant in product.variants -%}
+        {%- include 'product_variant_vars' %}
+        <div property="priceSpecification" about="{{variant.url}}" data-selected-variant={{ is_selected_or_default_variant }} data-variant-id={{ variant.id }}>
           <span property="price"         content="{{ price }}">{{ price_display }}</span>
           <span property="priceCurrency" content="{{ currency }}">{{ currency }}</span>
-        {%- if product.compare_at_price_min > product.price %}
+        {%- if variant.compare_at_price > variant.price %}
         <s>{{ compare_price }} {{ currency }}</s>
         {%- endif %}
         </div>
-        {%- if product.available %}
-          {%- unless product.has_only_default_variant -%}
+        {%- endfor %}
         <div class="variants">
-            {%- for variant in product.variants -%}
-            {% if variant.available %}
-            {% assign variant_disabled = '' %}
+          {%- for variant in product.variants -%}
+          {%- include 'product_variant_vars' %}
+          <span property="offers" resource="{{variant.url}}" typeof="OfferForPurchase">
+            <link property="availability" href="http://schema.org/{{variant_availability}}">
+            {%- comment -%}
+            If there's only a single variant, this for loop will only iterate
+            once and we have no need to have a real input available.
+            {%- endcomment -%}
+            {% if product.has_only_default_variant %}
+            <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
             {% else %}
-            {% assign variant_disabled = ' disabled="true"' %}
-            {% endif %}
-          <input type="radio"{{ variant_disabled }} name="id" id="{{variant.id}}" value="{{variant.id}}">
-          <label for="{{variant.id}}">{{variant.title}}</label>
-            {%- endfor -%}
+            <input type="radio"{{ variant_disabled }} name="id" id="{{variant.id}}" value="{{variant.id}}" {% if is_selected_variant %} checked{% endif %}>
+            <label for="{{variant.id}}">{{variant.title}}</label>
+            {%- endif %}
+          </span>
+            {%- endfor %}
         </div>
-          {%- else %}
-        <input type="hidden" id="{{ variant.id }}" name="id" value="{{ product.variants[0].id }}">
-          {%- endunless %}
+        {%- if product.available %}
         <button type="submit" name="add" value="Add to bag" {% unless product.has_only_default_variant %}title="Select an option"{% endunless %}>Add to bag</button>
         {%- else %}
         <button type="submit" name="add" value="Add to bag" disabled>Sold Out</button>
