@@ -441,7 +441,6 @@ class StoreSite(StoreClient):
         # Check links and targets
         col = self.url + "collections/"
         links = [
-            ("winter sale", col + "winter-sale"),
             ("new", col + "new"),
             ("gifts", col + "gifts"),
             ("leather goods", col + "leather-goods"),
