@@ -15,7 +15,7 @@ from .util import get_setting
 class TestSiteMailingList(StoreSite):
     """Test suite for store - mailing list features"""
 
-    def test_mailing_list(self):
+    def test_mailing_list_popup(self):
         """Mailing list should only pop up on first visit
 
         This takes a while.
@@ -26,6 +26,13 @@ class TestSiteMailingList(StoreSite):
         self.check_ml_popup()
         self.get()
         self.check_ml_popup(False)
+
+    def test_mailing_list(self):
+        self.skipTest("not implemented")
+        # TODO
+        # check that:
+        # * we can't click submit without an email address
+        # * once we put one it, it goes to mailchimp
 
     def check_ml_popup(self, should_pop=True):
         """Check the mailing list popup element.
