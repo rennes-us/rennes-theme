@@ -557,6 +557,9 @@ class StoreSite(StoreClient):
     def check_snippet_collection_designers(self):
         """Check the special designers collection snippet."""
         self.check_for_elem("//ul[@class='designers']")
+        # TODO check that all vendors have an associated collection by
+        # verifying that each inner list item is a link and not just text
+        self.skipTest("net yet implemented")
 
     def check_snippet_address(self):
         """Check the physical address blurb."""

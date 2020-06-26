@@ -1,0 +1,39 @@
+{% comment %}
+Scan through each vendor in the shop, and then check each collection for one
+whose Vendor metafield matches the vendor's handle.  Display as a list of lists
+with alphabetic groupings.  Vendors with a matching collection found will be
+displayed as a link to that collection.  Vendors with no matching collection
+will be left as text.
+
+Inspired initially by:
+https://www.blackbeltcommerce.com/vendor-page-in-shopify-the-clever-way-to-automatically-show-vendors-in-your-shop/
+...except then I realized that the names won't always match up, and also that
+we can attach metafields to collections to explicitly define the vendor.
+
+{% endcomment %}
+<ul class="designers">
+{% assign letters_done = "" -%}
+{%- for vendor in shop.vendors -%}
+{%- assign collection_url = "" -%}
+{%- capture vendor_letter -%}{{ vendor | handle | slice: 0 }}{%- endcapture -%}
+{%- unless letters_done contains vendor_letter -%}
+{%- if letters_done != "" %}
+    </ul>
+  </li>
+  {% endif %}
+  <li>{{ vendor_letter }}.
+    <ul>
+{%- capture letters_done -%}{{ letters_done | append: vendor_letter }}{%- endcapture -%}
+{%- endunless -%}
+{%- capture vendor_handle -%}{{ vendor | handle }}{%- endcapture -%}
+{%- for collection in collections -%}
+{%- if collection.metafields.global.vendor == vendor_handle -%}
+{%- capture collection_url -%}{{ collection.url }}{%- endcapture -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if collection_url == "" %}
+      <li>{{ vendor }}</li>{% else %}
+      <li><a href="{{ collection_url }}">{{ vendor }}</a></li>{% endif %}{% endfor %}
+    </ul>
+  </li>
+</ul>

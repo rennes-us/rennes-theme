@@ -130,12 +130,20 @@ nav.pagination {
 /* Designers list */
 
 ul.designers {
+  text-transform: lowercase;
   text-align: center;
+}
+
+ul.designers > li {
+  font-weight: bold;
+  font-size: 120%;
 }
 
 ul.designers ul {
   padding: 0;
   padding-top: 0.5em;
+  font-size: initial;
+  font-weight: normal;
 }
 
 ul.designers > li {
