@@ -202,7 +202,10 @@ function setupProductImageSwappingArrowsSwipe() {
   // HammerJS works very nicely for this though it seems to interfere
   // sporadically with the native iOS Safari's zoom on the figure as soon as
   // the Hammer object is initialized.  Need to look into that more.
-  var hammertime = new Hammer($("figure")[0]);
+  // touchCallout relates to the CSS that controls how the touch-and-hold
+  // behavior works.  We want the default (context menu enabled) so we'll set
+  // that here.
+  var hammertime = new Hammer($("figure")[0], {cssProps: {"touchCallout": "default"}});
   hammertime.on('swipeleft', function(ev) { _swipeProductImage("right"); });
   hammertime.on('swiperight', function(ev) { _swipeProductImage("left"); });
 }
