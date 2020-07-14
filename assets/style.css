@@ -161,6 +161,11 @@ nav ul {
   padding-left: 10px;
 }
 
+/* With the default small-screen layout, center the main navs */
+nav.main ul {
+  text-align: center;
+}
+
 /* Main site title */
 header > h1 {
   font-size: 400%;
@@ -180,6 +185,11 @@ header > h1 a:hover {
   /* navigation menus in general */
   nav {
     margin: 10px;
+  }
+
+  /* Undo the centering on larger screens */
+  nav.main ul {
+    text-align: initial;
   }
 
   /* product navigation on one side */
