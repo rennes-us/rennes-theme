@@ -1,15 +1,22 @@
 {% comment %}
 Scan through each vendor in the shop, and then check each collection for one
-whose Vendor metafield matches the vendor's handle.  Display as a list of lists
-with alphabetic groupings.  Vendors with a matching collection found will be
-displayed as a link to that collection.  Vendors with no matching collection
-will be left as text.
+whose Vendor metafield matches the vendor's handle.  Failing that, look for
+other obvious matches.  Display as a list of lists with alphabetic groupings.
+Vendors with a matching collection found will be displayed as a link to that
+collection.  Vendors with no matching collection will be left as text.
 
 Inspired initially by:
 https://www.blackbeltcommerce.com/vendor-page-in-shopify-the-clever-way-to-automatically-show-vendors-in-your-shop/
 ...except then I realized that the names won't always match up, and also that
 we can attach metafields to collections to explicitly define the vendor.
 
+The vendor/collection matching goes in order of:
+ 1. vendor name matches collection metafield
+ 2. vendor name matches both collection name and collection vendor
+ 3. vendor name matches collection name
+
+(Otherwise, no link.)  All three are necessary for edge cases like "bags" which
+has one vendor, Rennes, but is not "the" rennes collection.
 {% endcomment %}
 <ul class="designers">
 {% assign letters_done = "" -%}
@@ -26,14 +33,51 @@ we can attach metafields to collections to explicitly define the vendor.
 {%- capture letters_done -%}{{ letters_done | append: vendor_letter }}{%- endcapture -%}
 {%- endunless -%}
 {%- capture vendor_handle -%}{{ vendor | handle }}{%- endcapture -%}
+{%- assign collection_url = "" -%}
+{%- assign match_case="none" -%}
+
+{%- comment -%}
+Case 1: explicit metafield linking collection to vendor
+{%- endcomment -%}
+
 {%- for collection in collections -%}
 {%- if collection.metafields.global.vendor == vendor_handle -%}
 {%- capture collection_url -%}{{ collection.url }}{%- endcapture -%}
+{%- assign match_case = 1 -%}
 {%- endif -%}
 {%- endfor -%}
+
+{%- comment -%}
+Case 2: match with collection handle, collection vendor, vendor
+{%- endcomment -%}
+
+{%- if collection_url == "" -%}
+{%- for collection in collections -%}
+{%- assign col_vendors_count = collection.all_vendors | size -%}
+{%- assign col_vendors_first = collection.all_vendors[0] | handle -%}
+{%- if col_vendors_count == 1 and col_vendors_first == vendor_handle and collection.handle == vendor_handle -%}
+{%- capture collection_url -%}{{ collection.url }}{%- endcapture -%}
+{%- assign match_case = 2 -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+
+{%- comment -%}
+Case 3: collection vendor matches vendor
+{%- endcomment -%}
+
+{%- if collection_url == "" -%}
+{%- for collection in collections -%}
+{%- if collection.handle == vendor_handle -%}
+{%- capture collection_url -%}{{ collection.url }}{%- endcapture -%}
+{%- assign match_case = 3 -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+
 {%- if collection_url == "" %}
       <li>{{ vendor }}</li>{% else %}
-      <li><a href="{{ collection_url }}">{{ vendor }}</a></li>{% endif %}{% endfor %}
+      <li><a href="{{ collection_url }}" data-collection-match-case="{{match_case}}">{{ vendor }}</a></li>{% endif %}{% endfor %}
     </ul>
   </li>
 </ul>
