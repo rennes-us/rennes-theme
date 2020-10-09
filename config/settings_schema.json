@@ -38,7 +38,7 @@
       {
         "id": "product_img_swipe_speed",
         "label": "Speed when swiping product images (ms)",
-        "type": "text"
+        "type": "number"
       },
       {
         "type": "header",
@@ -57,7 +57,7 @@
       {
         "id": "search_paginate_num",
         "label": "Number of search results per page",
-        "type": "text"
+        "type": "number"
       }
     ]
   },
@@ -67,7 +67,7 @@
       {
         "id": "collection_paginate_num",
         "label": "Number of products per page",
-        "type": "text"
+        "type": "number"
       },
       {
         "id": "collection_empty_text",
@@ -82,7 +82,7 @@
       {
         "id": "collection_list_product_num",
         "label": "Number of preview products per collection",
-        "type": "text"
+        "type": "number"
       }
     ]
   },
@@ -152,7 +152,7 @@
       {
         "id": "mlpopup_delay",
         "label": "Delay in ms",
-        "type": "text"
+        "type": "number"
       },
 
       {
@@ -172,7 +172,7 @@
       {
         "id": "instafeed_limit",
         "label": "Number of photos to show",
-        "type": "text"
+        "type": "number"
       },
       {
         "id": "instafeed_resolution",
