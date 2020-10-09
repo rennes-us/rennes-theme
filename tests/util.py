@@ -81,7 +81,10 @@ TEST_PRODUCTS = {
 
 def get_setting(key):
     """Get the expected store setting from local JSON."""
-    return SETTINGS["presets"][SETTINGS["current"]].get(key)
+    try:
+        return SETTINGS["presets"][SETTINGS["current"]].get(key)
+    except TypeError:
+        return SETTINGS["current"].get(key)
 
 def main():
     """Run unit tests within virtual X display."""
