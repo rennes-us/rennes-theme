@@ -130,7 +130,6 @@ class TestSite(StoreSite):
         self.get("collections")
         self.check_layout_and_parts()
         self.check_for_elem("//article[@class='collections']/section[@class='products']")
-        self.check_pagination()
 
     def test_template_product(self):
         """Product page should show product information"""
