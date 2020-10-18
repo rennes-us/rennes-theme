@@ -7,20 +7,25 @@ images as a photo gallery using columns of fixed-width, varying-height images.
 The page content is filled in as usual but the bulk of the actual content is
 expected to come from the product images.
 
-TODO: I think we can use the bulk of the product_img snippet to help here too.
-Might need another product_context value, not sure.
+This uses the img srcset logic already in use in the collection and product
+templates, and repurposes the same sizing logic in use for the collections
+since it should be pretty close to the layout used here too.
 {% endcomment %}
 <article class="page gallery">
   <div>
 {{ page.content }}
   </div>
-  {% assign images = all_products[page.handle].images %}
+  {% assign product_context = "collection" %}
+  {% assign product = all_products[page.handle] %}
+  {% include 'product_vars' %}
+  {% assign images = product.images %}
   {% assign break1 = images.size | divided_by: 3 | round %}
   {% assign break2 = images.size | times: 2 | divided_by: 3 | round %}
   <div class="column">
   <!-- {% increment idx %} -->
   {% for img in images %}
-    <img src="{{ img | img_url: '1200x' }}">
+    {% include 'product_img' %}
+    <img sizes="{{ img_sizes }}" srcset="{{ img_srcset }}" src="{{ img | img_url: '1200x' }}">
     {% if idx == break1 or idx == break2 %}
   </div>
   <div class="column">
