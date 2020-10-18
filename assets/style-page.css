@@ -84,3 +84,50 @@ article.columns > div {
 article.columns img {
   max-width: 100%;
 }
+
+/*
+ *
+ * Photo gallery pages
+ *
+ * */
+
+/* Photo gallery with columns of images of varying height  */
+article.gallery {
+  /* Override the usual page article max width */
+  max-width: initial;
+
+  /* flex container */
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* If there are contents in the page they'll show up in this div */
+article.gallery div {
+  flex-basis: 100%;
+}
+
+/* On narrow screens show one column at a time */
+article.gallery div.column {
+  /* flex container */
+  display: flex;
+  flex-direction: column;
+
+  /* flex object */
+  flex-shrink: 0;
+  flex-basis: 100%;
+}
+
+article.gallery div.column img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Show three columns on wider screens */
+@media only screen and (min-width: 740px) {
+  article.gallery div.column {
+    flex-shrink: 1;
+    flex-grow: 1;
+    flex-basis: 30%;
+    margin: 5px;
+  }
+}
