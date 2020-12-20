@@ -190,7 +190,7 @@ article[typeof=Product] figure aside.zoomed a {
 article[typeof=Product] div[property=description] {
   margin: 0 3vw;
   padding: 1em 0;
-  text-align: justify;
+  text-align: left;
 }
 
 form[action="/cart/add"] {
