@@ -142,6 +142,26 @@
 
       {
         "type": "header",
+        "content": "Site Banner"
+      },
+      {
+        "id": "banner_enabled",
+        "label": "Enabled?",
+        "type": "checkbox"
+      },
+      {
+        "id": "banner_text",
+        "label": "Text to display",
+        "type": "text"
+      },
+      {
+        "id": "banner_bgcolor",
+        "label": "Background color",
+        "type": "text"
+      },
+
+      {
+        "type": "header",
         "content": "Mailing List Popup"
       },
       {
