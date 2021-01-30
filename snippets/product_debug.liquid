@@ -65,4 +65,8 @@ images ({{ product.images.size}}):
 
 description:
   {{product.description}}
+
+metafields:
+{%- for mf in product.metafields.general %}
+  {{mf | first}}: {{mf | last}}{% endfor %}
 </div>
