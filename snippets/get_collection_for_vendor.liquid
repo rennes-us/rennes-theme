@@ -1,0 +1,47 @@
+{% comment %}
+Given a vendor already assigned to the vendor variable, this sets a collection
+variable matched to that vendor.
+
+I suspect/hope there's a better way to do this, but until I know one I'll
+encapsulate the awful in here.  This is adapted from collection_designers (and
+should probably take over for that code eventually).
+{% endcomment %}
+
+{%- capture vendor_handle -%}{{ vendor | handle }}{%- endcapture -%}
+{%- assign collection = "" -%}
+
+{%- comment -%}
+Case 1: explicit metafield linking collection to vendor
+{%- endcomment -%}
+
+{%- for collection_tmp in collections -%}
+{%- if collection_tmp.metafields.global.vendor == vendor_handle -%}
+{%- assign collection = collection_tmp %}
+{%- endif -%}
+{%- endfor -%}
+
+{%- comment -%}
+Case 2: match with collection handle, collection vendor, vendor
+{%- endcomment -%}
+
+{%- if collection == "" -%}
+{%- for collection_tmp in collections -%}
+{%- assign col_vendors_count = collection_tmp.all_vendors | size -%}
+{%- assign col_vendors_first = collection_tmp.all_vendors[0] | handle -%}
+{%- if col_vendors_count == 1 and col_vendors_first == vendor_handle and collection_tmp.handle == vendor_handle -%}
+{%- assign collection = collection_tmp %}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+
+{%- comment -%}
+Case 3: collection vendor matches vendor
+{%- endcomment -%}
+
+{%- if collection == "" -%}
+{%- for collection_tmp in collections -%}
+{%- if collection_tmp.handle == vendor_handle -%}
+{%- assign collection = collection_tmp %}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}

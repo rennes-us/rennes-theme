@@ -27,7 +27,7 @@
     <div>
       <h2 property="name">{{ product.title | escape }}</h2>
       <div property="description">
-        {{ product.description }}
+        {% include 'product_description' %}
       </div>
 
       <form action="/cart/add" method="post">

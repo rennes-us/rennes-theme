@@ -186,6 +186,14 @@ article[typeof=Product] figure aside.zoomed a {
  *
  * */
 
+article[typeof=Product] h2,
+article[typeof=Product] h3 {
+  text-align: left;
+}
+article[typeof=Product] h2 {
+  margin: 0 3vw;
+}
+
 /* Product description, offer form, and fine print */
 article[typeof=Product] div[property=description] {
   margin: 0 3vw;

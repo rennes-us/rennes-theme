@@ -1,0 +1,30 @@
+{%- comment -%}
+Structure the product description as different sections.
+
+The main (details) section is the actual description attribute of the product
+object from shopify.  After that is the vendor description (pulled from the
+description attribute of the collection object found for the vendor, if any),
+and finally the metafields with custom order and headings.
+
+The metafields are handled with a clumsy array of key/value pairs built from a
+string, and other than the ordering and headings they're all treated the same.
+For more custom styling we'll have to fall back on manual handling per
+metafield.
+{%- endcomment -%}
+{%- assign vendor = product.vendor -%}
+{%- include 'get_collection_for_vendor' %}
+        <h3>Details</h3>
+        {{ product.description }}
+        {% if collection != "" %}
+        <h3>About {{ collection.title }}</h3>
+        {{ collection.description }}
+        {% endif %}
+        {%- assign mfs = "additionalinfo:Additional Info,country:Country of Origin,fit:Fit,material:Material,productcare:Product Care,disclaimer:Disclaimer" | split: "," -%}
+        {%- for mf in mfs -%}
+        {%- assign key = mf | split: ":" | first -%}
+        {%- assign desc = mf | split: ":" | last -%}
+        {%- if product.metafields.general[key] %}
+        <h3>{{ desc }}</h3>
+        <p>{{product.metafields.general[key]}}</p>
+        {% endif -%}
+        {%- endfor -%}
