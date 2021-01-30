@@ -139,7 +139,6 @@
         "label": "Mailing List Form Target URL",
         "type": "text"
       },
-
       {
         "type": "header",
         "content": "Site Banner"
@@ -159,7 +158,6 @@
         "label": "Background color",
         "type": "text"
       },
-
       {
         "type": "header",
         "content": "Mailing List Popup"
@@ -174,7 +172,6 @@
         "label": "Delay in ms",
         "type": "number"
       },
-
       {
         "type": "header",
         "content": "InstaFeed Instagram Viewer"
@@ -199,7 +196,6 @@
         "label": "Instafeed resolution setting",
         "type": "text"
       },
-
       {
         "type": "header",
         "content": "Storefront Address"
@@ -238,8 +234,15 @@
         "label": "Enable debug mode?",
         "type": "radio",
         "options": [
-          {"value": "false", "label": "false"},
-          {"value": "true", "label": "true"}]
+          {
+            "value": "false",
+            "label": "false"
+          },
+          {
+            "value": "true",
+            "label": "true"
+          }
+        ]
       }
     ]
   }
