@@ -6,10 +6,11 @@ See the StoreSite class for the main part.
 
 import logging
 import re
+import unittest
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
-from .store_client import StoreClient
+from .store_client import StoreClient, StoreError
 from .util import (TESTING_CONFIG, get_setting)
 
 LOGGER = logging.getLogger(__name__)
@@ -53,12 +54,24 @@ class HasCSSAttr:
         return False
 
 
-class StoreSite(StoreClient):
+class StoreSite(StoreClient, unittest.TestCase):
     """Browser session for development store website.
 
     This prepares for the tests themselves but can be used independently of the
     test functions.
     """
+
+    @classmethod
+    def setUpClass(cls):
+        LOGGER.info("Setting up StoreSite: %s", str(cls))
+        try:
+            cls.set_up_site(TESTING_CONFIG)
+        except StoreError as exc:
+            cls.fail(str(exc))
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tear_down_site()
 
     def is404(self):
         """Did we get a 404 on the most recent request?"""
@@ -607,3 +620,17 @@ class StoreSite(StoreClient):
         self.assertTrue(
             css().startswith(value2),
             "expected CSS property %s to start with %s but saw %s" % (attr, value2, css()))
+
+    def check_for_elem(self, xpath, elem=None):
+        """Get a single element by xpath, failing if not found."""
+        elem2 = self.try_for_elem(xpath, elem)
+        if not elem2:
+            self.fail("element not found: \"%s\"" % xpath)
+        return elem2
+
+    def check_for_elems(self, xpath, elem=None):
+        """Get a list of elements by xpath, failing if not found."""
+        elems = self.try_for_elems(xpath, elem)
+        if not elems:
+            self.fail("element not found: \"%s\"" % xpath)
+        return elems

@@ -6,7 +6,6 @@ See the StoreClient class for the main part.
 
 import time
 import logging
-import unittest
 import contextlib
 
 # https://selenium-python.readthedocs.io/getting-started.html
@@ -17,8 +16,6 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException)
 
-from .util import TESTING_CONFIG
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -26,7 +23,7 @@ class StoreError(Exception):
     """An Exception for store-related errors."""
 
 
-class StoreClient(unittest.TestCase):
+class StoreClient:
     """Low-level handling for queries to development store website with Selenium.
 
     Instances of this class share a single browser session.  Child classes each
@@ -37,25 +34,14 @@ class StoreClient(unittest.TestCase):
     """
 
     @classmethod
-    def setUpClass(cls):
-        LOGGER.info("Setting up StoreSite: %s", str(cls))
-        try:
-            cls.set_up_site()
-        except StoreError as exc:
-            cls.fail(str(exc))
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.tear_down_site()
-
-    @classmethod
-    def set_up_site(cls):
+    def set_up_site(cls, config):
         """Set up client and authenticate with site if needed.
 
         Call this before interacting with any pages.
         """
+        cls.config = config
         driver = cls.get_driver()
-        cls.url = "https://" + TESTING_CONFIG["store_site"] + "/"
+        cls.url = "https://" + config["store_site"] + "/"
         driver.get(cls.url)
         LOGGER.info("Setting up StoreSite: %s: loaded %s", str(cls), cls.url)
         try:
@@ -64,7 +50,7 @@ class StoreClient(unittest.TestCase):
             pass
         else:
             LOGGER.info("Setting up StoreSite: %s: reached password prompt", str(cls))
-            password = TESTING_CONFIG["store_password"]
+            password = config["store_password"]
             if password:
                 elem.send_keys(password)
                 elem.send_keys(Keys.RETURN)
@@ -103,7 +89,7 @@ class StoreClient(unittest.TestCase):
             options = ChromeOptions()
             options.add_argument("--headless")
             client = Chrome(options=options)
-            client.set_page_load_timeout(TESTING_CONFIG["page_load_timeout"])
+            client.set_page_load_timeout(cls.config["page_load_timeout"])
             LOGGER.info("No driver for class %s, initialized %s", str(cls), str(client))
             cls.clientmap[cls] = client
         return client
@@ -213,20 +199,6 @@ class StoreClient(unittest.TestCase):
         """Hover the mouse over the given element."""
         webdriver.ActionChains(self.driver).move_to_element(elem).perform()
 
-    def check_for_elem(self, xpath, elem=None):
-        """Get a single element by xpath, failing if not found."""
-        elem2 = self.try_for_elem(xpath, elem)
-        if not elem2:
-            self.fail("element not found: \"%s\"" % xpath)
-        return elem2
-
-    def check_for_elems(self, xpath, elem=None):
-        """Get a list of elements by xpath, failing if not found."""
-        elems = self.try_for_elems(xpath, elem)
-        if not elems:
-            self.fail("element not found: \"%s\"" % xpath)
-        return elems
-
     def try_for_elem(self, xpath, elem=None):
         """Get a single element by xpath, or None if not found."""
         try:
@@ -245,7 +217,7 @@ class StoreClient(unittest.TestCase):
         """Get a single element by xpath."""
         # pylint: disable=invalid-name
         log = lambda msg: LOGGER.debug("xp: %s", msg)
-        time.sleep(TESTING_CONFIG["elem_delay"])
+        time.sleep(self.config["elem_delay"])
         if elem:
             try:
                 log("in %s: %s" % (elem.tag_name, xpath))
@@ -267,7 +239,7 @@ class StoreClient(unittest.TestCase):
     def xps(self, xpath, elem=None):
         """Get a list of elements by xpath."""
         log = lambda msg: LOGGER.debug("xps: %s", msg)
-        time.sleep(TESTING_CONFIG["elem_delay"])
+        time.sleep(self.config["elem_delay"])
         if elem:
             try:
                 log("in %s: %s" % (elem.tag_name, xpath))

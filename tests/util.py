@@ -65,7 +65,6 @@ CONFIG = __load_theme_config()
 SETTINGS = __load_settings_data()
 TESTING_CONFIG = __setup_testing_config(CONFIG)
 
-logging.basicConfig(level=TESTING_CONFIG["log_level"])
 LOGGER = logging.getLogger(__name__)
 __log_testing_config()
 
