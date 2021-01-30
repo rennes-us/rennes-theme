@@ -232,17 +232,7 @@
       {
         "id": "debug",
         "label": "Enable debug mode?",
-        "type": "radio",
-        "options": [
-          {
-            "value": "false",
-            "label": "false"
-          },
-          {
-            "value": "true",
-            "label": "true"
-          }
-        ]
+        "type": "checkbox"
       }
     ]
   }
