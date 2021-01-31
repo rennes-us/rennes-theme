@@ -5,6 +5,13 @@ variable matched to that vendor.
 I suspect/hope there's a better way to do this, but until I know one I'll
 encapsulate the awful in here.  This is adapted from collection_designers (and
 should probably take over for that code eventually).
+
+AGH I think this is it:
+https://shopify.dev/docs/themes/liquid/reference/filters/url-filters
+See link_to_vendor.  There's a magical collection that can be referred to as
+vendors?q=<vendor>
+...but maybe that's problematic if you want more control like custom product
+ordering.  Needs more investigating.
 {% endcomment %}
 
 {%- capture vendor_handle -%}{{ vendor | handle }}{%- endcapture -%}
