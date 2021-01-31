@@ -15,7 +15,7 @@ metafield.
 {%- include 'get_collection_for_vendor' %}
         <h3>Details</h3>
         {{ product.description }}
-        {% if collection != "" %}
+        {% if collection != "" and collection.description != "" %}
         <h3>About {{ collection.title }}</h3>
         {{ collection.description }}
         {% endif %}
@@ -24,7 +24,20 @@ metafield.
         {%- assign key = mf | split: ":" | first -%}
         {%- assign desc = mf | split: ":" | last -%}
         {%- if product.metafields.general[key] %}
+        {%- if product.metafields.general[key] != "" %}
         <h3>{{ desc }}</h3>
         <p>{{product.metafields.general[key]}}</p>
+        {% endif %}
+
+        {% else %}
+
+        {%- if product.metafields.product[key] %}
+        {%- if product.metafields.product[key] != "" %}
+        <h3>{{ desc }}</h3>
+        <p>{{product.metafields.product[key]}}</p>
+        {% endif %}
         {% endif -%}
+
+        {% endif %}
+
         {%- endfor -%}
