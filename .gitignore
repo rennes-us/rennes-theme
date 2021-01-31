@@ -6,5 +6,7 @@ config/settings_data.json
 # Don't track images
 assets/*.png
 assets/*.jpg
+# Or my special version tracking text file
+assets/version.txt
 # Cache directories
 __pycache__/
